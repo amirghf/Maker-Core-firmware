@@ -3,7 +3,7 @@
 #include "host_reply.h"
 #include "text_format.h"
 #include "hal_board.h"
-#include "mc_version.h"
+#include "../config/mc_version.h"    // پوشه config در مسیر include نیست؛ مسیر نسبی از همین فایل
 
 namespace mc {
 namespace {
