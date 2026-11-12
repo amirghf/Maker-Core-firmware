@@ -20,6 +20,7 @@
 #include "host_reply.h"
 #include "adc_sampler.h"
 #include "thermistor.h"
+#include "output_pwm.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -492,6 +493,7 @@ void task_cmd_intake() {
 
 extern "C" void mc_core_init_c(void) {
     mc::mc_log(mc::LogLevel::Info, "core ready");
+    mc::mc_output_init();   // بند ۴.۳: PWM هیتر و فن (همه خاموش)
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -506,6 +508,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_splash, 100U);
     mc::g_main.add(mc::mc_adc_sampler_poll, mc::kAdcPeriodMs);   // بند ۴.۱: نمونه‌گیری ADC هر ۱۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_temp_poll, mc::kTempPeriodMs);   // بند ۴.۲: تبدیل ADC به دما هر ۱۰۰ میلی‌ثانیه
+    mc::g_main.add(mc::mc_output_poll, 100U);   // بند ۴.۳: به‌روزرسانی خروجی‌ها و متغیرهای debug
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);

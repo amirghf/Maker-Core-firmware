@@ -18,6 +18,7 @@ namespace {
 
 constexpr uint32_t kTickUs = 100;  // هر تیک ۱۰۰ میکروثانیه
 volatile uint32_t g_ticks = 0;     // فقط وقفه TIM6 این را زیاد می‌کند
+TickHook volatile g_tick_hook = nullptr;   // هوک وقفه (بند ۴.۳)
 
 }  // namespace
 
@@ -89,6 +90,10 @@ bool mc_time_selftest() {
     return true;
 }
 
+void mc_time_set_tick_hook(TickHook hook) {
+    g_tick_hook = hook;
+}
+
 }  // namespace mc
 
 extern "C" void mc_time_init_c(void) {
@@ -102,6 +107,10 @@ extern "C" int mc_time_selftest_c(void) {
 
 extern "C" void mc_time_tick_c(void) {
     mc::g_ticks = mc::g_ticks + 1U;  // خیلی کوتاه بماند؛ این تابع داخل وقفه است
+    mc::TickHook hook = mc::g_tick_hook;
+    if (hook != nullptr) {
+        hook();   // بند ۴.۳: PWM نرم‌افزاری
+    }
 }
 
 extern "C" void mc_time_debug_poll_c(void) {

@@ -15,6 +15,11 @@ uint32_t mc_millis();
 uint32_t mc_micros();
 // تعداد تیک‌های ۱۰۰ میکروثانیه‌ای از شروع زمان‌پایه.
 uint32_t mc_time_ticks();
+// نوع تابع هوک وقفه (بند ۴.۳)
+using TickHook = void (*)();
+// یک تابع خیلی کوتاه ثبت می‌کند که در هر وقفه ۱۰۰ میکروثانیه‌ای صدا زده شود. داخل وقفه اجرا می‌شود!
+// nullptr = حذف هوک.
+void mc_time_set_tick_hook(TickHook hook);
 // تست خودکار زمان‌پایه (حدود ۱۰۰ میلی‌ثانیه طول می‌کشد). true = سالم.
 bool mc_time_selftest();
 
