@@ -15,5 +15,7 @@ void mc_reply_command_failed(char letter, uint16_t number);
 void mc_reply_unknown(const char* line);
 // «echo:busy: processing» می‌فرستد (بدون ok).
 void mc_reply_busy();
+// یک خط متن (با خط جدید) برای کامپیوتر می‌فرستد، بدون ok. (ok را توزیع‌کننده بعد از تمام شدن دستور می‌فرستد.)
+void mc_reply_line(const char* text);
 
 }  // namespace mc

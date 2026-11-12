@@ -28,6 +28,12 @@ struct GcodeEntry {
 // دستور را در جدول (gcode_table.cpp) پیدا می‌کند. nullptr = دستور ناشناس.
 const GcodeEntry* mc_gcode_find(char letter, uint16_t number, int8_t sub);
 
+GcodeStatus mc_gcode_g4(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m110(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m114(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m400(const GcodeCommand& cmd, bool first_call);
+
 // دستور تست این بند: M9999 (فایل m9999.cpp)
 GcodeStatus mc_gcode_m9999(const GcodeCommand& cmd, bool first_call);
 

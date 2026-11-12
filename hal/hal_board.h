@@ -7,6 +7,8 @@ namespace mc {
 void mc_board_safe_state();
 // بررسی می‌کند همه خروجی‌ها واقعاً در حالت امن هستند. true = سالم.
 bool mc_board_safe_state_check();
+// نام برد (مثلاً "MW-X1") برای پیام‌هایی مثل M115. رشته ثابت است و نباید آزاد شود.
+const char* mc_board_name();
 }  // namespace mc
 
 extern "C" {

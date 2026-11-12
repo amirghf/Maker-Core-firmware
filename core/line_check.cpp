@@ -53,6 +53,11 @@ int32_t mc_line_last_number() {
     return g_last_n;
 }
 
+void mc_line_set_last_number(int32_t n) {
+    g_last_n = n;
+    mc_dbg_chk_last_n = g_last_n;
+}
+
 LineCheck mc_line_check(const char* line, char* out, uint16_t out_size) {
     if ((out == nullptr) || (out_size == 0U)) { return LineCheck::Ok; }
     out[0] = '\0';

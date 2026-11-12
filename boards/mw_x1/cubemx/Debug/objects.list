@@ -16,6 +16,7 @@
 "./Core/core_src/error.o"
 "./Core/core_src/gcode_parser.o"
 "./Core/core_src/gfx.o"
+"./Core/core_src/host_reply.o"
 "./Core/core_src/line_check.o"
 "./Core/core_src/line_reader.o"
 "./Core/core_src/log.o"
