@@ -6,7 +6,7 @@ namespace {
 // جدول دستورها. برای افزودن دستور جدید: یک فایل در gcode بساز و یک خط به این جدول اضافه کن.
 const GcodeEntry kTable[] = {
     // حرف، شماره، زیرکد (-۱ = بدون زیرکد)، تابع
-    { 'M', 9999U, -1, mc_gcode_m9999 },   // دستور تست بند ۴.۵ (موقت)
+    { 'M', 9999U, -1, mc_gcode_m9999 },   // دستور تست بند ۳.۵ (موقت)
 };
 
 constexpr uint16_t kTableCount = static_cast<uint16_t>(sizeof(kTable) / sizeof(kTable[0]));
