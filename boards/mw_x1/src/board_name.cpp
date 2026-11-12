@@ -1,1 +1,11 @@
-// نام برد MW-X1 برای هسته (هسته به board_info.h دسترسی ندارد).\r\n#include "hal_board.h"\r\n#include "board_info.h"\r\n\r\nnamespace mc {\r\n\r\nconst char* mc_board_name() {\r\n    return MC_BOARD_NAME;\r\n}\r\n\r\n}  // namespace mc\r\n
+// نام برد MW-X1 برای هسته (هسته به board_info.h دسترسی ندارد).
+#include "hal_board.h"
+#include "board_info.h"
+
+namespace mc {
+
+const char* mc_board_name() {
+    return MC_BOARD_NAME;
+}
+
+}  // namespace mc

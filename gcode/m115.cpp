@@ -1,1 +1,40 @@
-// M115: اطلاعات فرمویر و امکانات. بعداً با اضافه شدن امکانات، مقدار Cap ها ۱ می‌شود.\r\n#include "gcode_handlers.h"\r\n#include "host_reply.h"\r\n#include "text_format.h"\r\n#include "hal_board.h"\r\n#include "mc_version.h"\r\n\r\nnamespace mc {\r\nnamespace {\r\n\r\n// فهرست امکانات (۰ = فعلاً ندارد)\r\nconst char* const kCaps[] = {\r\n    "Cap:SERIAL_XON_XOFF:0",\r\n    "Cap:EEPROM:0",\r\n    "Cap:AUTOREPORT_TEMP:0",\r\n    "Cap:AUTOREPORT_POS:0",\r\n    "Cap:SDCARD:0",\r\n    "Cap:EMERGENCY_PARSER:0",\r\n    "Cap:THERMAL_PROTECTION:0",\r\n};\r\n\r\n}  // namespace\r\n\r\nGcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call) {\r\n    (void)cmd;\r\n    (void)first_call;\r\n    char buf[128];\r\n    uint16_t n = 0U;\r\n    const uint16_t cap = static_cast<uint16_t>(sizeof(buf));\r\n    n = mc_fmt_text(buf, cap, n, "FIRMWARE_NAME:" MC_FIRMWARE_NAME " " MC_VERSION_STRING " PROTOCOL_VERSION:1.0 MACHINE_TYPE:");\r\n    n = mc_fmt_text(buf, cap, n, mc_board_name());\r\n    n = mc_fmt_text(buf, cap, n, " EXTRUDER_COUNT:1");\r\n    mc_reply_line(buf);\r\n    for (uint8_t i = 0U; i < static_cast<uint8_t>(sizeof(kCaps) / sizeof(kCaps[0])); ++i) {\r\n        mc_reply_line(kCaps[i]);\r\n    }\r\n    return GcodeStatus::Done;\r\n}\r\n\r\n}  // namespace mc\r\n
+// M115: اطلاعات فرمویر و امکانات. بعداً با اضافه شدن امکانات، مقدار Cap ها ۱ می‌شود.
+#include "gcode_handlers.h"
+#include "host_reply.h"
+#include "text_format.h"
+#include "hal_board.h"
+#include "mc_version.h"
+
+namespace mc {
+namespace {
+
+// فهرست امکانات (۰ = فعلاً ندارد)
+const char* const kCaps[] = {
+    "Cap:SERIAL_XON_XOFF:0",
+    "Cap:EEPROM:0",
+    "Cap:AUTOREPORT_TEMP:0",
+    "Cap:AUTOREPORT_POS:0",
+    "Cap:SDCARD:0",
+    "Cap:EMERGENCY_PARSER:0",
+    "Cap:THERMAL_PROTECTION:0",
+};
+
+}  // namespace
+
+GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call) {
+    (void)cmd;
+    (void)first_call;
+    char buf[128];
+    uint16_t n = 0U;
+    const uint16_t cap = static_cast<uint16_t>(sizeof(buf));
+    n = mc_fmt_text(buf, cap, n, "FIRMWARE_NAME:" MC_FIRMWARE_NAME " " MC_VERSION_STRING " PROTOCOL_VERSION:1.0 MACHINE_TYPE:");
+    n = mc_fmt_text(buf, cap, n, mc_board_name());
+    n = mc_fmt_text(buf, cap, n, " EXTRUDER_COUNT:1");
+    mc_reply_line(buf);
+    for (uint8_t i = 0U; i < static_cast<uint8_t>(sizeof(kCaps) / sizeof(kCaps[0])); ++i) {
+        mc_reply_line(kCaps[i]);
+    }
+    return GcodeStatus::Done;
+}
+
+}  // namespace mc

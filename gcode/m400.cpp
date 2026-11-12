@@ -1,1 +1,14 @@
-// M400: صبر می‌کند تا همه حرکت‌ها تمام شوند. (فعلاً حرکتی نداریم؛ مرحله ۵ آن را واقعی می‌کند.)\r\n#include "gcode_handlers.h"\r\n#include "machine_state.h"\r\n\r\nnamespace mc {\r\n\r\nGcodeStatus mc_gcode_m400(const GcodeCommand& cmd, bool first_call) {\r\n    (void)cmd;\r\n    (void)first_call;\r\n    if (mc_motion_busy()) { return GcodeStatus::Busy; }\r\n    return GcodeStatus::Done;\r\n}\r\n\r\n}  // namespace mc\r\n
+// M400: صبر می‌کند تا همه حرکت‌ها تمام شوند. (فعلاً حرکتی نداریم؛ مرحله ۵ آن را واقعی می‌کند.)
+#include "gcode_handlers.h"
+#include "machine_state.h"
+
+namespace mc {
+
+GcodeStatus mc_gcode_m400(const GcodeCommand& cmd, bool first_call) {
+    (void)cmd;
+    (void)first_call;
+    if (mc_motion_busy()) { return GcodeStatus::Busy; }
+    return GcodeStatus::Done;
+}
+
+}  // namespace mc

@@ -1,1 +1,29 @@
-#include "machine_state.h"\r\n\r\n// متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.\r\nextern "C" {\r\nvolatile uint32_t mc_dbg_motion_fake_busy = 0;   // برای تست: نوشتن عدد ۱ یعنی «حرکت در جریان است»، ۰ یعنی تمام شد\r\n}\r\n\r\nnamespace mc {\r\nnamespace {\r\n\r\nfloat g_pos[kAxisCount] = { 0.0f, 0.0f, 0.0f, 0.0f };   // موقعیت محورها (میلی‌متر)\r\n\r\n}  // namespace\r\n\r\nfloat mc_position_get(uint8_t axis) {\r\n    if (axis >= kAxisCount) { return 0.0f; }\r\n    return g_pos[axis];\r\n}\r\n\r\nvoid mc_position_set(uint8_t axis, float mm) {\r\n    if (axis >= kAxisCount) { return; }\r\n    g_pos[axis] = mm;\r\n}\r\n\r\nbool mc_motion_busy() {\r\n    return mc_dbg_motion_fake_busy != 0U;\r\n}\r\n\r\n}  // namespace mc\r\n
+#include "machine_state.h"
+
+// متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
+extern "C" {
+volatile uint32_t mc_dbg_motion_fake_busy = 0;   // برای تست: نوشتن عدد ۱ یعنی «حرکت در جریان است»، ۰ یعنی تمام شد
+}
+
+namespace mc {
+namespace {
+
+float g_pos[kAxisCount] = { 0.0f, 0.0f, 0.0f, 0.0f };   // موقعیت محورها (میلی‌متر)
+
+}  // namespace
+
+float mc_position_get(uint8_t axis) {
+    if (axis >= kAxisCount) { return 0.0f; }
+    return g_pos[axis];
+}
+
+void mc_position_set(uint8_t axis, float mm) {
+    if (axis >= kAxisCount) { return; }
+    g_pos[axis] = mm;
+}
+
+bool mc_motion_busy() {
+    return mc_dbg_motion_fake_busy != 0U;
+}
+
+}  // namespace mc
