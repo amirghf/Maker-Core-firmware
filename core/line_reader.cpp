@@ -1,6 +1,7 @@
 #include "line_reader.h"
 #include "hal_serial.h"
 #include "log.h"
+#include "host_reply.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -40,6 +41,7 @@ void mc_line_poll() {
             if (g_overflow) {
                 mc_dbg_line_overflow = mc_dbg_line_overflow + 1U;
                 mc_log(LogLevel::Error, "line too long");
+                mc_reply_error("Line too long");
                 g_overflow = false;
                 g_len = 0U;
                 continue;

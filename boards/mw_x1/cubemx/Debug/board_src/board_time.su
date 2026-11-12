@@ -1,0 +1,9 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:24:6:void mc::mc_time_init()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:31:10:uint32_t mc::mc_millis()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:35:10:uint32_t mc::mc_time_ticks()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:39:10:uint32_t mc::mc_micros()	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:58:6:bool mc::mc_time_selftest()	56	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:94:17:void mc_time_init_c()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:98:16:int mc_time_selftest_c()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:103:17:void mc_time_tick_c()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_time.cpp:107:17:void mc_time_debug_poll_c()	8	static

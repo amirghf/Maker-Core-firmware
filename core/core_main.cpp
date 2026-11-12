@@ -17,6 +17,7 @@
 #include "line_check.h"
 #include "command_queue.h"
 #include "gcode_dispatch.h"
+#include "host_reply.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -466,9 +467,19 @@ void task_cmd_intake() {
     if (r == GcodeResult::Ok) {
         if (!mc_cmdq_push(cmd)) {
             mc_log(LogLevel::Error, "command queue push failed");
+            mc_reply_error("Command queue full");
         }
-    } else if (r != GcodeResult::Empty) {
+    } else if (r == GcodeResult::Empty) {
+        mc_reply_ok();   // خط فقط کامنت بود: کامپیوتر هم ok می‌خواهد
+    } else {
         mc_log_value(LogLevel::Error, "gcode parse error", static_cast<uint32_t>(r));
+        if (r == GcodeResult::BadParam) {
+            mc_reply_error("Bad parameter");
+        } else if (r == GcodeResult::TooManyParams) {
+            mc_reply_error("Too many parameters");
+        } else {
+            mc_reply_error("Bad command word");
+        }
     }
 }
 

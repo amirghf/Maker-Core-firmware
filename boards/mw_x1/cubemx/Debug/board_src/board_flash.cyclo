@@ -1,0 +1,13 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:31:6:void mc::{anonymous}::select_flash()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:32:6:void mc::{anonymous}::deselect_flash()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:34:6:bool mc::{anonymous}::tx_bytes(const uint8_t*, uint16_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:42:6:bool mc::{anonymous}::rx_bytes(uint8_t*, uint16_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:51:6:void mc::{anonymous}::make_cmd(uint8_t*, uint8_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:59:6:bool mc::{anonymous}::read_status(uint8_t*)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:68:6:bool mc::{anonymous}::wait_ready(uint32_t)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:78:6:bool mc::{anonymous}::write_enable()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:88:6:bool mc::mc_flash_init()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:107:10:uint32_t mc::mc_flash_capacity()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:111:6:bool mc::mc_flash_read(uint32_t, uint8_t*, uint32_t)	9
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:130:6:bool mc::mc_flash_erase_sector(uint32_t)	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_flash.cpp:145:6:bool mc::mc_flash_write(uint32_t, const uint8_t*, uint32_t)	14
