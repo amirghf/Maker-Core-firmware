@@ -19,6 +19,7 @@
 #include "gcode_dispatch.h"
 #include "host_reply.h"
 #include "adc_sampler.h"
+#include "thermistor.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -504,6 +505,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_flash_test, 100U);
     mc::g_main.add(mc::task_splash, 100U);
     mc::g_main.add(mc::mc_adc_sampler_poll, mc::kAdcPeriodMs);   // بند ۴.۱: نمونه‌گیری ADC هر ۱۰ میلی‌ثانیه
+    mc::g_main.add(mc::mc_temp_poll, mc::kTempPeriodMs);   // بند ۴.۲: تبدیل ADC به دما هر ۱۰۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
