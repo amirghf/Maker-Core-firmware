@@ -47,6 +47,16 @@ uint8_t append_uint(char* dst, uint8_t pos, uint32_t value) {
     return pos;
 }
 
+// عدد علامت‌دار را می‌نویسد (برای شماره خط منفی مثل -1).
+uint8_t append_int(char* dst, uint8_t pos, int32_t value) {
+    if (value >= 0) { return append_uint(dst, pos, static_cast<uint32_t>(value)); }
+    if (pos < 100U) {
+        dst[pos] = '-';
+        pos = static_cast<uint8_t>(pos + 1U);
+    }
+    return append_uint(dst, pos, static_cast<uint32_t>(-(value + 1)) + 1U);
+}
+
 }  // namespace
 
 int32_t mc_line_last_number() {
@@ -76,11 +86,16 @@ LineCheck mc_line_check(const char* line, char* out, uint16_t out_size) {
     const char* p = line;
     while (is_space(*p)) { ++p; }
     bool has_n = false;
+    bool neg_n = false;        // N منفی (مثل N-1 که میزبان‌ها همراه M110 می‌فرستند)
     uint32_t n = 0U;
     const char* text = line;   // شروع متن دستور
-    if ((*p == 'N') && is_digit(p[1])) {
+    if ((*p == 'N') && (is_digit(p[1]) || ((p[1] == '-') && is_digit(p[2])))) {
         has_n = true;
         ++p;
+        if (*p == '-') {
+            neg_n = true;
+            ++p;
+        }
         while (is_digit(*p)) {
             if (n <= 99999999U) { n = (n * 10U) + static_cast<uint32_t>(*p - '0'); }
             ++p;
@@ -92,7 +107,8 @@ LineCheck mc_line_check(const char* line, char* out, uint16_t out_size) {
     LineCheck result = LineCheck::Ok;
     if (has_n) {
         const bool m110 = is_m110(text);
-        if ((static_cast<int32_t>(n) != (g_last_n + 1)) && !m110) {
+        const int32_t n_signed = neg_n ? -static_cast<int32_t>(n) : static_cast<int32_t>(n);
+        if ((n_signed != (g_last_n + 1)) && !m110) {
             result = LineCheck::BadSequence;
         } else if (star == nullptr) {
             result = LineCheck::NoChecksum;
@@ -112,7 +128,7 @@ LineCheck mc_line_check(const char* line, char* out, uint16_t out_size) {
             if (*c != '\0') { ok = false; }   // بعد از عدد چک‌سام چیز دیگری نباشد
             if (!ok || (value != sum)) { result = LineCheck::ChecksumMismatch; }
         }
-        if (result == LineCheck::Ok) { g_last_n = static_cast<int32_t>(n); }
+        if (result == LineCheck::Ok) { g_last_n = n_signed; }
     } else if (star != nullptr) {
         result = LineCheck::NoLineNumber;
     }
@@ -147,9 +163,9 @@ void mc_line_send_resend(LineCheck reason) {
     n = append_text(buf, n, "Error:");
     n = append_text(buf, n, what);
     n = append_text(buf, n, ", Last Line: ");
-    n = append_uint(buf, n, static_cast<uint32_t>(g_last_n));
+    n = append_int(buf, n, g_last_n);
     n = append_text(buf, n, "\nResend: ");
-    n = append_uint(buf, n, static_cast<uint32_t>(g_last_n) + 1U);
+    n = append_int(buf, n, g_last_n + 1);
     n = append_text(buf, n, "\nok\n");
     buf[n] = '\0';
     (void)mc_serial_print(buf);

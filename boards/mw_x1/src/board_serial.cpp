@@ -88,6 +88,8 @@ void mc_serial_poll() {
 
     // تازه وصل شده: پیام شروع را می‌فرستیم
     if (now && !g_was_connected) {
+        // سلام استاندارد مثل Marlin: میزبان‌هایی مثل Pronterface و OctoPrint آن را می‌شناسند (بند ۳.۸)
+        mc_serial_print("start\r\n");
         mc_serial_print(MC_FIRMWARE_NAME " " MC_VERSION_STRING " | " MC_BOARD_NAME "\r\n");
     }
     g_was_connected = now;

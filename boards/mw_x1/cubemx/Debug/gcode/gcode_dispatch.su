@@ -1,3 +1,0 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:22:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/gcode/gcode_dispatch.cpp:32:6:bool mc::mc_dispatch_busy()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/gcode/gcode_dispatch.cpp:36:6:void mc::mc_dispatch_poll()	16	static

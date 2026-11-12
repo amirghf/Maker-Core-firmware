@@ -451,7 +451,7 @@ void task_cmd_intake() {
     }
     waiting = false;
 
-    mc_log(LogLevel::Info, mc_line_text());
+    mc_log(LogLevel::Debug, mc_line_text());   // بند ۳.۸: متن هر خط دریافتی فقط در سطح Debug به USB برمی‌گردد
 
     static char cmd_text[kLineMaxChars + 1U];   // متن دستور بعد از حذف N و *
     const LineCheck chk = mc_line_check(mc_line_text(), cmd_text, sizeof(cmd_text));
