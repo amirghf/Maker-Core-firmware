@@ -17,7 +17,7 @@ enum class TempStatus : uint8_t {
 
 constexpr uint32_t kTempPeriodMs = 100;     // دوره تبدیل
 constexpr uint16_t kAdcFullX16   = 65520;   // 4095 × 16
-constexpr uint16_t kAdcOpenX16   = 65440;   // میانگین ×۱۶ از این بیشتر یا برابر باشد = قطع (خام ≥ 4090)
+constexpr uint16_t kAdcOpenX16   = 65280;   // میانگین ×۱۶ از این بیشتر یا برابر باشد = قطع (خام ≥ 4080؛ حالت قطع واقعی روی برد ۶۵۴۴۰ تا ۶۵۴۸۶ است)
 constexpr uint16_t kAdcShortX16  = 80;      // میانگین ×۱۶ از این کمتر یا برابر باشد = اتصال کوتاه (خام ≤ 5)
 constexpr int32_t  kTempMinX10   = -1000;   // کف دما ( -100 درجه )
 constexpr int32_t  kTempMaxX10   = 5000;    // سقف دما ( 500 درجه )
