@@ -85,4 +85,11 @@ bool mc_heater_ex_demanded() {
     return (mc_dbg_03_hex_arm == 1U) && (mc_dbg_01_hex_target_x10 > 0);
 }
 
+int32_t mc_heater_ex_target_x10() {
+    if (mc_dbg_03_hex_arm != 1U) { return 0; }
+    int32_t target = mc_dbg_01_hex_target_x10;
+    if (target > kHeaterExTargetCapX10) { target = kHeaterExTargetCapX10; }
+    return (target > 0) ? target : 0;
+}
+
 }  // namespace mc

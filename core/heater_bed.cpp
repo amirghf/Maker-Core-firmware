@@ -65,4 +65,11 @@ bool mc_heater_bed_demanded() {
     return (mc_dbg_06_hbed_arm == 1U) && (mc_dbg_04_hbed_target_x10 > 0);
 }
 
+int32_t mc_heater_bed_target_x10() {
+    if (mc_dbg_06_hbed_arm != 1U) { return 0; }
+    int32_t target = mc_dbg_04_hbed_target_x10;
+    if (target > kHeaterBedTargetCapX10) { target = kHeaterBedTargetCapX10; }
+    return (target > 0) ? target : 0;
+}
+
 }  // namespace mc
