@@ -38,7 +38,7 @@ float mc_ln_f(float x) {
     }
     const float z  = (m - 1.0f) / (m + 1.0f);
     const float z2 = z * z;
-    const float s  = z * (1.0f + z2 * (0.33333333f + z2 * (0.2f + z2 * (0.14285714f + z2 0.11111111f))));
+    const float s  = z * (1.0f + z2 * (0.33333333f + z2 * (0.2f + z2 * (0.14285714f + z2 * 0.11111111f))));
     return 2.0f * s + static_cast<float>(e) * 0.69314718f;
 }
 
