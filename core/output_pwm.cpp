@@ -6,9 +6,8 @@
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile uint32_t mc_dbg_out_arm          = 0;  // برای تست: فقط وقتی ۱ باشد توان‌های debug اعمال می‌شوند، در غیر این صورت همه ۰
+volatile uint32_t mc_dbg_out_arm          = 0;  // برای تست: فقط وقتی ۱ باشد توان debug فن اعمال می‌شود، در غیر این صورت ۰ (بستر از بند ۴.۵ جدا شده)
 volatile uint32_t mc_dbg_out_ex_power     = 0;  // از بند ۴.۴ دیگر استفاده نمی‌شود؛ هیتر اکسترودر را PID می‌گذارد
-volatile uint32_t mc_dbg_out_bed_power    = 0;  // برای تست: توان هیتر بستر (۰ تا ۲۵۵)
 volatile uint32_t mc_dbg_out_fan_power    = 0;  // برای تست: توان فن (۰ تا ۲۵۵)
 volatile uint32_t mc_dbg_out_ex_on_ticks  = 0;  // تعداد تیک روشن در آخرین دوره کامل اکسترودر (از ۱۰۰۰)
 volatile uint32_t mc_dbg_out_bed_on_ticks = 0;  // تعداد تیک روشن در آخرین دوره کامل بستر (از ۱۰۰۰۰)
@@ -108,13 +107,11 @@ void mc_output_init() {
 }
 
 void mc_output_poll() {
-    // بند ۴.۴: هیتر اکسترودر را دیگر اینجا نمی‌نویسیم (فقط PID در heater_ex.cpp). بستر و فن فعلاً از debug می‌آیند.
+    // بند ۴.۵: هیتر بستر را دیگر اینجا نمی‌نویسیم (فقط heater_bed.cpp). فقط فن فعلاً از debug می‌آید.
     if (mc_dbg_out_arm == 1U) {
-        mc_output_set(OutputId::HeaterBed, clamp_power(mc_dbg_out_bed_power));
-        mc_output_set(OutputId::Fan,       clamp_power(mc_dbg_out_fan_power));
+        mc_output_set(OutputId::Fan, clamp_power(mc_dbg_out_fan_power));
     } else {
-        mc_output_set(OutputId::HeaterBed, 0);
-        mc_output_set(OutputId::Fan,       0);
+        mc_output_set(OutputId::Fan, 0);
     }
     mc_dbg_out_ex_on_ticks  = g_ch[0].last_on;
     mc_dbg_out_bed_on_ticks = g_ch[1].last_on;

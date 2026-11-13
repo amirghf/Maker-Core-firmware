@@ -21,6 +21,6 @@ void mc_output_set(OutputId id, uint8_t power);
 uint8_t mc_output_get(OutputId id);
 // همه خروجی‌ها را صفر می‌کند.
 void mc_output_all_off();
-// وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): متغیرهای debug را به‌روز می‌کند و (موقت) توان بستر و فن را از متغیرهای debug می‌گیرد. هیتر اکسترودر با PID است (بند ۴.۴).
+// وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): متغیرهای debug را به‌روز می‌کند و (موقت) توان فن را از متغیرهای debug می‌گیرد. هیتر اکسترودر با PID (بند ۴.۴) و هیتر بستر با heater_bed (بند ۴.۵) است.
 void mc_output_poll();
 }  // namespace mc
