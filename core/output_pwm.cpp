@@ -16,10 +16,13 @@ volatile uint32_t mc_dbg_11_out_ex_pin    = 0;  // سطح واقعی پین هی
 volatile uint32_t mc_dbg_12_out_bed_pin   = 0;  // سطح واقعی پین هیتر بستر
 volatile uint32_t mc_dbg_out_fan_pin      = 0;  // سطح واقعی پین فن
 volatile uint32_t mc_dbg_out_killed_seen  = 0;  // ۱ = وقفه حالت kill را دیده و همه را خاموش کرده
+volatile uint32_t mc_dbg_35_fan_power     = 0;  // توان فن که واقعاً اعمال می‌شود (۰ تا ۲۵۵)
 }
 
 namespace mc {
 namespace {
+
+uint8_t g_fan_gcode_power = 0;
 
 struct Channel {
     PinId             pin;
@@ -107,12 +110,12 @@ void mc_output_init() {
 }
 
 void mc_output_poll() {
-    // بند ۴.۵: هیتر بستر را دیگر اینجا نمی‌نویسیم (فقط heater_bed.cpp). فقط فن فعلاً از debug می‌آید.
-    if (mc_dbg_out_arm == 1U) {
-        mc_output_set(OutputId::Fan, clamp_power(mc_dbg_out_fan_power));
-    } else {
-        mc_output_set(OutputId::Fan, 0);
-    }
+    // فن: در حالت تست از debug، وگرنه از G-code
+    uint8_t fan = g_fan_gcode_power;
+    if (mc_dbg_out_arm == 1U) { fan = clamp_power(mc_dbg_out_fan_power); }
+    mc_output_set(OutputId::Fan, fan);
+    mc_dbg_35_fan_power = fan;
+
     mc_dbg_out_ex_on_ticks  = g_ch[0].last_on;
     mc_dbg_out_bed_on_ticks = g_ch[1].last_on;
     mc_dbg_out_fan_on_ticks = g_ch[2].last_on;
@@ -120,5 +123,8 @@ void mc_output_poll() {
     mc_dbg_12_out_bed_pin = mc_gpio_read(g_ch[1].pin) ? 1U : 0U;
     mc_dbg_out_fan_pin    = mc_gpio_read(g_ch[2].pin) ? 1U : 0U;
 }
+
+void mc_fan_set(uint8_t power) { g_fan_gcode_power = power; }
+uint8_t mc_fan_get() { return g_fan_gcode_power; }
 
 }  // namespace mc

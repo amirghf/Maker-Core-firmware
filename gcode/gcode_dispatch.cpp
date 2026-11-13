@@ -77,6 +77,8 @@ void mc_dispatch_poll() {
         mc_dbg_disp_errors = mc_dbg_disp_errors + 1U;
         mc_log_value(LogLevel::Error, "gcode command failed", g_cmd.number);
         mc_reply_command_failed(g_cmd.letter, g_cmd.number);
+    } else if (s == GcodeStatus::DoneReplied) {
+        mc_dbg_disp_done = mc_dbg_disp_done + 1U;   // ok را خود دستور فرستاده
     } else {
         mc_dbg_disp_done = mc_dbg_disp_done + 1U;
         mc_reply_ok();

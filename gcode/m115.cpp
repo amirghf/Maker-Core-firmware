@@ -12,11 +12,11 @@ namespace {
 const char* const kCaps[] = {
     "Cap:SERIAL_XON_XOFF:0",
     "Cap:EEPROM:0",
-    "Cap:AUTOREPORT_TEMP:0",
+    "Cap:AUTOREPORT_TEMP:1",
     "Cap:AUTOREPORT_POS:0",
     "Cap:SDCARD:0",
     "Cap:EMERGENCY_PARSER:0",
-    "Cap:THERMAL_PROTECTION:0",
+    "Cap:THERMAL_PROTECTION:1",
 };
 
 }  // namespace

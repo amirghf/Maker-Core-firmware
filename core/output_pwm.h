@@ -23,4 +23,7 @@ uint8_t mc_output_get(OutputId id);
 void mc_output_all_off();
 // وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): متغیرهای debug را به‌روز می‌کند و (موقت) توان فن را از متغیرهای debug می‌گیرد. هیتر اکسترودر با PID (بند ۴.۴) و هیتر بستر با heater_bed (بند ۴.۵) است.
 void mc_output_poll();
+// توان فن از G-code (M106 و M107). ۰ تا ۲۵۵. در حالت تست فن (mc_dbg_out_arm برابر ۱) توان debug اولویت دارد.
+void mc_fan_set(uint8_t power);
+uint8_t mc_fan_get();
 }  // namespace mc

@@ -11,12 +11,21 @@ volatile int32_t  mc_dbg_hbed_target_applied_x10 = 0;    // هدفی که واق
 volatile uint32_t mc_dbg_hbed_hyst_x10           = 20;   // برای تست: هیسترزیس ×۱۰ (20 = 2.0 درجه)
 volatile uint32_t mc_dbg_15_hbed_state           = 0;    // وضعیت: 0=Off 1=SensorBad 2=Heating 3=Holding
 volatile uint32_t mc_dbg_16_hbed_power           = 0;    // توان محاسبه‌شده (۰ یا ۲۵۵)
+volatile int32_t  mc_dbg_34_gc_bed_target_x10    = 0;    // هدف بستر که با M140 یا M190 گذاشته شده (×۱۰)؛ ۰ = خاموش
 }
 
 namespace mc {
 namespace {
 
 bool g_heating = false;   // حالت حافظه‌دار هیسترزیس: true = هیتر روشن
+int32_t g_gcode_target_x10 = 0;   // هدف G-code (×۱۰)
+
+// هدف مؤثر: در حالت تست از debug، وگرنه از G-code. بعد سقف. صفر یعنی خاموش.
+int32_t effective_target_x10() {
+    int32_t t = (mc_dbg_06_hbed_arm == 1U) ? mc_dbg_04_hbed_target_x10 : g_gcode_target_x10;
+    if (t > kHeaterBedTargetCapX10) { t = kHeaterBedTargetCapX10; }
+    return (t > 0) ? t : 0;
+}
 
 // توان صفر، پاک‌کردن حافظه هیسترزیس و ثبت وضعیت
 void set_off(HeaterBedState st) {
@@ -29,11 +38,11 @@ void set_off(HeaterBedState st) {
 }  // namespace
 
 void mc_heater_bed_poll() {
-    int32_t target = mc_dbg_04_hbed_target_x10;
-    if (target > kHeaterBedTargetCapX10) { target = kHeaterBedTargetCapX10; }
+    const int32_t target = effective_target_x10();
+    mc_dbg_34_gc_bed_target_x10 = g_gcode_target_x10;
 
     // مسلح نیست یا هدف صفر: خاموش
-    if ((mc_dbg_06_hbed_arm != 1U) || (target <= 0)) {
+    if (target <= 0) {
         mc_dbg_hbed_target_applied_x10 = 0;
         set_off(HeaterBedState::Off);
         return;
@@ -62,14 +71,23 @@ void mc_heater_bed_poll() {
 }
 
 bool mc_heater_bed_demanded() {
-    return (mc_dbg_06_hbed_arm == 1U) && (mc_dbg_04_hbed_target_x10 > 0);
+    return effective_target_x10() > 0;
 }
 
 int32_t mc_heater_bed_target_x10() {
-    if (mc_dbg_06_hbed_arm != 1U) { return 0; }
-    int32_t target = mc_dbg_04_hbed_target_x10;
-    if (target > kHeaterBedTargetCapX10) { target = kHeaterBedTargetCapX10; }
-    return (target > 0) ? target : 0;
+    return effective_target_x10();
+}
+
+bool mc_heater_bed_test_mode() {
+    return mc_dbg_06_hbed_arm == 1U;
+}
+
+int32_t mc_heater_bed_set_target_x10(int32_t t_x10) {
+    if (t_x10 < 0) { t_x10 = 0; }
+    if (t_x10 > kHeaterBedTargetCapX10) { t_x10 = kHeaterBedTargetCapX10; }
+    g_gcode_target_x10 = t_x10;
+    mc_dbg_34_gc_bed_target_x10 = t_x10;
+    return t_x10;
 }
 
 }  // namespace mc

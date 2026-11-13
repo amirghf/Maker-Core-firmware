@@ -27,4 +27,10 @@ bool mc_heater_bed_demanded();
 // هدف اعمال‌شده ×۱۰ (بعد از سقف). ۰ یعنی مسلح نیست یا هدف صفر است. برای حفاظت‌های بند ۴.۷.
 int32_t mc_heater_bed_target_x10();
 
+// آیا هیتر بستر در «حالت تست» است؟ (mc_dbg_06_hbed_arm برابر ۱). در این حالت M140 و M190 خطا می‌دهند.
+bool mc_heater_bed_test_mode();
+
+// هدف G-code را می‌گذارد (×۱۰). منفی ← ۰، بالاتر از سقف ← سقف. مقدار واقعاً ذخیره‌شده را برمی‌گرداند.
+int32_t mc_heater_bed_set_target_x10(int32_t t_x10);
+
 }  // namespace mc

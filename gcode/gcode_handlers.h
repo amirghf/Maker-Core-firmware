@@ -8,9 +8,10 @@ namespace mc {
 
 // نتیجه اجرای یک دستور
 enum class GcodeStatus : uint8_t {
-    Done  = 0,   // دستور تمام شد
-    Busy  = 1,   // هنوز کار دارد؛ دفعه بعد دوباره صدا زده شود و دستور بعدی برداشته نمی‌شود
-    Error = 2    // شمرده و لاگ می‌شود و برای کامپیوتر Error:... و ok فرستاده می‌شود (بند ۳.۶)
+    Done        = 0,   // دستور تمام شد
+    Busy        = 1,   // هنوز کار دارد؛ دفعه بعد دوباره صدا زده شود و دستور بعدی برداشته نشود
+    Error       = 2,   // شمرده و لاگ می‌شود و برای کامپیوتر Error:... و ok فرستاده می‌شود (بند ۳.۶)
+    DoneReplied = 3    // دستور تمام شد و خودش ok را (همراه متن) فرستاده؛ توزیع‌کننده ok جدا نمی‌فرستد
 };
 
 // تابع یک دستور. first_call فقط بار اول (برای هر دستور) true است؛ بعد از آن اگر Busy برگردانده
@@ -29,9 +30,17 @@ struct GcodeEntry {
 const GcodeEntry* mc_gcode_find(char letter, uint16_t number, int8_t sub);
 
 GcodeStatus mc_gcode_g4(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m104(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m105(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m106(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m107(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m109(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m110(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m114(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m140(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m155(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m190(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m400(const GcodeCommand& cmd, bool first_call);
 
 // دستور تست این بند: M9999 (فایل m9999.cpp)

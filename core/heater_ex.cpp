@@ -18,6 +18,7 @@ volatile int32_t  mc_dbg_hex_i_x10            = 0;      // جمله انتگرا
 volatile int32_t  mc_dbg_hex_d_x100           = 0;      // مشتق دما ×۱۰۰ (درجه بر ثانیه)
 volatile int32_t  mc_dbg_hex_d_min_x100       = 0;      // کمترین (منفی‌ترین) مشتق دیده‌شده از آخرین مسلح‌شدن
 volatile uint32_t mc_dbg_hex_power_max        = 0;      // بیشترین توان دیده‌شده از آخرین مسلح‌شدن
+volatile int32_t  mc_dbg_33_gc_ex_target_x10 = 0;      // هدف اکسترودر که با M104 یا M109 گذاشته شده (×۱۰)؛ ۰ = خاموش
 }
 
 namespace mc {
@@ -25,6 +26,14 @@ namespace {
 
 Pid g_pid;
 constexpr float kPidDtS = 0.1f;   // برابر دوره وظیفه (۱۰۰ میلی‌ثانیه)
+int32_t g_gcode_target_x10 = 0;   // هدف G-code (×۱۰)
+
+// هدف مؤثر: در حالت تست از debug، وگرنه از G-code. بعد سقف. صفر یعنی خاموش.
+int32_t effective_target_x10() {
+    int32_t t = (mc_dbg_03_hex_arm == 1U) ? mc_dbg_01_hex_target_x10 : g_gcode_target_x10;
+    if (t > kHeaterExTargetCapX10) { t = kHeaterExTargetCapX10; }
+    return (t > 0) ? t : 0;
+}
 
 // توان صفر، پاک‌کردن PID و ثبت وضعیت
 void set_off(HeaterExState st) {
@@ -39,11 +48,11 @@ void set_off(HeaterExState st) {
 }  // namespace
 
 void mc_heater_ex_poll() {
-    int32_t target = mc_dbg_01_hex_target_x10;
-    if (target > kHeaterExTargetCapX10) { target = kHeaterExTargetCapX10; }
+    const int32_t target = effective_target_x10();
+    mc_dbg_33_gc_ex_target_x10 = g_gcode_target_x10;
 
-    // مسلح نیست یا هدف صفر: خاموش. شمارنده‌های «بیشینه» هم پاک می‌شوند تا هر بار مسلح‌شدن از نو شروع شود.
-    if ((mc_dbg_03_hex_arm != 1U) || (target <= 0)) {
+    // هدف صفر: خاموش. شمارنده‌های «بیشینه» هم پاک می‌شوند تا هر بار روشن‌شدن از نو شروع شود.
+    if (target <= 0) {
         mc_dbg_hex_target_applied_x10 = 0;
         mc_dbg_hex_d_min_x100 = 0;
         mc_dbg_hex_power_max  = 0U;
@@ -82,14 +91,23 @@ void mc_heater_ex_poll() {
 }
 
 bool mc_heater_ex_demanded() {
-    return (mc_dbg_03_hex_arm == 1U) && (mc_dbg_01_hex_target_x10 > 0);
+    return effective_target_x10() > 0;
 }
 
 int32_t mc_heater_ex_target_x10() {
-    if (mc_dbg_03_hex_arm != 1U) { return 0; }
-    int32_t target = mc_dbg_01_hex_target_x10;
-    if (target > kHeaterExTargetCapX10) { target = kHeaterExTargetCapX10; }
-    return (target > 0) ? target : 0;
+    return effective_target_x10();
+}
+
+bool mc_heater_ex_test_mode() {
+    return mc_dbg_03_hex_arm == 1U;
+}
+
+int32_t mc_heater_ex_set_target_x10(int32_t t_x10) {
+    if (t_x10 < 0) { t_x10 = 0; }
+    if (t_x10 > kHeaterExTargetCapX10) { t_x10 = kHeaterExTargetCapX10; }
+    g_gcode_target_x10 = t_x10;
+    mc_dbg_33_gc_ex_target_x10 = t_x10;
+    return t_x10;
 }
 
 }  // namespace mc

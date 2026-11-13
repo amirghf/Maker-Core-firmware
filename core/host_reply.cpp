@@ -57,6 +57,17 @@ void mc_reply_ok() {
     mc_dbg_reply_ok = mc_dbg_reply_ok + 1U;
 }
 
+void mc_reply_ok_line(const char* text) {
+    char buf[kBufSize];
+    uint8_t n = 0U;
+    n = append_text(buf, n, "ok ");
+    n = append_text(buf, n, text);
+    buf[n] = '\n';
+    buf[n + 1U] = '\0';
+    (void)mc_serial_print(buf);
+    mc_dbg_reply_ok = mc_dbg_reply_ok + 1U;
+}
+
 void mc_reply_error(const char* text) {
     char buf[kBufSize];
     uint8_t n = 0U;

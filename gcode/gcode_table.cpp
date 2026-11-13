@@ -7,9 +7,17 @@ namespace {
 const GcodeEntry kTable[] = {
     // حرف، شماره، زیرکد (-۱ = بدون زیرکد)، تابع
     { 'G', 4U,   -1, mc_gcode_g4 },
+    { 'M', 104U, -1, mc_gcode_m104 },
+    { 'M', 105U, -1, mc_gcode_m105 },
+    { 'M', 106U, -1, mc_gcode_m106 },
+    { 'M', 107U, -1, mc_gcode_m107 },
+    { 'M', 109U, -1, mc_gcode_m109 },
     { 'M', 110U, -1, mc_gcode_m110 },
     { 'M', 114U, -1, mc_gcode_m114 },
     { 'M', 115U, -1, mc_gcode_m115 },
+    { 'M', 140U, -1, mc_gcode_m140 },
+    { 'M', 155U, -1, mc_gcode_m155 },
+    { 'M', 190U, -1, mc_gcode_m190 },
     { 'M', 400U, -1, mc_gcode_m400 },
     { 'M', 9999U, -1, mc_gcode_m9999 },   // دستور تست بند ۳.۵ (موقت)
 };

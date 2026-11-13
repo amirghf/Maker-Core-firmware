@@ -7,6 +7,8 @@ namespace mc {
 
 // «ok» می‌فرستد.
 void mc_reply_ok();
+// «ok <متن>» و خط جدید می‌فرستد (مثل جواب M105 در Marlin). ok جدا بعدش فرستاده نمی‌شود.
+void mc_reply_ok_line(const char* text);
 // «Error:<text>» و بعدش «ok» می‌فرستد.
 void mc_reply_error(const char* text);
 // «Error:Command failed: <حرف><شماره>» و بعدش «ok» (وقتی تابع یک دستور Error برگرداند).
