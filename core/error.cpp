@@ -8,9 +8,9 @@
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile int mc_dbg_killed        = 0;  // 1 = برد در حالت kill است
-volatile int mc_dbg_error_code    = 0;  // آخرین کد خطا
-volatile int mc_dbg_kill_safe_ok  = -1; // بعد از kill: 1 = همه خروجی‌ها امن بودند، 0 = نبودند، -1 = kill نشده
+volatile int mc_dbg_07_killed       = 0;  // 1 = برد در حالت kill است
+volatile int mc_dbg_08_error_code   = 0;  // آخرین کد خطا
+volatile int mc_dbg_10_kill_safe_ok = -1; // بعد از kill: 1 = همه خروجی‌ها امن بودند، 0 = نبودند، -1 = kill نشده
 }
 
 namespace mc {
@@ -58,12 +58,12 @@ ErrorCode mc_last_error() {
 [[noreturn]] void mc_kill(ErrorCode code) {
     g_error  = code;
     g_killed = true;
-    mc_dbg_error_code = static_cast<int>(code);
-    mc_dbg_killed = 1;
+    mc_dbg_08_error_code = static_cast<int>(code);
+    mc_dbg_07_killed     = 1;
 
     // اول از همه همه خروجی‌ها را خاموش کن و بررسی کن واقعاً امن شده‌اند
     mc_board_safe_state();
-    mc_dbg_kill_safe_ok = mc_board_safe_state_check() ? 1 : 0;
+    mc_dbg_10_kill_safe_ok = mc_board_safe_state_check() ? 1 : 0;
 
     // حلقه امن: تا ریست دستی اینجا می‌مانیم
     uint32_t last_safe   = mc_millis();

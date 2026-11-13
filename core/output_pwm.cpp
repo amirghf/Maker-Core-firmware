@@ -12,8 +12,8 @@ volatile uint32_t mc_dbg_out_fan_power    = 0;  // برای تست: توان ف�
 volatile uint32_t mc_dbg_out_ex_on_ticks  = 0;  // تعداد تیک روشن در آخرین دوره کامل اکسترودر (از ۱۰۰۰)
 volatile uint32_t mc_dbg_out_bed_on_ticks = 0;  // تعداد تیک روشن در آخرین دوره کامل بستر (از ۱۰۰۰۰)
 volatile uint32_t mc_dbg_out_fan_on_ticks = 0;  // تعداد تیک روشن در آخرین دوره کامل فن (از ۱۰۰)
-volatile uint32_t mc_dbg_out_ex_pin       = 0;  // سطح واقعی پین هیتر اکسترودر (۱ = HIGH)
-volatile uint32_t mc_dbg_out_bed_pin      = 0;  // سطح واقعی پین هیتر بستر
+volatile uint32_t mc_dbg_11_out_ex_pin    = 0;  // سطح واقعی پین هیتر اکسترودر (۱ = HIGH)
+volatile uint32_t mc_dbg_12_out_bed_pin   = 0;  // سطح واقعی پین هیتر بستر
 volatile uint32_t mc_dbg_out_fan_pin      = 0;  // سطح واقعی پین فن
 volatile uint32_t mc_dbg_out_killed_seen  = 0;  // ۱ = وقفه حالت kill را دیده و همه را خاموش کرده
 }
@@ -50,9 +50,9 @@ void tick_hook() {
         }
         if (!g_killed_seen) {
             g_killed_seen = true;
-            mc_dbg_out_ex_pin  = mc_gpio_read(g_ch[0].pin) ? 1U : 0U;
-            mc_dbg_out_bed_pin = mc_gpio_read(g_ch[1].pin) ? 1U : 0U;
-            mc_dbg_out_fan_pin = mc_gpio_read(g_ch[2].pin) ? 1U : 0U;
+            mc_dbg_11_out_ex_pin   = mc_gpio_read(g_ch[0].pin) ? 1U : 0U;
+            mc_dbg_12_out_bed_pin  = mc_gpio_read(g_ch[1].pin) ? 1U : 0U;
+            mc_dbg_out_fan_pin     = mc_gpio_read(g_ch[2].pin) ? 1U : 0U;
             mc_dbg_out_killed_seen = 1U;
         }
         return;
@@ -116,9 +116,9 @@ void mc_output_poll() {
     mc_dbg_out_ex_on_ticks  = g_ch[0].last_on;
     mc_dbg_out_bed_on_ticks = g_ch[1].last_on;
     mc_dbg_out_fan_on_ticks = g_ch[2].last_on;
-    mc_dbg_out_ex_pin  = mc_gpio_read(g_ch[0].pin) ? 1U : 0U;
-    mc_dbg_out_bed_pin = mc_gpio_read(g_ch[1].pin) ? 1U : 0U;
-    mc_dbg_out_fan_pin = mc_gpio_read(g_ch[2].pin) ? 1U : 0U;
+    mc_dbg_11_out_ex_pin  = mc_gpio_read(g_ch[0].pin) ? 1U : 0U;
+    mc_dbg_12_out_bed_pin = mc_gpio_read(g_ch[1].pin) ? 1U : 0U;
+    mc_dbg_out_fan_pin    = mc_gpio_read(g_ch[2].pin) ? 1U : 0U;
 }
 
 }  // namespace mc

@@ -6,13 +6,13 @@
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile uint32_t mc_dbg_hex_arm              = 0;      // برای تست: فقط وقتی ۱ باشد PID هیتر اکسترودر کار می‌کند
-volatile int32_t  mc_dbg_hex_target_x10       = 0;      // برای تست: دمای هدف ×۱۰ (2000 = 200.0 درجه)؛ صفر یا منفی = خاموش
+volatile uint32_t mc_dbg_03_hex_arm           = 0;      // برای تست: فقط وقتی ۱ باشد PID هیتر اکسترودر کار می‌کند
+volatile int32_t  mc_dbg_01_hex_target_x10    = 0;      // برای تست: دمای هدف ×۱۰ (2000 = 200.0 درجه)؛ صفر یا منفی = خاموش
 volatile uint32_t mc_dbg_hex_kp_x100          = 2000;   // برای تست: Kp ×۱۰۰ (2000 = 20.00)
 volatile uint32_t mc_dbg_hex_ki_x100          = 100;    // برای تست: Ki ×۱۰۰ (100 = 1.00)
 volatile uint32_t mc_dbg_hex_kd_x100          = 10000;  // برای تست: Kd ×۱۰۰ (10000 = 100.00)
-volatile uint32_t mc_dbg_hex_state            = 0;      // وضعیت: 0=Off 1=SensorBad 2=FullOn 3=Active(PID) 4=CutOff
-volatile uint32_t mc_dbg_hex_power            = 0;      // توان محاسبه‌شده توسط PID (۰ تا ۲۵۵)
+volatile uint32_t mc_dbg_13_hex_state         = 0;      // وضعیت: 0=Off 1=SensorBad 2=FullOn 3=Active(PID) 4=CutOff
+volatile uint32_t mc_dbg_14_hex_power         = 0;      // توان محاسبه‌شده توسط PID (۰ تا ۲۵۵)
 volatile int32_t  mc_dbg_hex_target_applied_x10 = 0;    // هدفی که واقعاً اعمال می‌شود (بعد از سقف موقت)؛ ۰ وقتی خاموش است
 volatile int32_t  mc_dbg_hex_i_x10            = 0;      // جمله انتگرال ×۱۰
 volatile int32_t  mc_dbg_hex_d_x100           = 0;      // مشتق دما ×۱۰۰ (درجه بر ثانیه)
@@ -30,20 +30,20 @@ constexpr float kPidDtS = 0.1f;   // برابر دوره وظیفه (۱۰۰ می
 void set_off(HeaterExState st) {
     g_pid.reset();
     mc_output_set(OutputId::HeaterEx, 0);
-    mc_dbg_hex_state  = static_cast<uint32_t>(st);
-    mc_dbg_hex_power  = 0U;
-    mc_dbg_hex_i_x10  = 0;
-    mc_dbg_hex_d_x100 = 0;
+    mc_dbg_13_hex_state = static_cast<uint32_t>(st);
+    mc_dbg_14_hex_power = 0U;
+    mc_dbg_hex_i_x10    = 0;
+    mc_dbg_hex_d_x100   = 0;
 }
 
 }  // namespace
 
 void mc_heater_ex_poll() {
-    int32_t target = mc_dbg_hex_target_x10;
+    int32_t target = mc_dbg_01_hex_target_x10;
     if (target > kHeaterExTargetCapX10) { target = kHeaterExTargetCapX10; }
 
     // مسلح نیست یا هدف صفر: خاموش. شمارنده‌های «بیشینه» هم پاک می‌شوند تا هر بار مسلح‌شدن از نو شروع شود.
-    if ((mc_dbg_hex_arm != 1U) || (target <= 0)) {
+    if ((mc_dbg_03_hex_arm != 1U) || (target <= 0)) {
         mc_dbg_hex_target_applied_x10 = 0;
         mc_dbg_hex_d_min_x100 = 0;
         mc_dbg_hex_power_max  = 0U;
@@ -72,8 +72,8 @@ void mc_heater_ex_poll() {
     HeaterExState st = HeaterExState::Active;
     if (region == PidRegion::FullOn) { st = HeaterExState::FullOn; }
     if (region == PidRegion::CutOff) { st = HeaterExState::CutOff; }
-    mc_dbg_hex_state = static_cast<uint32_t>(st);
-    mc_dbg_hex_power = power;
+    mc_dbg_13_hex_state = static_cast<uint32_t>(st);
+    mc_dbg_14_hex_power = power;
     mc_dbg_hex_i_x10 = static_cast<int32_t>(g_pid.integral() * 10.0f);
     const int32_t d100 = static_cast<int32_t>(g_pid.derivative() * 100.0f);
     mc_dbg_hex_d_x100 = d100;
@@ -82,7 +82,7 @@ void mc_heater_ex_poll() {
 }
 
 bool mc_heater_ex_demanded() {
-    return (mc_dbg_hex_arm == 1U) && (mc_dbg_hex_target_x10 > 0);
+    return (mc_dbg_03_hex_arm == 1U) && (mc_dbg_01_hex_target_x10 > 0);
 }
 
 }  // namespace mc

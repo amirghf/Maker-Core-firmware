@@ -4,15 +4,15 @@
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile int32_t  mc_dbg_temp_ext_x10    = 0;   // دمای اکسترودر ×۱۰ (250 = 25.0 درجه)؛ ۰ وقتی وضعیت Ok نیست
-volatile int32_t  mc_dbg_temp_bed_x10    = 0;   // دمای بستر ×۱۰؛ ۰ وقتی وضعیت Ok نیست
-volatile uint32_t mc_dbg_temp_ext_status = 0;   // وضعیت اکسترودر: 0=NotReady 1=Ok 2=Open 3=Short
-volatile uint32_t mc_dbg_temp_bed_status = 0;   // وضعیت بستر: 0=NotReady 1=Ok 2=Open 3=Short
+volatile int32_t  mc_dbg_17_temp_ext_x10    = 0;   // دمای اکسترودر ×۱۰ (250 = 25.0 درجه)؛ ۰ وقتی وضعیت Ok نیست
+volatile int32_t  mc_dbg_19_temp_bed_x10    = 0;   // دمای بستر ×۱۰؛ ۰ وقتی وضعیت Ok نیست
+volatile uint32_t mc_dbg_18_temp_ext_status = 0;   // وضعیت اکسترودر: 0=NotReady 1=Ok 2=Open 3=Short
+volatile uint32_t mc_dbg_20_temp_bed_status = 0;   // وضعیت بستر: 0=NotReady 1=Ok 2=Open 3=Short
 volatile uint32_t mc_dbg_temp_ext_ohm    = 0;   // مقاومت محاسبه‌شده ترمیستور اکسترودر (اهم)؛ ۰ وقتی Ok نیست
 volatile uint32_t mc_dbg_temp_bed_ohm    = 0;   // مقاومت محاسبه‌شده ترمیستور بستر (اهم)؛ ۰ وقتی Ok نیست
 volatile uint32_t mc_dbg_temp_polls      = 0;   // تعداد دورهای تبدیل از شروع
-volatile uint32_t mc_dbg_temp_fake_ext   = 0;   // برای تست: عدد غیرصفر = میانگین ×۱۶ ساختگی برای اکسترودر (۰ = عادی)
-volatile uint32_t mc_dbg_temp_fake_bed   = 0;   // برای تست: عدد غیرصفر = میانگین ×۱۶ ساختگی برای بستر (۰ = عادی)
+volatile uint32_t mc_dbg_02_temp_fake_ext   = 0;   // برای تست: عدد غیرصفر = میانگین ×۱۶ ساختگی برای اکسترودر (۰ = عادی)
+volatile uint32_t mc_dbg_05_temp_fake_bed   = 0;   // برای تست: عدد غیرصفر = میانگین ×۱۶ ساختگی برای بستر (۰ = عادی)
 }
 
 namespace mc {
@@ -38,7 +38,7 @@ float mc_ln_f(float x) {
     }
     const float z  = (m - 1.0f) / (m + 1.0f);
     const float z2 = z * z;
-    const float s  = z * (1.0f + z2 * (0.33333333f + z2 * (0.2f + z2 * (0.14285714f + z2 * 0.11111111f))));
+    const float s  = z * (1.0f + z2 * (0.33333333f + z2 * (0.2f + z2 * (0.14285714f + z2 0.11111111f))));
     return 2.0f * s + static_cast<float>(e) * 0.69314718f;
 }
 
@@ -49,12 +49,12 @@ void store_result(uint8_t idx, TempStatus st, int32_t t_x10, uint32_t ohm) {
     g_status[idx]   = st;
     g_temp_x10[idx] = t_out;
     if (idx == static_cast<uint8_t>(AdcChannel::TempExtruder)) {
-        mc_dbg_temp_ext_status = static_cast<uint32_t>(st);
-        mc_dbg_temp_ext_x10    = t_out;
+        mc_dbg_18_temp_ext_status = static_cast<uint32_t>(st);
+        mc_dbg_17_temp_ext_x10    = t_out;
         mc_dbg_temp_ext_ohm    = ohm_out;
     } else {
-        mc_dbg_temp_bed_status = static_cast<uint32_t>(st);
-        mc_dbg_temp_bed_x10    = t_out;
+        mc_dbg_20_temp_bed_status = static_cast<uint32_t>(st);
+        mc_dbg_19_temp_bed_x10    = t_out;
         mc_dbg_temp_bed_ohm    = ohm_out;
     }
 }
@@ -91,7 +91,7 @@ void mc_temp_poll() {
             store_result(i, TempStatus::NotReady, 0, 0U);
             continue;
         }
-        const uint32_t fake = (ch == AdcChannel::TempExtruder) ? mc_dbg_temp_fake_ext : mc_dbg_temp_fake_bed;
+        const uint32_t fake = (ch == AdcChannel::TempExtruder) ? mc_dbg_02_temp_fake_ext : mc_dbg_05_temp_fake_bed;
         uint16_t avg = 0U;
         bool have = false;
         if (fake != 0U) {

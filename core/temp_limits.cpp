@@ -7,11 +7,11 @@
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile int32_t  mc_dbg_tlim_ex_min_x10  = 50;     // حداقل اکسترودر ×۱۰ (فقط برای نمایش)
-volatile int32_t  mc_dbg_tlim_ex_max_x10  = 2750;   // حداکثر اکسترودر ×۱۰ (فقط برای نمایش)
-volatile int32_t  mc_dbg_tlim_bed_min_x10 = 50;     // حداقل بستر ×۱۰ (فقط برای نمایش)
-volatile int32_t  mc_dbg_tlim_bed_max_x10 = 1300;   // حداکثر بستر ×۱۰ (فقط برای نمایش)
-volatile uint32_t mc_dbg_tlim_trip        = 0;      // کد خطایی که باعث kill شد؛ ۰ یعنی هنوز kill نشده
+volatile int32_t  mc_dbg_21_tlim_ex_min_x10  = 50;     // حداقل اکسترودر ×۱۰ (فقط برای نمایش)
+volatile int32_t  mc_dbg_22_tlim_ex_max_x10  = 2750;   // حداکثر اکسترودر ×۱۰ (فقط برای نمایش)
+volatile int32_t  mc_dbg_23_tlim_bed_min_x10 = 50;     // حداقل بستر ×۱۰ (فقط برای نمایش)
+volatile int32_t  mc_dbg_24_tlim_bed_max_x10 = 1300;   // حداکثر بستر ×۱۰ (فقط برای نمایش)
+volatile uint32_t mc_dbg_09_tlim_trip        = 0;      // کد خطایی که باعث kill شد؛ ۰ یعنی هنوز kill نشده
 }
 
 namespace mc {
@@ -25,7 +25,7 @@ uint8_t g_bed_max_cnt = 0;
 uint8_t g_bed_min_cnt = 0;
 
 [[noreturn]] void trip(ErrorCode code) {
-    mc_dbg_tlim_trip = static_cast<uint32_t>(code);
+    mc_dbg_09_tlim_trip = static_cast<uint32_t>(code);
     mc_kill(code);
 }
 
@@ -63,6 +63,12 @@ void check_channel(AdcChannel ch, bool demanded, int32_t min_x10, int32_t max_x1
 }  // namespace
 
 void mc_temp_limits_poll() {
+    // بند ۴.۶: نوشتن حدها در متغیرهای debug. این نوشتن لازم است تا لینکر متغیرها را حذف نکند.
+    mc_dbg_21_tlim_ex_min_x10  = kTempExMinX10;
+    mc_dbg_22_tlim_ex_max_x10  = kTempExMaxX10;
+    mc_dbg_23_tlim_bed_min_x10 = kTempBedMinX10;
+    mc_dbg_24_tlim_bed_max_x10 = kTempBedMaxX10;
+
     check_channel(AdcChannel::TempExtruder, mc_heater_ex_demanded(),
                   kTempExMinX10, kTempExMaxX10,
                   ErrorCode::MinTempExtruder, ErrorCode::MaxTempExtruder,
