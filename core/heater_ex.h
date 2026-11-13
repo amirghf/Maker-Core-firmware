@@ -1,11 +1,12 @@
 #pragma once
 // کنترل PID هیتر اکسترودر (بند ۴.۴). هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "temp_limits.h"
 
 namespace mc {
 
-// سقف موقت دمای هدف ×۱۰ (2600 = 260 درجه). در بند ۴.۶ با حداکثر دمای واقعی جایگزین می‌شود.
-constexpr int32_t kHeaterExTargetCapX10 = 2600;
+// سقف دمای هدف ×۱۰ (2600 = 260 درجه). از حداکثر دما مشتق می‌شود (بند ۴.۶).
+constexpr int32_t kHeaterExTargetCapX10 = kTempExMaxX10 - kTempExTargetBufferX10;   // 2600 = 260 درجه (از حداکثر دما مشتق می‌شود، بند ۴.۶)
 
 enum class HeaterExState : uint8_t {
     Off       = 0,   // مسلح نیست یا هدف صفر است
@@ -18,5 +19,8 @@ enum class HeaterExState : uint8_t {
 // وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): توان هیتر اکسترودر را از PID می‌گذارد.
 // فعلاً هدف و مسلح‌شدن از متغیرهای debug می‌آیند (در بند ۴.۸ تغییر می‌کند).
 void mc_heater_ex_poll();
+
+// آیا هیتر اکسترودر «درخواست‌شده» است؟ (مسلح و هدف بیشتر از صفر). برای حفاظت حداقل دما (بند ۴.۶).
+bool mc_heater_ex_demanded();
 
 }  // namespace mc

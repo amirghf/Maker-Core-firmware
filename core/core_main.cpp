@@ -23,6 +23,7 @@
 #include "output_pwm.h"
 #include "heater_ex.h"
 #include "heater_bed.h"
+#include "temp_limits.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -510,6 +511,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_splash, 100U);
     mc::g_main.add(mc::mc_adc_sampler_poll, mc::kAdcPeriodMs);   // بند ۴.۱: نمونه‌گیری ADC هر ۱۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_temp_poll, mc::kTempPeriodMs);   // بند ۴.۲: تبدیل ADC به دما هر ۱۰۰ میلی‌ثانیه
+    mc::g_main.add(mc::mc_temp_limits_poll, 100U);   // بند ۴.۶: حفاظت حداقل و حداکثر دما
     mc::g_main.add(mc::mc_output_poll, 100U);   // بند ۴.۳: به‌روزرسانی خروجی‌ها و متغیرهای debug
     mc::g_main.add(mc::mc_heater_ex_poll, 100U);   // بند ۴.۴: PID هیتر اکسترودر
     mc::g_main.add(mc::mc_heater_bed_poll, 100U);   // بند ۴.۵: کنترل هیتر بستر

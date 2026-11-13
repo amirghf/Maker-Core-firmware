@@ -1,11 +1,12 @@
 #pragma once
 // کنترل هیتر بستر (بند ۴.۵). روش bang-bang با هیسترزیس. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "temp_limits.h"
 
 namespace mc {
 
-// سقف موقت دمای هدف بستر ×۱۰ (1200 = 120 درجه). در بند ۴.۶ با حداکثر دمای واقعی جایگزین می‌شود.
-constexpr int32_t kHeaterBedTargetCapX10 = 1200;
+// سقف دمای هدف بستر ×۱۰ (1200 = 120 درجه). از حداکثر دما مشتق می‌شود (بند ۴.۶).
+constexpr int32_t kHeaterBedTargetCapX10 = kTempBedMaxX10 - kTempBedTargetBufferX10;   // 1200 = 120 درجه (از حداکثر دما مشتق می‌شود، بند ۴.۶)
 // بیشترین هیسترزیس مجاز ×۱۰ (100 = 10 درجه)
 constexpr int32_t kHeaterBedHystMaxX10 = 100;
 
@@ -19,5 +20,8 @@ enum class HeaterBedState : uint8_t {
 // وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): توان هیتر بستر را مشخص می‌کند.
 // فعلاً هدف و مسلح‌شدن از متغیرهای debug می‌آیند (در بند ۴.۸ تغییر می‌کند).
 void mc_heater_bed_poll();
+
+// آیا هیتر بستر «درخواست‌شده» است؟ (مسلح و هدف بیشتر از صفر). برای حفاظت حداقل دما (بند ۴.۶).
+bool mc_heater_bed_demanded();
 
 }  // namespace mc

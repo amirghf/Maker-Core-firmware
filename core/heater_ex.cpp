@@ -81,4 +81,8 @@ void mc_heater_ex_poll() {
     if (power > mc_dbg_hex_power_max) { mc_dbg_hex_power_max = power; }
 }
 
+bool mc_heater_ex_demanded() {
+    return (mc_dbg_hex_arm == 1U) && (mc_dbg_hex_target_x10 > 0);
+}
+
 }  // namespace mc

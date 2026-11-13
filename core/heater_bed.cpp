@@ -61,4 +61,8 @@ void mc_heater_bed_poll() {
     mc_dbg_hbed_power = power;
 }
 
+bool mc_heater_bed_demanded() {
+    return (mc_dbg_hbed_arm == 1U) && (mc_dbg_hbed_target_x10 > 0);
+}
+
 }  // namespace mc
