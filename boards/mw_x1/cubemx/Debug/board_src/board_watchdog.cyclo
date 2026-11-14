@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_watchdog.cpp:28:6:void mc::mc_watchdog_start(uint32_t)	8
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_watchdog.cpp:59:6:void mc::mc_watchdog_feed()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_watchdog.cpp:64:6:bool mc::mc_watchdog_active()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_watchdog.cpp:68:6:bool mc::mc_watchdog_was_reset()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_watchdog.cpp:74:17:void mc_watchdog_start_c(uint32_t)	1

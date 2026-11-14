@@ -1,0 +1,20 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/scheduler.h:21:14:uint32_t mc::Scheduler::max_task_us() const	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:80:6:void mc::{anonymous}::task_100ms()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:84:6:void mc::{anonymous}::task_1s()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:90:6:void mc::{anonymous}::task_watchdog_feed()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:94:6:void mc::{anonymous}::task_kill_test()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:100:6:void mc::{anonymous}::task_log_flush()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:104:6:void mc::{anonymous}::task_log_test()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:115:6:void mc::{anonymous}::task_heartbeat()	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:130:6:void mc::{anonymous}::task_tft_test()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:173:6:void mc::{anonymous}::task_gfx_test()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:225:6:void mc::{anonymous}::draw_cross(uint16_t, uint16_t, uint16_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:231:6:void mc::{anonymous}::show_target(uint8_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:239:6:void mc::{anonymous}::task_touch_test()	20
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:362:10:uint32_t mc::{anonymous}::run_flash_test()	24
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:412:6:void mc::{anonymous}::task_flash_test()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:427:6:void mc::{anonymous}::task_splash()	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:450:6:void mc::{anonymous}::task_cmd_intake()	10
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:499:17:void mc_core_init_c()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_main.cpp:527:17:void mc_core_loop_c()	1

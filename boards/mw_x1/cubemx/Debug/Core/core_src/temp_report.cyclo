@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/temp_report.cpp:23:10:uint16_t mc::{anonymous}::put_x10(char*, uint16_t, uint16_t, int32_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/temp_report.cpp:35:10:uint16_t mc::mc_temp_report_build(char*, uint16_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/temp_report.cpp:56:6:void mc::mc_temp_autoreport_set(uint8_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/temp_report.cpp:62:6:void mc::mc_temp_autoreport_poll()	4

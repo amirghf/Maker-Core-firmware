@@ -1,0 +1,6 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:28:7:float mc::{anonymous}::mc_ln_f(float)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:45:6:void mc::{anonymous}::store_result(uint8_t, mc::TempStatus, int32_t, uint32_t)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:64:12:mc::TempStatus mc::mc_temp_convert(const ThermistorParams&, uint16_t, int32_t*, uint32_t*)	56	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:86:6:void mc::mc_temp_poll()	48	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:115:12:mc::TempStatus mc::mc_temp_status(AdcChannel)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/thermistor.cpp:121:6:bool mc::mc_temp_get_x10(AdcChannel, int32_t*)	24	static

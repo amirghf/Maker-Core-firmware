@@ -1,0 +1,6 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:25:6:void mc::{anonymous}::set_spi_speed(uint32_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:32:6:bool mc::{anonymous}::read_channel(uint8_t, uint16_t*)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:45:6:bool mc::{anonymous}::read_axis(uint8_t, uint16_t*)	48	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:66:6:bool mc::mc_touch_init()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:74:6:bool mc::mc_touch_pressed()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_touch.cpp:78:6:bool mc::mc_touch_read_raw(uint16_t*, uint16_t*)	32	static

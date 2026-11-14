@@ -1,0 +1,4 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/text_format.cpp:6:10:uint16_t mc::{anonymous}::put_char(char*, uint16_t, uint16_t, char)	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/text_format.cpp:19:10:uint16_t mc::mc_fmt_text(char*, uint16_t, uint16_t, const char*)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/text_format.cpp:28:10:uint16_t mc::mc_fmt_uint(char*, uint16_t, uint16_t, uint32_t)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/text_format.cpp:43:10:uint16_t mc::mc_fmt_float(char*, uint16_t, uint16_t, float, uint8_t)	10

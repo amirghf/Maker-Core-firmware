@@ -41,6 +41,7 @@ GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m140(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m155(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m190(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m303(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m400(const GcodeCommand& cmd, bool first_call);
 
 // دستور تست این بند: M9999 (فایل m9999.cpp)

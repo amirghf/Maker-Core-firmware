@@ -1,5 +1,6 @@
 #include "temp_report.h"
 #include "temp_wait.h"
+#include "pid_autotune.h"
 #include "thermistor.h"
 #include "heater_ex.h"
 #include "heater_bed.h"
@@ -62,8 +63,8 @@ void mc_temp_autoreport_set(uint8_t seconds) {
 void mc_temp_autoreport_poll() {
     mc_dbg_36_autorep_s = g_interval_s;
     if (g_interval_s == 0U) { return; }
-    // وسط M109 و M190 خود آن دستور گزارش می‌دهد؛ گزارش تکراری نفرست
-    if (mc_temp_wait_active()) {
+    // وسط M109 و M190 و M303 خود آن دستور گزارش می‌دهد؛ گزارش تکراری نفرست
+    if (mc_temp_wait_active() || mc_autotune_active()) {
         g_last_ms = mc_millis();
         return;
     }
