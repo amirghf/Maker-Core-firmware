@@ -7,7 +7,7 @@ namespace mc {
 
 class Scheduler {
 public:
-    static constexpr uint8_t kMaxTasks = 24;   // بند ۴.۱: برای وظیفه‌های دما جا باز شد
+    static constexpr uint8_t kMaxTasks = 32;   // بند ۵.۱: برای وظیفه‌های حرکت جا باز شد
     using TaskFn = void (*)();
 
     // وظیفه جدید ثبت می‌کند. period_ms = 0 یعنی هر دور حلقه اجرا شود.
