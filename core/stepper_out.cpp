@@ -110,8 +110,8 @@ void mc_stepper_out_poll() {
         if (mc_dbg_58_st_enable == 1U) {
             if (!mc_stepper_is_enabled(axis)) {
                 mc_stepper_enable(axis, true);
+                g_last_activity_ms = mc_millis();
             }
-            g_last_activity_ms = mc_millis();
         } else {
             mc_stepper_enable(axis, false);
         }
