@@ -18,11 +18,14 @@ namespace mc {
 namespace {
 
 constexpr uint8_t kTripPolls = 3;   // شرط باید این‌قدر دور ۱۰۰ میلی‌ثانیه‌ای پشت‌سرهم بماند
+constexpr uint8_t kNotReadyTripPolls = 10;   // ۱۰ دور ۱۰۰ میلی‌ثانیه‌ای یعنی حدود ۱ ثانیه (بند ۴.۱۰)
 
 uint8_t g_ex_max_cnt  = 0;
 uint8_t g_ex_min_cnt  = 0;
+uint8_t g_ex_nr_cnt   = 0;
 uint8_t g_bed_max_cnt = 0;
 uint8_t g_bed_min_cnt = 0;
+uint8_t g_bed_nr_cnt  = 0;
 
 [[noreturn]] void trip(ErrorCode code) {
     mc_dbg_09_tlim_trip = static_cast<uint32_t>(code);
@@ -30,7 +33,8 @@ uint8_t g_bed_min_cnt = 0;
 }
 
 void check_channel(AdcChannel ch, bool demanded, int32_t min_x10, int32_t max_x10,
-                   ErrorCode min_err, ErrorCode max_err, uint8_t* max_cnt, uint8_t* min_cnt) {
+                   ErrorCode min_err, ErrorCode max_err,
+                   uint8_t* max_cnt, uint8_t* min_cnt, uint8_t* nr_cnt) {
     int32_t t = 0;
     const bool ok = mc_temp_get_x10(ch, &t);
 
@@ -58,6 +62,17 @@ void check_channel(AdcChannel ch, bool demanded, int32_t min_x10, int32_t max_x1
     } else {
         *min_cnt = 0U;
     }
+
+    // بند ۴.۱۰: حفاظت NotReady (نامعتبر شدن ADC) هنگام درخواست هیتر
+    // اگر ADC خراب شود، وضعیت سنسور NotReady می‌شود. در این حالت هیتر خاموش است اما اگر هیتر
+    // درخواست شده باشد، دستورهای انتظار مانند M109 یا M190 تا ابد منتظر می‌مانند.
+    // با این حفاظت، پس از ۱۰ دور ۱۰۰ میلی‌ثانیه‌ای (حدود ۱ ثانیه)، برد با همان کد حداقل دما (MinTempExtruder / MinTempBed) kill می‌شود.
+    if (demanded && (mc_temp_status(ch) == TempStatus::NotReady)) {
+        *nr_cnt = static_cast<uint8_t>(*nr_cnt + 1U);
+        if (*nr_cnt >= kNotReadyTripPolls) { trip(min_err); }
+    } else {
+        *nr_cnt = 0U;
+    }
 }
 
 }  // namespace
@@ -72,11 +87,11 @@ void mc_temp_limits_poll() {
     check_channel(AdcChannel::TempExtruder, mc_heater_ex_demanded(),
                   kTempExMinX10, kTempExMaxX10,
                   ErrorCode::MinTempExtruder, ErrorCode::MaxTempExtruder,
-                  &g_ex_max_cnt, &g_ex_min_cnt);
+                  &g_ex_max_cnt, &g_ex_min_cnt, &g_ex_nr_cnt);
     check_channel(AdcChannel::TempBed, mc_heater_bed_demanded(),
                   kTempBedMinX10, kTempBedMaxX10,
                   ErrorCode::MinTempBed, ErrorCode::MaxTempBed,
-                  &g_bed_max_cnt, &g_bed_min_cnt);
+                  &g_bed_max_cnt, &g_bed_min_cnt, &g_bed_nr_cnt);
 }
 
 }  // namespace mc

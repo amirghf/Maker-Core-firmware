@@ -3,15 +3,15 @@
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile uint32_t mc_dbg_adc_ext_avg16 = 0;   // میانگین ×۱۶ اکسترودر (۰ = هنوز معتبر نیست)
-volatile uint32_t mc_dbg_adc_bed_avg16 = 0;   // میانگین ×۱۶ بستر (۰ = هنوز معتبر نیست)
+volatile uint32_t mc_dbg_54_adc_ext_avg16 = 0;   // میانگین ×۱۶ اکسترودر (۰ = هنوز معتبر نیست)
+volatile uint32_t mc_dbg_55_adc_bed_avg16 = 0;   // میانگین ×۱۶ بستر (۰ = هنوز معتبر نیست)
 volatile uint32_t mc_dbg_adc_ext_noise = 0;   // بیشترین منهای کمترین نمونه خام در پنجره اکسترودر
 volatile uint32_t mc_dbg_adc_bed_noise = 0;   // بیشترین منهای کمترین نمونه خام در پنجره بستر
 volatile uint32_t mc_dbg_adc_samples   = 0;   // تعداد دورهای نمونه‌گیری از شروع
 volatile uint32_t mc_dbg_adc_fail      = 0;   // تعداد خواندن‌های ناموفق ADC (جمع دو کانال)
 volatile uint32_t mc_dbg_adc_ready     = 0;   // ۱ = هر دو کانال معتبرند
 volatile uint32_t mc_dbg_adc_task_us   = 0;   // بیشترین زمان اجرای یک دور نمونه‌گیری (میکروثانیه)
-volatile uint32_t mc_dbg_adc_fake_fail = 0;   // برای تست: نوشتن ۱ یعنی «خواندن ADC شکست خورد»، ۰ یعنی عادی
+volatile uint32_t mc_dbg_53_adc_fake_fail = 0;   // برای تست: نوشتن ۱ یعنی «خواندن ADC شکست خورد»، ۰ یعنی عادی
 }
 
 namespace mc {
@@ -83,7 +83,7 @@ void mc_adc_sampler_poll() {
         ChannelState& s = g_ch[i];
         uint16_t raw = 0U;
         bool ok = false;
-        if (mc_dbg_adc_fake_fail == 0U) {
+        if (mc_dbg_53_adc_fake_fail == 0U) {
             ok = mc_adc_read(static_cast<AdcChannel>(i), &raw);
         }
         if (ok && (raw <= 4095U)) {
@@ -95,8 +95,8 @@ void mc_adc_sampler_poll() {
 
     const ChannelState& ext = g_ch[static_cast<uint8_t>(AdcChannel::TempExtruder)];
     const ChannelState& bed = g_ch[static_cast<uint8_t>(AdcChannel::TempBed)];
-    mc_dbg_adc_ext_avg16 = ext.valid ? ext.sum : 0U;
-    mc_dbg_adc_bed_avg16 = bed.valid ? bed.sum : 0U;
+    mc_dbg_54_adc_ext_avg16 = ext.valid ? ext.sum : 0U;
+    mc_dbg_55_adc_bed_avg16 = bed.valid ? bed.sum : 0U;
     mc_dbg_adc_ext_noise = window_noise(ext);
     mc_dbg_adc_bed_noise = window_noise(bed);
     mc_dbg_adc_ready     = (ext.valid && bed.valid) ? 1U : 0U;
