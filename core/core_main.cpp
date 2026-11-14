@@ -27,6 +27,7 @@
 #include "temp_protect.h"
 #include "temp_report.h"
 #include "stepper_out.h"
+#include "step_gen.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -501,6 +502,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_log(mc::LogLevel::Info, "core ready");
     mc::mc_output_init();   // بند ۴.۳: PWM هیتر و فن (همه خاموش)
     mc::mc_stepper_out_init();   // بند ۵.۱: خروجی‌های استپر (همه خاموش)
+    mc::mc_stepgen_init();   // بند ۵.۲
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -522,6 +524,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_heater_bed_poll, 100U);   // بند ۴.۵: کنترل هیتر بستر
     mc::g_main.add(mc::mc_temp_autoreport_poll, 100U);   // بند ۴.۸: گزارش خودکار دما (M155)
     mc::g_main.add(mc::mc_stepper_out_poll, 10U);   // بند ۵.۱: خروجی‌های استپر
+    mc::g_main.add(mc::mc_stepgen_poll, 10U);   // بند ۵.۲: تولید پالس با تایمر
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);

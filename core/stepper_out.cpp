@@ -1,5 +1,6 @@
 // خروجی‌های استپر در هسته (بند ۵.۱). هیچ هدر ST اینجا include نمی‌شود.
 #include "stepper_out.h"
+#include "step_gen.h"
 #include "hal_time.h"
 #include "error.h"
 
@@ -118,7 +119,10 @@ void mc_stepper_out_poll() {
 
         // ۷) اگر پالس درخواست شده است
         if (mc_dbg_60_st_pulses > 0U) {
-            if (!mc_stepper_is_enabled(axis)) {
+            if (mc_stepgen_busy()) {
+                mc_dbg_60_st_pulses = 0U;
+                mc_dbg_66_st_refused = mc_dbg_66_st_refused + 1U;
+            } else if (!mc_stepper_is_enabled(axis)) {
                 mc_dbg_60_st_pulses = 0U;
                 mc_dbg_66_st_refused = mc_dbg_66_st_refused + 1U;
             } else {
@@ -137,7 +141,8 @@ void mc_stepper_out_poll() {
 
         // ۸) بیکاری خودکار
         if ((mc_dbg_56_st_arm == 1U) && mc_stepper_is_enabled(axis) &&
-            (mc_dbg_60_st_pulses == 0U) && mc_time_elapsed_ms(g_last_activity_ms, kTestIdleMs)) {
+            (mc_dbg_60_st_pulses == 0U) && !mc_stepgen_busy() &&
+            mc_time_elapsed_ms(g_last_activity_ms, kTestIdleMs)) {
             mc_motor_disable_all();
             mc_dbg_58_st_enable = 0U;
             mc_dbg_67_st_idle_off = mc_dbg_67_st_idle_off + 1U;

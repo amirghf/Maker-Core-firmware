@@ -40,6 +40,7 @@
 #include "core_selftest.h"
 #include "core_main.h"
 #include "hal_watchdog.h"
+#include "hal_step_timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -209,6 +210,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM6)
   {
     mc_time_tick_c();
+  }
+  else if (htim->Instance == TIM2)
+  {
+    mc_steptimer_isr_c();
   }
 }
 /* USER CODE END 4 */

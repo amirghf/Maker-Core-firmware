@@ -1,0 +1,10 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:11:13:void mc::{anonymous}::buzzer_set(bool)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:16:6:void mc::{anonymous}::pulse(uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:24:6:void mc::{anonymous}::repeat(uint8_t, uint32_t, uint32_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:31:6:void mc::{anonymous}::wait_release(mc::PinId)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:39:6:bool mc::{anonymous}::key_pressed(mc::PinId)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:47:6:void mc::mc_buzzer_off()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:51:6:void mc::mc_buzzer_beep(uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:57:6:void mc::mc_buzzer_play(Sound)	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:74:17:void mc_buzzer_play_c(int)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_buzzer.cpp:79:17:void mc_buzzer_test_poll_c()	4
