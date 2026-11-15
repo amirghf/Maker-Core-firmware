@@ -1,0 +1,8 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:41:6:void mc::{anonymous}::stepgen_isr_callback()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:95:6:void mc::mc_stepgen_init()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:117:6:bool mc::mc_stepgen_start(StepAxis, bool, uint32_t, uint32_t)	10
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:152:6:void mc::mc_stepgen_stop()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:160:6:bool mc::mc_stepgen_set_rate(uint32_t)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:168:6:bool mc::mc_stepgen_busy()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:172:10:uint32_t mc::mc_stepgen_remaining()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/step_gen.cpp:176:6:void mc::mc_stepgen_poll()	7
