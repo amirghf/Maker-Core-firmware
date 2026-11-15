@@ -1,11 +1,9 @@
 #pragma once
-// صف بلوک‌های حرکت (بند ۵.۶). هیچ هدر ST اینجا include نمی‌شود.
+// صف بلوک‌های حرکت (بند ۵.۶ و ۵.۷). هیچ هدر ST اینجا include نمی‌شود.
+// از بند ۵.۷ بلوک‌ها در planner نگه‌داری می‌شوند و مولد گام آن‌ها را بدون توقف اجرا می‌کند.
 #include <stdint.h>
 
 namespace mc {
-
-// اندازه صف (توان ۲). ظرفیت واقعی یکی کمتر است، یعنی ۷ بلوک.
-constexpr uint16_t kMotionQueueSize = 8U;
 
 // یک بلوک حرکت: یک حرکت دوزنقه‌ای چندمحوره (همان ورودی‌های mc_axis_move_start_multi)
 struct MotionBlock {
@@ -19,7 +17,7 @@ struct MotionBlock {
 // دلیل رد شدن آخرین بلوک ورودی
 enum class MqReason : uint8_t {
     None         = 0,
-    Full         = 1,   // صف پر است
+    Full         = 1,   // صف پر است (۱۵ بلوک، kPlanQueueSize در planner.h)
     ZeroSteps    = 2,   // گام همه محورها صفر است
     TooManySteps = 3,   // گام یک محور بیشتر از kAxisMoveMaxSteps است
     BadRate      = 4,   // نرخ شروع یا cruise یا شتاب بیرون از بازه است
@@ -39,7 +37,7 @@ enum class MqState : uint8_t {
 void mc_mq_init();
 // یک بلوک را بعد از بررسی به صف اضافه می‌کند. false اگر رد شد (دلیل در متغیر debug).
 bool mc_mq_push(const MotionBlock& block);
-// بلوک‌های منتظر را پاک می‌کند (بلوکی که در حال حرکت است ادامه می‌دهد).
+// همه چیز را پاک می‌کند: بلوک‌های منتظر و (بند ۵.۷) اجرای جاری را هم قطع می‌کند.
 void mc_mq_clear();
 // تعداد بلوک‌های منتظر در صف (بدون بلوک در حال اجرا).
 uint16_t mc_mq_count();

@@ -1,5 +1,0 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/stepper_out.cpp:36:6:void mc::mc_stepper_out_init()	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/stepper_out.cpp:54:6:bool mc::mc_motor_enable(StepAxis, bool)	4
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/stepper_out.cpp:65:6:void mc::mc_motor_disable_all()	2
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/stepper_out.cpp:71:6:void mc::mc_stepper_out_poll()	25

@@ -1,7 +1,9 @@
-// پیاده‌سازی صف بلوک‌های حرکت (بند ۵.۶).
+// پیاده‌سازی صف بلوک‌های حرکت (بند ۵.۶ و ۵.۷). از بند ۵.۷ بلوک‌ها در planner.cpp نگه‌داری و بدون توقف اجرا می‌شوند.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include "motion_queue.h"
-#include "ring_buffer.h"
+#include "planner.h"
+#include "step_gen.h"
+#include "stepper_out.h"
 #include "axis_move.h"
 #include "hal_step_timer.h"
 #include "error.h"
@@ -10,8 +12,8 @@
 extern "C" {
 volatile uint32_t mc_dbg_111_mq_push     = 0;  // برای تست: نوشتنی. با ۱ شدن یک بلوک از متغیرهای mc_dbg_100 تا mc_dbg_104 و mc_dbg_92، mc_dbg_84، mc_dbg_93 ساخته و وارد صف می‌شود و خودش صفر می‌شود.
 volatile uint32_t mc_dbg_112_mq_run      = 0;  // برای تست: نوشتنی. با ۱ بودن، بلوک‌های صف اجرا می‌شوند. با ۰ بودن بلوک‌ها در صف می‌مانند.
-volatile uint32_t mc_dbg_113_mq_clear    = 0;  // برای تست: نوشتنی. با ۱ شدن بلوک‌های منتظر پاک می‌شوند و خودش صفر می‌شود.
-volatile uint32_t mc_dbg_114_mq_count    = 0;  // برای تست: خواندنی. تعداد بلوک‌های منتظر در صف.
+volatile uint32_t mc_dbg_113_mq_clear    = 0;  // برای تست: نوشتنی. با ۱ شدن همه چیز پاک می‌شود و اجرای جاری هم قطع می‌شود و خودش صفر می‌شود.
+volatile uint32_t mc_dbg_114_mq_count    = 0;  // برای تست: خواندنی. تعداد بلوک‌های منتظر در صف (بدون بلوکی که الان اجرا می‌شود).
 volatile uint32_t mc_dbg_115_mq_pushed   = 0;  // برای تست: خواندنی. تعداد کل بلوک‌های پذیرفته‌شده.
 volatile uint32_t mc_dbg_116_mq_done     = 0;  // برای تست: خواندنی. تعداد بلوک‌هایی که کامل تمام شدند.
 volatile uint32_t mc_dbg_117_mq_refused  = 0;  // برای تست: خواندنی. تعداد بلوک‌های ردشده هنگام ورود.
@@ -36,28 +38,31 @@ namespace mc {
 
 namespace {
 
-RingBuffer<MotionBlock, kMotionQueueSize> g_queue;
-bool g_block_running = false;   // آیا بلوک شروع‌شده از صف هنوز در جریان است؟
-bool g_cleared       = false;   // آیا صف پاک شده (برای وضعیت ۳)؟
+bool g_started = false;   // آیا یک اجرای زنجیره‌ای را ما شروع کرده‌ایم و هنوز تمام نشده؟
+bool g_cleared = false;   // آیا صف پاک شده (برای وضعیت ۳)؟
 
 void note_refused(MqReason reason) {
     mc_dbg_117_mq_refused += 1U;
     mc_dbg_119_mq_reason = static_cast<uint32_t>(reason);
 }
 
-// بلوک‌های منتظر را پاک می‌کند و وضعیت «پاک‌شده» را ثبت می‌کند
-void clear_waiting(bool mark) {
-    if (!g_queue.empty() && mark) {
+// همه چیز را پاک می‌کند: اگر اجرا در جریان است قطعش می‌کند (بند ۵.۷: بلوک در حال اجرا با سرعت اتصال ادامه نمی‌دهد)
+void clear_all(bool mark) {
+    const bool had = mc_axis_move_busy() || (mc_plan_count() != 0U);
+    mc_axis_move_abort();
+    mc_plan_clear();
+    g_started = false;
+    if (had && mark) {
         g_cleared = true;
     }
-    g_queue.clear();
 }
 
 void update_debug() {
-    mc_dbg_114_mq_count = g_queue.size();
-    if (g_block_running) {
+    mc_dbg_114_mq_count = mc_plan_count();
+    mc_dbg_116_mq_done  = mc_stepgen_plan_done();
+    if (mc_axis_move_busy()) {
         mc_dbg_118_mq_state = static_cast<uint32_t>(MqState::Running);
-    } else if (!g_queue.empty()) {
+    } else if (mc_plan_count() != 0U) {
         mc_dbg_118_mq_state = (mc_dbg_112_mq_run == 1U)
                                   ? static_cast<uint32_t>(MqState::Running)
                                   : static_cast<uint32_t>(MqState::Waiting);
@@ -71,9 +76,9 @@ void update_debug() {
 }  // namespace
 
 void mc_mq_init() {
-    g_queue.clear();
-    g_block_running = false;
-    g_cleared       = false;
+    mc_plan_init();
+    g_started = false;
+    g_cleared = false;
     mc_dbg_111_mq_push    = 0U;
     mc_dbg_112_mq_run     = 0U;
     mc_dbg_113_mq_clear   = 0U;
@@ -110,7 +115,18 @@ bool mc_mq_push(const MotionBlock& block) {
         note_refused(MqReason::BadRate);
         return false;
     }
-    if (!g_queue.push(block)) {
+    if (mc_plan_count() >= (kPlanQueueSize - 1U)) {
+        note_refused(MqReason::Full);
+        return false;
+    }
+    // بند ۵.۷: درایور محورهای بلوک همین‌جا فعال می‌شود تا وقفه هنگام تعویض بلوک با درایور غیرفعال روبه‌رو نشود
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if ((block.steps[i] != 0U) && !mc_motor_enable(static_cast<StepAxis>(i), true)) {
+            note_refused(MqReason::Killed);
+            return false;
+        }
+    }
+    if (!mc_plan_push(block)) {
         note_refused(MqReason::Full);
         return false;
     }
@@ -120,15 +136,15 @@ bool mc_mq_push(const MotionBlock& block) {
 }
 
 void mc_mq_clear() {
-    clear_waiting(true);
+    clear_all(true);
 }
 
 uint16_t mc_mq_count() {
-    return g_queue.size();
+    return mc_plan_count();
 }
 
 bool mc_mq_busy() {
-    return g_block_running || !g_queue.empty();
+    return mc_axis_move_busy() || (mc_plan_count() != 0U);
 }
 
 void mc_mq_poll() {
@@ -138,17 +154,13 @@ void mc_mq_poll() {
         mc_mq_clear();
     }
 
-    // ۲) kill یا arm برابر 1 نیست: صف پاک، درخواست ورود رد
+    // ۲) kill یا arm برابر 1 نیست: همه چیز پاک، درخواست ورود رد
     if (mc_is_killed() || (mc_dbg_80_mv_arm != 1U)) {
         if (mc_dbg_111_mq_push == 1U) {
             mc_dbg_111_mq_push = 0U;
             note_refused(mc_is_killed() ? MqReason::Killed : MqReason::NotArmed);
         }
-        if (g_block_running || !g_queue.empty()) {
-            g_cleared = true;
-        }
-        g_queue.clear();
-        g_block_running = false;
+        clear_all(true);
         mc_dbg_112_mq_run = 0U;
         update_debug();
         return;
@@ -169,19 +181,17 @@ void mc_mq_poll() {
         mc_mq_push(b);
     }
 
-    // ۴) بلوک در حال اجرا: پایان یا قطع آن را بررسی کن
-    if (g_block_running) {
+    // ۴) اجرای زنجیره‌ای که ما شروع کرده بودیم: پایان یا قطع آن را بررسی کن
+    if (g_started) {
         const MoveState st = mc_axis_move_state();
         if (st == MoveState::Moving) {
             update_debug();
             return;
         }
-        g_block_running = false;
-        if (st == MoveState::Done) {
-            mc_dbg_116_mq_done += 1U;
-        } else {
+        g_started = false;
+        if (st != MoveState::Done) {
             // قطع شد (abort) یا رد شد: بقیه صف بی‌معنی است
-            clear_waiting(true);
+            clear_all(true);
             g_cleared = true;
             mc_dbg_112_mq_run = 0U;
             update_debug();
@@ -189,19 +199,14 @@ void mc_mq_poll() {
         }
     }
 
-    // ۵) شروع بلوک بعدی (فقط اگر اجرا مجاز است و لایه حرکت بیکار است)
-    if ((mc_dbg_112_mq_run == 1U) && !g_queue.empty() && !mc_axis_move_busy()) {
-        MotionBlock b;
-        if (g_queue.pop(b)) {
-            const bool ok = mc_axis_move_start_multi(b.steps, b.dir_mask,
-                                                     b.start_hz, b.cruise_hz, b.accel_sps2);
-            if (ok) {
-                g_block_running = true;
-            } else {
-                clear_waiting(true);
-                g_cleared = true;
-                mc_dbg_112_mq_run = 0U;
-            }
+    // ۵) شروع اجرا (فقط اگر اجازه هست، بلوکی در صف هست و لایه حرکت بیکار است)
+    if ((mc_dbg_112_mq_run == 1U) && (mc_plan_count() != 0U) && !mc_axis_move_busy()) {
+        if (mc_axis_move_start_plan()) {
+            g_started = true;
+        } else {
+            clear_all(true);
+            g_cleared = true;
+            mc_dbg_112_mq_run = 0U;
         }
     }
 

@@ -1,7 +1,8 @@
-// حرکت یک یا چند محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳، ۵.۴ و ۵.۵). هیچ هدر ST اینجا include نمی‌شود.
+// حرکت یک یا چند محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳، ۵.۴، ۵.۵ و ۵.۷). هیچ هدر ST اینجا include نمی‌شود.
 #include "axis_move.h"
 #include "step_gen.h"
 #include "stepper_out.h"
+#include "planner.h"
 #include "hal_step_timer.h"
 #include "error.h"
 
@@ -44,6 +45,17 @@ bool      g_prev_armed = false;
 
 bool      g_multi_move = false;   // آیا حرکت جاری چندمحوره است؟ (بند ۵.۵)
 uint8_t   g_dir_mask   = 0U;      // ماسک جهت حرکت چندمحوره (بند ۵.۵)
+bool      g_plan_move  = false;   // آیا حرکت جاری اجرای زنجیره‌ای از صف برنامه‌ریز است؟ (بند ۵.۷)
+
+// گام‌های اجراهای برنامه‌ریز را که تمام شده‌اند به موقعیت اضافه می‌کند (فقط وقتی مولد گام بیکار است) — بند ۵.۷
+void merge_plan_delta() {
+    if (mc_stepgen_busy()) {
+        return;
+    }
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        g_pos[i] += mc_stepgen_plan_take_delta(static_cast<StepAxis>(i));
+    }
+}
 
 // یک درخواست ردشده را ثبت می‌کند. اگر حرکتی در جریان است، وضعیت آن را به Refused تغییر نمی‌دهد.
 void note_refused(MoveRefuse why) {
@@ -57,6 +69,15 @@ void note_refused(MoveRefuse why) {
 // حرکت جاری تمام شده یا قطع شده است؛ گام‌های انجام‌شده را حساب و موقعیت را به‌روز می‌کند.
 void close_move() {
     const uint32_t left  = mc_stepgen_remaining();
+    if (g_plan_move) {
+        // بند ۵.۷: موقعیت از جمع گام‌های مولد گام می‌آید؛ گام‌های انجام‌شده مربوط به بلوک آخر است
+        const uint32_t blk  = mc_stepgen_block_total();
+        mc_dbg_91_mv_done_steps = (left <= blk) ? (blk - left) : 0U;
+        merge_plan_delta();
+        g_plan_move = false;
+        g_state = (left == 0U) ? MoveState::Done : MoveState::Aborted;
+        return;
+    }
     const uint32_t done  = (left <= g_total) ? (g_total - left) : 0U;
     if (g_multi_move) {
         // بند ۵.۵: موقعیت هر محور از روی پالس‌های واقعی همان محور
@@ -78,7 +99,7 @@ void close_move() {
 void update_debug() {
     mc_dbg_87_mv_state = static_cast<uint32_t>(g_state);
     const uint32_t sel = mc_dbg_81_mv_axis;
-    mc_dbg_88_mv_pos_steps = (sel < 4U) ? g_pos[sel] : 0;
+    mc_dbg_88_mv_pos_steps = (sel < 4U) ? mc_axis_position_steps(static_cast<StepAxis>(sel)) : 0;
 }
 
 }  // namespace
@@ -111,6 +132,7 @@ void mc_axis_move_init() {
 
     g_multi_move = false;
     g_dir_mask   = 0U;
+    g_plan_move  = false;
     mc_dbg_100_mx_steps_x = 0U;
     mc_dbg_101_mx_steps_y = 0U;
     mc_dbg_102_mx_steps_z = 0U;
@@ -155,6 +177,8 @@ bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t ra
     g_forward    = forward;
     g_total      = steps;
     g_multi_move = false;   // بند ۵.۵: حرکت یک‌محوره
+    g_plan_move  = false;   // بند ۵.۷
+    merge_plan_delta();
     if (!mc_stepgen_start(axis, forward, steps, rate_hz)) {
         note_refused(MoveRefuse::StartFailed);
         return false;
@@ -206,6 +230,8 @@ bool mc_axis_move_start_ramp(StepAxis axis, bool forward, uint32_t steps,
     g_forward    = forward;
     g_total      = steps;
     g_multi_move = false;   // بند ۵.۵: حرکت یک‌محوره
+    g_plan_move  = false;   // بند ۵.۷
+    merge_plan_delta();
     if (!mc_stepgen_start_ramp(axis, forward, steps, start_hz, cruise_hz, accel_sps2)) {
         note_refused(MoveRefuse::StartFailed);
         return false;
@@ -261,12 +287,40 @@ bool mc_axis_move_start_multi(const uint32_t* steps, uint8_t dir_mask,
     g_total      = total;
     g_dir_mask   = static_cast<uint8_t>(dir_mask & 0x0FU);
     g_multi_move = true;
+    g_plan_move  = false;   // بند ۵.۷
+    merge_plan_delta();
     if (!mc_stepgen_start_multi(steps, g_dir_mask, start_hz, cruise_hz, accel_sps2)) {
         g_multi_move = false;
         note_refused(MoveRefuse::StartFailed);
         return false;
     }
 
+    g_state = MoveState::Moving;
+    mc_dbg_91_mv_done_steps = 0U;
+    return true;
+}
+
+bool mc_axis_move_start_plan() {
+    if (mc_is_killed()) {
+        note_refused(MoveRefuse::Killed);
+        return false;
+    }
+    if ((g_state == MoveState::Moving) || mc_stepgen_busy()) {
+        note_refused(MoveRefuse::Busy);
+        return false;
+    }
+    if (mc_plan_count() == 0U) {
+        note_refused(MoveRefuse::ZeroSteps);
+        return false;
+    }
+    merge_plan_delta();   // موقعیت اجراهای قبلی
+    g_multi_move = false;
+    g_plan_move  = true;
+    if (!mc_stepgen_plan_start()) {
+        g_plan_move = false;
+        note_refused(MoveRefuse::StartFailed);
+        return false;
+    }
     g_state = MoveState::Moving;
     mc_dbg_91_mv_done_steps = 0U;
     return true;
@@ -289,7 +343,7 @@ int32_t mc_axis_position_steps(StepAxis axis) {
     if (idx >= static_cast<uint8_t>(StepAxis::Count)) {
         return 0;
     }
-    return g_pos[idx];
+    return g_pos[idx] + mc_stepgen_plan_delta(axis);   // بند ۵.۷: شامل بلوک‌های برنامه‌ریز که هنوز جمع نشده‌اند
 }
 
 MoveState mc_axis_move_state() {
@@ -347,6 +401,7 @@ void mc_axis_move_poll() {
     if ((g_state == MoveState::Moving) && !mc_stepgen_busy()) {
         close_move();
     }
+    merge_plan_delta();   // بند ۵.۷
 
     // ۵) درخواست شروع
     if (mc_dbg_85_mv_start == 1U) {

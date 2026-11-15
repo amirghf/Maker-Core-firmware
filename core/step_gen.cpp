@@ -4,6 +4,8 @@
 #include "hal_step_timer.h"
 #include "hal_stepper.h"
 #include "hal_time.h"
+#include "hal_irq.h"
+#include "planner.h"
 #include "error.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
@@ -32,10 +34,18 @@ volatile uint32_t mc_dbg_107_mx_done_y     = 0;  // برای تست: خواند�
 volatile uint32_t mc_dbg_108_mx_done_z     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به Z در آخرین حرکت چندمحوره.
 volatile uint32_t mc_dbg_109_mx_done_e     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به E در آخرین حرکت چندمحوره.
 volatile uint32_t mc_dbg_110_mx_master     = 0;  // برای تست: خواندنی. شماره محور اصلی آخرین حرکت چندمحوره (۰ = X، ۱ = Y، ۲ = Z، ۳ = E).
+
+volatile uint32_t mc_dbg_129_pl_hand_cnt   = 0;  // برای تست: خواندنی. تعداد تعویض بلوک بدون توقف تایمر در آخرین اجرای برنامه‌ریز (بند ۵.۷). در شروع هر اجرا صفر می‌شود.
+volatile uint32_t mc_dbg_130_pl_hand_hz    = 0;  // برای تست: خواندنی. نرخ تایمر در آخرین تعویض بلوک (گام بر ثانیه).
+volatile uint32_t mc_dbg_131_pl_hand_sel_hz = 0; // برای تست: خواندنی. نرخ تایمر در تعویض شماره mc_dbg_121_pl_sel آخرین اجرا (۰ = تعویض اول). اگر آن تعویض انجام نشده ۰.
+volatile uint32_t mc_dbg_132_pl_starts     = 0;  // برای تست: خواندنی. تعداد کل دفعاتی که اجرای برنامه‌ریز تایمر را از ایستاده شروع کرده است.
+volatile uint32_t mc_dbg_133_pl_load_max_us = 0; // برای تست: خواندنی. طولانی‌ترین زمان بارگذاری بلوک بعدی داخل وقفه (میکروثانیه).
+volatile uint32_t mc_dbg_134_pl_total_ms   = 0;  // برای تست: خواندنی. مدت آخرین اجرای کامل برنامه‌ریز از شروع تا آخرین گام (میلی‌ثانیه).
 }
 
 // متغیرهای دیباگ از بند ۵.۱ برای خواندن تنظیمات تست
 extern "C" {
+extern volatile uint32_t mc_dbg_121_pl_sel;   // تعریف‌شده در planner.cpp (بند ۵.۷)
 extern volatile uint32_t mc_dbg_56_st_arm;
 extern volatile uint32_t mc_dbg_57_st_axis;
 extern volatile uint32_t mc_dbg_59_st_dir;
@@ -66,6 +76,16 @@ uint32_t volatile g_mx_emit[4]   = {0U, 0U, 0U, 0U};  // پالس‌های دا�
 uint8_t  volatile g_mx_master    = 0U;     // شماره محور اصلی
 uint32_t volatile g_mx_total     = 0U;     // گام محور اصلی
 
+uint32_t volatile g_exit_sq      = 0U;     // مربع نرخ خروج بلوک جاری (در حرکت‌های قدیمی برابر مربع نرخ شروع) — بند ۵.۷
+bool     volatile g_plan         = false;  // آیا اجرای جاری از صف برنامه‌ریز بلوک می‌گیرد؟ (بند ۵.۷)
+bool     volatile g_plan_active  = false;  // آیا اجرای برنامه‌ریز در جریان است؟ (برای برنامه‌ریز)
+uint32_t volatile g_plan_done    = 0U;     // تعداد بلوک‌هایی که کامل تمام شده‌اند
+int32_t  volatile g_fold[4]      = {0, 0, 0, 0};   // جمع گام‌های علامت‌دار بلوک‌های بسته‌شده (برای موقعیت)
+bool     volatile g_cur_open     = false;  // آیا بلوک جاری هنوز در g_fold جمع نشده؟
+uint32_t volatile g_cur_dirs     = 0U;     // ماسک جهت بلوک جاری
+uint32_t volatile g_hand_hz[8]   = {0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};  // نرخ تایمر در هر تعویض بلوک
+uint32_t volatile g_plan_start_ms = 0U;
+
 // ریشه دوم صحیح (کف) بدون float، به روش بیت‌به‌بیت.
 uint32_t isqrt_u32(uint32_t x) {
     uint32_t res = 0U;
@@ -94,7 +114,7 @@ void ramp_next_rate() {
         rate  = isqrt_u32(g_v0_sq + 2U * g_accel * k);
         phase = 1U;
     } else if (g_remaining <= g_dec_steps) {
-        rate  = isqrt_u32(g_v0_sq + 2U * g_accel * (g_remaining - 1U));
+        rate  = isqrt_u32(g_exit_sq + 2U * g_accel * (g_remaining - 1U));   // بند ۵.۷: از نرخ خروج
         phase = 3U;
     } else {
         rate  = g_cruise_hz;
@@ -143,6 +163,66 @@ void mx_pulse_all() {
     }
 }
 
+// بلوک جاری را در جمع موقعیت می‌ریزد (یک‌بار برای هر بلوک؛ داخل وقفه یا داخل قفل صدا زده می‌شود) — بند ۵.۷
+void plan_fold_current() {
+    if (!g_cur_open) {
+        return;
+    }
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        const int32_t e = static_cast<int32_t>(g_mx_emit[i]);
+        g_fold[i] += (((g_cur_dirs >> i) & 1U) != 0U) ? e : -e;
+    }
+    g_cur_open = false;
+}
+
+// همه پرچم‌های اجرای برنامه‌ریز را خاموش می‌کند (پایان، توقف، kill، خطا) — بند ۵.۷
+void plan_end_flags() {
+    g_plan        = false;
+    g_plan_active = false;
+}
+
+// بلوک p را به‌عنوان بلوک جاری بارگذاری می‌کند: جهت‌ها، شمارنده‌ها و پروفایل (بند ۵.۷)
+void plan_apply(const PlanExec& p) {
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        g_mx_steps[i] = p.steps[i];
+        g_mx_acc[i]   = p.total / 2U;
+        g_mx_emit[i]  = 0U;
+        if (p.steps[i] != 0U) {
+            mc_stepper_set_dir(static_cast<StepAxis>(i), ((p.dir_mask >> i) & 1U) != 0U);
+        }
+    }
+    g_cur_dirs    = p.dir_mask;
+    g_cur_open    = true;
+    g_mx_master   = p.master;
+    g_mx_total    = p.total;
+    g_axis        = static_cast<StepAxis>(p.master);
+    g_remaining   = p.total;
+    g_total_steps = p.total;
+    g_v0_sq       = p.entry_sq;
+    g_exit_sq     = p.exit_sq;
+    g_cruise_hz   = p.nominal_hz;
+    g_accel       = p.accel;
+    g_acc_steps   = p.n_acc;
+    g_dec_steps   = p.n_dec;
+    const uint32_t e_hz = isqrt_u32(p.entry_sq);
+    const uint32_t x_hz = isqrt_u32(p.exit_sq);
+    uint32_t lo = (e_hz < x_hz) ? e_hz : x_hz;
+    if (lo < kStepTimerMinHz) { lo = kStepTimerMinHz; }
+    g_start_hz    = lo;
+    g_cur_hz      = (e_hz < kStepTimerMinHz) ? kStepTimerMinHz : e_hz;
+    if (g_cur_hz > p.nominal_hz) { g_cur_hz = p.nominal_hz; }
+    g_ramp        = true;
+    g_multi       = true;
+    g_start_ms    = mc_millis();
+    mc_dbg_110_mx_master     = p.master;
+    mc_dbg_96_ac_accel_steps = p.n_acc;
+    mc_dbg_97_ac_decel_steps = p.n_dec;
+    mc_dbg_98_ac_peak_hz     = g_cur_hz;
+    mc_dbg_99_ac_cur_hz      = g_cur_hz;
+    mc_dbg_95_ac_phase       = (p.n_acc > 0U) ? 1U : 2U;
+    mc_dbg_74_sg_remaining   = p.total;
+}
+
 void stepgen_isr_callback() {
     const uint32_t t0 = mc_micros();
 
@@ -158,6 +238,8 @@ void stepgen_isr_callback() {
         g_running = false;
         g_ramp = false;
         g_multi = false;               // بند ۵.۵
+        plan_fold_current();           // بند ۵.۷
+        plan_end_flags();
         mc_dbg_95_ac_phase = 0U;
         mc_dbg_73_sg_state = 4U;   // ۴ = kill
         return;
@@ -170,6 +252,8 @@ void stepgen_isr_callback() {
         g_running = false;
         g_ramp = false;
         g_multi = false;               // بند ۵.۵
+        plan_fold_current();           // بند ۵.۷
+        plan_end_flags();
         mc_dbg_95_ac_phase = 0U;
         mc_dbg_73_sg_state = 3U;   // ۳ = متوقف شد (درایور غیرفعال شد)
         return;
@@ -186,19 +270,46 @@ void stepgen_isr_callback() {
 
     // ۶) اگر گام باقی‌مانده صفر شد
     if (g_remaining == 0U) {
-        mc_steptimer_stop();
-        g_running = false;
-        g_ramp = false;
-        g_multi = false;               // بند ۵.۵
-        mc_dbg_95_ac_phase = 0U;
         const uint32_t elapsed = mc_millis() - g_start_ms;
-        mc_dbg_76_sg_elapsed_ms = elapsed;
-        if (elapsed != 0U) {
-            mc_dbg_79_sg_actual_hz = (g_total_steps * 1000U) / elapsed;
-        } else {
-            mc_dbg_79_sg_actual_hz = 0U;
+        PlanExec nxt;
+        bool have_next = false;
+        if (g_plan) {                  // بند ۵.۷: بلوک تمام شد؛ بلوک بعدی را بدون توقف تایمر بگیر
+            plan_fold_current();
+            g_plan_done += 1U;
+            have_next = mc_plan_isr_take(nxt);
         }
-        mc_dbg_73_sg_state = 2U;   // ۲ = تمام شد
+        if (have_next) {
+            const uint32_t l0 = mc_micros();
+            plan_apply(nxt);
+            mc_steptimer_set_rate(g_cur_hz);
+            const uint32_t idx = mc_dbg_129_pl_hand_cnt;
+            if (idx < 8U) {
+                g_hand_hz[idx] = g_cur_hz;
+            }
+            mc_dbg_129_pl_hand_cnt = idx + 1U;
+            mc_dbg_130_pl_hand_hz  = g_cur_hz;
+            const uint32_t load_us = mc_micros() - l0;
+            if (load_us > mc_dbg_133_pl_load_max_us) {
+                mc_dbg_133_pl_load_max_us = load_us;
+            }
+        } else {
+            mc_steptimer_stop();
+            g_running = false;
+            g_ramp = false;
+            g_multi = false;               // بند ۵.۵
+            if (g_plan) {
+                plan_end_flags();
+                mc_dbg_134_pl_total_ms = mc_millis() - g_plan_start_ms;
+            }
+            mc_dbg_95_ac_phase = 0U;
+            mc_dbg_76_sg_elapsed_ms = elapsed;
+            if (elapsed != 0U) {
+                mc_dbg_79_sg_actual_hz = (g_total_steps * 1000U) / elapsed;
+            } else {
+                mc_dbg_79_sg_actual_hz = 0U;
+            }
+            mc_dbg_73_sg_state = 2U;   // ۲ = تمام شد
+        }
     } else if (g_ramp) {
         ramp_next_rate();              // نرخ گام بعدی
     }
@@ -242,6 +353,22 @@ void mc_stepgen_init() {
     mc_dbg_109_mx_done_e = 0U;
     mc_dbg_110_mx_master = 0U;
 
+    g_exit_sq       = 0U;
+    g_plan          = false;
+    g_plan_active   = false;
+    g_plan_done     = 0U;
+    g_cur_open      = false;
+    g_cur_dirs      = 0U;
+    g_plan_start_ms = 0U;
+    for (uint8_t i = 0U; i < 4U; ++i) { g_fold[i] = 0; }
+    for (uint8_t i = 0U; i < 8U; ++i) { g_hand_hz[i] = 0U; }
+    mc_dbg_129_pl_hand_cnt    = 0U;
+    mc_dbg_130_pl_hand_hz     = 0U;
+    mc_dbg_131_pl_hand_sel_hz = 0U;
+    mc_dbg_132_pl_starts      = 0U;
+    mc_dbg_133_pl_load_max_us = 0U;
+    mc_dbg_134_pl_total_ms    = 0U;
+
     mc_dbg_68_sg_start      = 0U;
     mc_dbg_69_sg_steps      = 0U;
     mc_dbg_70_sg_rate_hz    = 0U;
@@ -279,6 +406,7 @@ bool mc_stepgen_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate
     g_start_ms    = mc_millis();
     g_ramp        = false;   // بند ۵.۴: اجرای ثابت‌نرخ
     g_multi       = false;   // بند ۵.۵: اجرای یک‌محوره
+    g_plan        = false;   // بند ۵.۷
     g_running     = true;
     mc_dbg_73_sg_state     = 1U;   // ۱ = در حال اجرا
     mc_dbg_74_sg_remaining = steps;
@@ -328,12 +456,14 @@ bool mc_stepgen_start_ramp(StepAxis axis, bool forward, uint32_t steps,
     g_cruise_hz   = cruise_hz;
     g_accel       = accel_sps2;
     g_v0_sq       = start_hz * start_hz;
+    g_exit_sq     = g_v0_sq;   // بند ۵.۷: حرکت قدیمی متقارن است
     g_acc_steps   = acc_steps;
     g_dec_steps   = dec_steps;
     g_cur_hz      = start_hz;
     g_start_ms    = mc_millis();
     g_ramp        = true;
     g_multi       = false;   // بند ۵.۵: اجرای یک‌محوره
+    g_plan        = false;   // بند ۵.۷
     g_running     = true;
 
     mc_dbg_96_ac_accel_steps = acc_steps;
@@ -412,12 +542,15 @@ bool mc_stepgen_start_multi(const uint32_t* steps, uint8_t dir_mask,
     g_cruise_hz   = cruise_hz;
     g_accel       = accel_sps2;
     g_v0_sq       = start_hz * start_hz;
+    g_exit_sq     = g_v0_sq;   // بند ۵.۷: حرکت قدیمی متقارن است
     g_acc_steps   = acc_steps;
     g_dec_steps   = dec_steps;
     g_cur_hz      = start_hz;
     g_start_ms    = mc_millis();
     g_ramp        = true;
     g_multi       = true;
+    g_plan        = false;   // بند ۵.۷
+    g_cur_open    = false;   // بند ۵.۷: موقعیت این حرکت را axis_move از روی g_mx_emit می‌گیرد
     g_running     = true;
 
     mc_dbg_110_mx_master     = master;
@@ -450,12 +583,101 @@ uint32_t mc_stepgen_axis_emitted(StepAxis axis) {
     return g_mx_emit[idx];
 }
 
+bool mc_stepgen_plan_start() {
+    if (mc_is_killed() || g_running) {
+        mc_dbg_78_sg_refused += 1U;
+        mc_dbg_73_sg_state = 5U;   // ۵ = شروع رد شد
+        return false;
+    }
+    PlanExec first;
+    if (!mc_plan_isr_take(first)) {
+        mc_dbg_78_sg_refused += 1U;
+        mc_dbg_73_sg_state = 5U;
+        return false;
+    }
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if ((first.steps[i] != 0U) && !mc_stepper_is_enabled(static_cast<StepAxis>(i))) {
+            mc_dbg_78_sg_refused += 1U;
+            mc_dbg_73_sg_state = 5U;
+            return false;
+        }
+    }
+    plan_apply(first);
+    g_plan           = true;
+    g_plan_active    = true;
+    g_plan_start_ms  = mc_millis();
+    for (uint8_t i = 0U; i < 8U; ++i) { g_hand_hz[i] = 0U; }
+    mc_dbg_129_pl_hand_cnt    = 0U;
+    mc_dbg_130_pl_hand_hz     = 0U;
+    mc_dbg_131_pl_hand_sel_hz = 0U;
+    g_running        = true;
+    mc_dbg_73_sg_state = 1U;   // ۱ = در حال اجرا
+    if (!mc_steptimer_start(g_cur_hz)) {
+        g_running = false;
+        g_ramp = false;
+        g_multi = false;
+        const uint32_t irq = mc_irq_save();
+        plan_fold_current();
+        plan_end_flags();
+        mc_irq_restore(irq);
+        mc_dbg_95_ac_phase = 0U;
+        mc_dbg_73_sg_state = 0U;
+        mc_dbg_78_sg_refused += 1U;
+        return false;
+    }
+    mc_dbg_132_pl_starts += 1U;
+    return true;
+}
+
+bool mc_stepgen_plan_active() {
+    return g_plan_active;
+}
+
+uint32_t mc_stepgen_plan_done() {
+    return g_plan_done;
+}
+
+uint32_t mc_stepgen_block_total() {
+    return g_total_steps;
+}
+
+int32_t mc_stepgen_plan_delta(StepAxis axis) {
+    const uint8_t i = static_cast<uint8_t>(axis);
+    if (i >= 4U) {
+        return 0;
+    }
+    const uint32_t irq = mc_irq_save();
+    int32_t d = g_fold[i];
+    if (g_cur_open) {
+        const int32_t e = static_cast<int32_t>(g_mx_emit[i]);
+        d += (((g_cur_dirs >> i) & 1U) != 0U) ? e : -e;
+    }
+    mc_irq_restore(irq);
+    return d;
+}
+
+int32_t mc_stepgen_plan_take_delta(StepAxis axis) {
+    const uint8_t i = static_cast<uint8_t>(axis);
+    if ((i >= 4U) || g_running) {
+        return 0;
+    }
+    const uint32_t irq = mc_irq_save();
+    const int32_t d = g_fold[i];
+    g_fold[i] = 0;
+    mc_irq_restore(irq);
+    return d;
+}
+
 void mc_stepgen_stop() {
     if (g_running) {
+        const uint32_t irq = mc_irq_save();   // بند ۵.۷: توقف و بستن بلوک جاری یک‌جا انجام شود
         mc_steptimer_stop();
         g_running = false;
         g_ramp = false;              // بند ۵.۴
         g_multi = false;             // بند ۵.۵
+        plan_fold_current();         // بند ۵.۷
+        plan_end_flags();
+        mc_irq_restore(irq);
         mc_dbg_95_ac_phase = 0U;     // بند ۵.۴
         mc_dbg_73_sg_state = 3U;   // ۳ = متوقف شد
     }
@@ -483,6 +705,10 @@ void mc_stepgen_poll() {
     mc_dbg_108_mx_done_z = g_mx_emit[2];
     mc_dbg_109_mx_done_e = g_mx_emit[3];
     mc_dbg_110_mx_master = g_mx_master;
+    {
+        const uint32_t sel = mc_dbg_121_pl_sel;
+        mc_dbg_131_pl_hand_sel_hz = (sel < 8U) ? g_hand_hz[sel] : 0U;   // بند ۵.۷
+    }
 
     if (mc_is_killed()) {
         return;

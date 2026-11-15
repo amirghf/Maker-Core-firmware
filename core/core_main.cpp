@@ -30,6 +30,7 @@
 #include "step_gen.h"
 #include "axis_move.h"
 #include "motion_queue.h"
+#include "planner.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -531,6 +532,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_stepgen_poll, 10U);   // بند ۵.۲: تولید پالس با تایمر
     mc::g_main.add(mc::mc_axis_move_poll, 10U);   // بند ۵.۳: حرکت یک محور با سرعت ثابت
     mc::g_main.add(mc::mc_mq_poll, 10U);   // بند ۵.۶: صف بلوک‌های حرکت
+    mc::g_main.add(mc::mc_plan_poll, 10U);   // بند ۵.۷: برنامه‌ریز (lookahead و متغیرهای debug)
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
