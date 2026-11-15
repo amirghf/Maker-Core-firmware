@@ -1,4 +1,4 @@
-// حرکت یک محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳ و ۵.۴). هیچ هدر ST اینجا include نمی‌شود.
+// حرکت یک یا چند محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳، ۵.۴ و ۵.۵). هیچ هدر ST اینجا include نمی‌شود.
 #include "axis_move.h"
 #include "step_gen.h"
 #include "stepper_out.h"
@@ -23,6 +23,13 @@ volatile uint32_t mc_dbg_91_mv_done_steps = 0;  // برای تست: خواندن
 volatile uint32_t mc_dbg_92_ac_start_hz = 0;  // برای تست: نوشتنی. نرخ شروع و پایان حرکت دوزنقه‌ای (گام بر ثانیه) — بند ۵.۴.
 volatile uint32_t mc_dbg_93_ac_accel    = 0;  // برای تست: نوشتنی. شتاب (گام بر ثانیه‌مربع).
 volatile uint32_t mc_dbg_94_ac_go       = 0;  // برای تست: نوشتنی. با ۱ شدن حرکت دوزنقه‌ای شروع می‌شود و خودش صفر می‌شود. نرخ سرعت ثابت از mc_dbg_84_mv_rate_hz خوانده می‌شود.
+
+volatile uint32_t mc_dbg_100_mx_steps_x = 0;  // برای تست: نوشتنی. گام X در حرکت چندمحوره (بند ۵.۵).
+volatile uint32_t mc_dbg_101_mx_steps_y = 0;  // برای تست: نوشتنی. گام Y در حرکت چندمحوره.
+volatile uint32_t mc_dbg_102_mx_steps_z = 0;  // برای تست: نوشتنی. گام Z در حرکت چندمحوره.
+volatile uint32_t mc_dbg_103_mx_steps_e = 0;  // برای تست: نوشتنی. گام E در حرکت چندمحوره.
+volatile uint32_t mc_dbg_104_mx_dirs    = 0;  // برای تست: نوشتنی. ماسک جهت: بیت ۰ = X، بیت ۱ = Y، بیت ۲ = Z، بیت ۳ = E؛ ۱ = مثبت. (مثلاً ۳ یعنی X و Y مثبت، Z و E منفی)
+volatile uint32_t mc_dbg_105_mx_go      = 0;  // برای تست: نوشتنی. با ۱ شدن حرکت چندمحوره شروع می‌شود و خودش صفر می‌شود. نرخ محور اصلی از mc_dbg_84_mv_rate_hz، نرخ شروع از mc_dbg_92_ac_start_hz و شتاب از mc_dbg_93_ac_accel خوانده می‌شود.
 }
 
 namespace mc {
@@ -34,6 +41,9 @@ bool      g_forward    = true;
 uint32_t  g_total      = 0U;
 int32_t   g_pos[4]     = {0, 0, 0, 0};
 bool      g_prev_armed = false;
+
+bool      g_multi_move = false;   // آیا حرکت جاری چندمحوره است؟ (بند ۵.۵)
+uint8_t   g_dir_mask   = 0U;      // ماسک جهت حرکت چندمحوره (بند ۵.۵)
 
 // یک درخواست ردشده را ثبت می‌کند. اگر حرکتی در جریان است، وضعیت آن را به Refused تغییر نمی‌دهد.
 void note_refused(MoveRefuse why) {
@@ -48,10 +58,19 @@ void note_refused(MoveRefuse why) {
 void close_move() {
     const uint32_t left  = mc_stepgen_remaining();
     const uint32_t done  = (left <= g_total) ? (g_total - left) : 0U;
-    const int32_t  delta = static_cast<int32_t>(done);
-    const uint8_t  idx   = static_cast<uint8_t>(g_axis);
-    g_pos[idx] += g_forward ? delta : -delta;
-    mc_dbg_91_mv_done_steps = done;
+    if (g_multi_move) {
+        // بند ۵.۵: موقعیت هر محور از روی پالس‌های واقعی همان محور
+        for (uint8_t i = 0U; i < 4U; ++i) {
+            const int32_t e = static_cast<int32_t>(mc_stepgen_axis_emitted(static_cast<StepAxis>(i)));
+            const bool fwd  = (((g_dir_mask >> i) & 1U) != 0U);
+            g_pos[i] += fwd ? e : -e;
+        }
+    } else {
+        const int32_t  delta = static_cast<int32_t>(done);
+        const uint8_t  idx   = static_cast<uint8_t>(g_axis);
+        g_pos[idx] += g_forward ? delta : -delta;
+    }
+    mc_dbg_91_mv_done_steps = done;    // گام‌های انجام‌شده محور اصلی
     g_state = (left == 0U) ? MoveState::Done : MoveState::Aborted;
 }
 
@@ -89,6 +108,15 @@ void mc_axis_move_init() {
     mc_dbg_92_ac_start_hz   = 0U;
     mc_dbg_93_ac_accel      = 0U;
     mc_dbg_94_ac_go         = 0U;
+
+    g_multi_move = false;
+    g_dir_mask   = 0U;
+    mc_dbg_100_mx_steps_x = 0U;
+    mc_dbg_101_mx_steps_y = 0U;
+    mc_dbg_102_mx_steps_z = 0U;
+    mc_dbg_103_mx_steps_e = 0U;
+    mc_dbg_104_mx_dirs    = 0U;
+    mc_dbg_105_mx_go      = 0U;
 }
 
 bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate_hz) {
@@ -123,9 +151,10 @@ bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t ra
         return false;
     }
 
-    g_axis    = axis;
-    g_forward = forward;
-    g_total   = steps;
+    g_axis       = axis;
+    g_forward    = forward;
+    g_total      = steps;
+    g_multi_move = false;   // بند ۵.۵: حرکت یک‌محوره
     if (!mc_stepgen_start(axis, forward, steps, rate_hz)) {
         note_refused(MoveRefuse::StartFailed);
         return false;
@@ -173,10 +202,67 @@ bool mc_axis_move_start_ramp(StepAxis axis, bool forward, uint32_t steps,
         return false;
     }
 
-    g_axis    = axis;
-    g_forward = forward;
-    g_total   = steps;
+    g_axis       = axis;
+    g_forward    = forward;
+    g_total      = steps;
+    g_multi_move = false;   // بند ۵.۵: حرکت یک‌محوره
     if (!mc_stepgen_start_ramp(axis, forward, steps, start_hz, cruise_hz, accel_sps2)) {
+        note_refused(MoveRefuse::StartFailed);
+        return false;
+    }
+
+    g_state = MoveState::Moving;
+    mc_dbg_91_mv_done_steps = 0U;
+    return true;
+}
+
+bool mc_axis_move_start_multi(const uint32_t* steps, uint8_t dir_mask,
+                              uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2) {
+    if (mc_is_killed()) {
+        note_refused(MoveRefuse::Killed);
+        return false;
+    }
+
+    uint32_t total = 0U;
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if (steps[i] > kAxisMoveMaxSteps) {
+            note_refused(MoveRefuse::TooManySteps);
+            return false;
+        }
+        if (steps[i] > total) {
+            total = steps[i];
+        }
+    }
+    if (total == 0U) {
+        note_refused(MoveRefuse::ZeroSteps);
+        return false;
+    }
+    if ((start_hz < kStepTimerMinHz) || (cruise_hz > kAxisMoveMaxRateHz) || (start_hz > cruise_hz)) {
+        note_refused(MoveRefuse::BadRate);
+        return false;
+    }
+    if ((accel_sps2 < kAxisAccelMinSps2) || (accel_sps2 > kAxisAccelMaxSps2)) {
+        note_refused(MoveRefuse::BadAccel);
+        return false;
+    }
+    if ((g_state == MoveState::Moving) || mc_stepgen_busy()) {
+        note_refused(MoveRefuse::Busy);
+        return false;
+    }
+    // فقط درایور محورهای دارای گام فعال شود
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if ((steps[i] != 0U) && !mc_motor_enable(static_cast<StepAxis>(i), true)) {
+            mc_motor_disable_all();
+            note_refused(MoveRefuse::Killed);
+            return false;
+        }
+    }
+
+    g_total      = total;
+    g_dir_mask   = static_cast<uint8_t>(dir_mask & 0x0FU);
+    g_multi_move = true;
+    if (!mc_stepgen_start_multi(steps, g_dir_mask, start_hz, cruise_hz, accel_sps2)) {
+        g_multi_move = false;
         note_refused(MoveRefuse::StartFailed);
         return false;
     }
@@ -227,6 +313,10 @@ void mc_axis_move_poll() {
             mc_dbg_94_ac_go = 0U;
             note_refused(MoveRefuse::NotArmed);
         }
+        if (mc_dbg_105_mx_go == 1U) {
+            mc_dbg_105_mx_go = 0U;
+            note_refused(MoveRefuse::NotArmed);
+        }
         mc_dbg_86_mv_abort = 0U;
         g_prev_armed = false;
         update_debug();
@@ -241,6 +331,7 @@ void mc_axis_move_poll() {
         }
         mc_dbg_85_mv_start = 0U;
         mc_dbg_94_ac_go    = 0U;
+        mc_dbg_105_mx_go   = 0U;
         mc_dbg_86_mv_abort = 0U;
         update_debug();
         return;
@@ -283,6 +374,18 @@ void mc_axis_move_poll() {
                                     mc_dbg_84_mv_rate_hz,
                                     mc_dbg_93_ac_accel);
         }
+    }
+
+    // ۷) درخواست شروع حرکت چندمحوره (بند ۵.۵)
+    if (mc_dbg_105_mx_go == 1U) {
+        mc_dbg_105_mx_go = 0U;
+        const uint32_t mx_steps[4] = {mc_dbg_100_mx_steps_x, mc_dbg_101_mx_steps_y,
+                                      mc_dbg_102_mx_steps_z, mc_dbg_103_mx_steps_e};
+        mc_axis_move_start_multi(mx_steps,
+                                 static_cast<uint8_t>(mc_dbg_104_mx_dirs & 0x0FU),
+                                 mc_dbg_92_ac_start_hz,
+                                 mc_dbg_84_mv_rate_hz,
+                                 mc_dbg_93_ac_accel);
     }
 
     update_debug();

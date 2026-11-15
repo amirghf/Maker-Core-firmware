@@ -1,5 +1,5 @@
 #pragma once
-// تولیدکننده پالس STEP با وقفه تایمر برای یک محور (بند ۵.۲). هیچ هدر ST اینجا include نمی‌شود.
+// تولیدکننده پالس STEP با وقفه تایمر برای یک یا چند محور (بند ۵.۲، ۵.۴ و ۵.۵). هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 #include "hal_stepper.h"
 
@@ -18,6 +18,14 @@ bool mc_stepgen_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate
 // start_hz یا cruise_hz بیرون از بازه hal، start_hz > cruise_hz، یا شتاب بیرون از kStepAccelMin تا kStepAccelMax.
 bool mc_stepgen_start_ramp(StepAxis axis, bool forward, uint32_t steps,
                            uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2);
+// حرکت چندمحوره (بند ۵.۵): steps آرایه ۴تایی گام هر محور (X، Y، Z، E)، dir_mask ماسک جهت (بیت ۰ = X ... بیت ۳ = E؛ ۱ = مثبت).
+// محوری که بیشترین گام را دارد (در تساوی، کوچک‌ترین شماره) محور اصلی است و نرخ و شتاب برای آن حساب می‌شود؛ بقیه با Bresenham می‌آیند.
+// false (و بدون هیچ پالسی) اگر: kill، همه گام‌ها صفر، اجرای دیگری در جریان، درایور یکی از محورهای دارای گام غیرفعال،
+// start_hz یا cruise_hz بیرون از بازه hal، start_hz > cruise_hz، یا شتاب بیرون از kStepAccelMin تا kStepAccelMax.
+bool mc_stepgen_start_multi(const uint32_t* steps, uint8_t dir_mask,
+                            uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2);
+// تعداد پالس‌های داده‌شده به یک محور در آخرین (یا جاری) حرکت چندمحوره. محور نامعتبر = ۰.
+uint32_t mc_stepgen_axis_emitted(StepAxis axis);
 // اجرای جاری را متوقف می‌کند (بی‌اثر اگر در جریان نباشد).
 void mc_stepgen_stop();
 // نرخ را حین اجرا عوض می‌کند. false اگر اجرا در جریان نیست یا نرخ نامعتبر است.

@@ -1,4 +1,4 @@
-// پیاده‌سازی تولیدکننده پالس STEP با وقفه تایمر برای یک محور (بند ۵.۲).
+// پیاده‌سازی تولیدکننده پالس STEP با وقفه تایمر برای یک یا چند محور (بند ۵.۲، ۵.۴ و ۵.۵).
 // هیچ هدر ST اینجا include نمی‌شود.
 #include "step_gen.h"
 #include "hal_step_timer.h"
@@ -26,6 +26,12 @@ volatile uint32_t mc_dbg_96_ac_accel_steps = 0;  // برای تست: خواند�
 volatile uint32_t mc_dbg_97_ac_decel_steps = 0;  // برای تست: خواندنی. تعداد گام فاز کاهش سرعت آخرین حرکت دوزنقه‌ای.
 volatile uint32_t mc_dbg_98_ac_peak_hz     = 0;  // برای تست: خواندنی. بیشترین نرخ اعمال‌شده در آخرین حرکت دوزنقه‌ای (در شروع هر حرکت صفر می‌شود).
 volatile uint32_t mc_dbg_99_ac_cur_hz      = 0;  // برای تست: خواندنی. آخرین نرخ اعمال‌شده.
+
+volatile uint32_t mc_dbg_106_mx_done_x     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به X در آخرین حرکت چندمحوره (بند ۵.۵).
+volatile uint32_t mc_dbg_107_mx_done_y     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به Y در آخرین حرکت چندمحوره.
+volatile uint32_t mc_dbg_108_mx_done_z     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به Z در آخرین حرکت چندمحوره.
+volatile uint32_t mc_dbg_109_mx_done_e     = 0;  // برای تست: خواندنی. پالس‌های داده‌شده به E در آخرین حرکت چندمحوره.
+volatile uint32_t mc_dbg_110_mx_master     = 0;  // برای تست: خواندنی. شماره محور اصلی آخرین حرکت چندمحوره (۰ = X، ۱ = Y، ۲ = Z، ۳ = E).
 }
 
 // متغیرهای دیباگ از بند ۵.۱ برای خواندن تنظیمات تست
@@ -52,6 +58,13 @@ uint32_t volatile g_accel      = 0U;
 uint32_t volatile g_acc_steps  = 0U;
 uint32_t volatile g_dec_steps  = 0U;
 uint32_t volatile g_cur_hz     = 0U;
+
+bool     volatile g_multi        = false;  // آیا اجرای جاری چندمحوره است؟ (بند ۵.۵)
+uint32_t volatile g_mx_steps[4]  = {0U, 0U, 0U, 0U};  // گام هر محور
+uint32_t volatile g_mx_acc[4]    = {0U, 0U, 0U, 0U};  // شمارنده Bresenham هر محور
+uint32_t volatile g_mx_emit[4]   = {0U, 0U, 0U, 0U};  // پالس‌های داده‌شده به هر محور
+uint8_t  volatile g_mx_master    = 0U;     // شماره محور اصلی
+uint32_t volatile g_mx_total     = 0U;     // گام محور اصلی
 
 // ریشه دوم صحیح (کف) بدون float، به روش بیت‌به‌بیت.
 uint32_t isqrt_u32(uint32_t x) {
@@ -100,6 +113,36 @@ void ramp_next_rate() {
     mc_dbg_95_ac_phase = phase;
 }
 
+// آیا درایور همه محورهای دارای گام فعال است؟ (بند ۵.۵؛ داخل وقفه صدا زده می‌شود)
+bool mx_all_enabled() {
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if ((g_mx_steps[i] != 0U) && !mc_stepper_is_enabled(static_cast<StepAxis>(i))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// در هر وقفه: محور اصلی یک پالس می‌دهد و بقیه محورها طبق Bresenham (فقط عدد صحیح، بدون تقسیم).
+void mx_pulse_all() {
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if (g_mx_steps[i] == 0U) {
+            continue;
+        }
+        if (i == g_mx_master) {
+            mc_stepper_pulse(static_cast<StepAxis>(i));
+            g_mx_emit[i] += 1U;
+            continue;
+        }
+        g_mx_acc[i] += g_mx_steps[i];
+        if (g_mx_acc[i] >= g_mx_total) {
+            g_mx_acc[i] -= g_mx_total;
+            mc_stepper_pulse(static_cast<StepAxis>(i));
+            g_mx_emit[i] += 1U;
+        }
+    }
+}
+
 void stepgen_isr_callback() {
     const uint32_t t0 = mc_micros();
 
@@ -113,33 +156,41 @@ void stepgen_isr_callback() {
     if (mc_is_killed()) {
         mc_steptimer_stop();
         g_running = false;
-        g_ramp = false;                // بند ۵.۴
-        mc_dbg_95_ac_phase = 0U;       // بند ۵.۴
+        g_ramp = false;
+        g_multi = false;               // بند ۵.۵
+        mc_dbg_95_ac_phase = 0U;
         mc_dbg_73_sg_state = 4U;   // ۴ = kill
         return;
     }
 
-    // ۴) اگر درایور محور غیرفعال است
-    if (!mc_stepper_is_enabled(g_axis)) {
+    // ۴) اگر درایور محور (یا یکی از محورهای حرکت چندمحوره) غیرفعال است
+    const bool drivers_ok = g_multi ? mx_all_enabled() : mc_stepper_is_enabled(g_axis);   // بند ۵.۵
+    if (!drivers_ok) {
         mc_steptimer_stop();
         g_running = false;
-        g_ramp = false;                // بند ۵.۴
-        mc_dbg_95_ac_phase = 0U;       // بند ۵.۴
+        g_ramp = false;
+        g_multi = false;               // بند ۵.۵
+        mc_dbg_95_ac_phase = 0U;
         mc_dbg_73_sg_state = 3U;   // ۳ = متوقف شد (درایور غیرفعال شد)
         return;
     }
 
     // ۵) پالس STEP بده، گام باقی‌مانده یکی کم، پالس‌های صادرشده یکی زیاد
-    mc_stepper_pulse(g_axis);
+    if (g_multi) {
+        mx_pulse_all();                // بند ۵.۵: همه محورها طبق Bresenham
+    } else {
+        mc_stepper_pulse(g_axis);
+    }
     g_remaining -= 1U;
-    mc_dbg_75_sg_emitted += 1U;
+    mc_dbg_75_sg_emitted += 1U;        // فقط گام‌های محور اصلی را می‌شمارد
 
     // ۶) اگر گام باقی‌مانده صفر شد
     if (g_remaining == 0U) {
         mc_steptimer_stop();
         g_running = false;
-        g_ramp = false;                // بند ۵.۴
-        mc_dbg_95_ac_phase = 0U;       // بند ۵.۴
+        g_ramp = false;
+        g_multi = false;               // بند ۵.۵
+        mc_dbg_95_ac_phase = 0U;
         const uint32_t elapsed = mc_millis() - g_start_ms;
         mc_dbg_76_sg_elapsed_ms = elapsed;
         if (elapsed != 0U) {
@@ -149,7 +200,7 @@ void stepgen_isr_callback() {
         }
         mc_dbg_73_sg_state = 2U;   // ۲ = تمام شد
     } else if (g_ramp) {
-        ramp_next_rate();              // بند ۵.۴: نرخ گام بعدی
+        ramp_next_rate();              // نرخ گام بعدی
     }
 
     // ۷) به‌روزرسانی گام باقی‌مانده و محاسبه طولانی‌ترین زمان اجرای وقفه
@@ -176,6 +227,20 @@ void mc_stepgen_init() {
     mc_dbg_97_ac_decel_steps = 0U;
     mc_dbg_98_ac_peak_hz     = 0U;
     mc_dbg_99_ac_cur_hz      = 0U;
+
+    g_multi     = false;
+    g_mx_master = 0U;
+    g_mx_total  = 0U;
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        g_mx_steps[i] = 0U;
+        g_mx_acc[i]   = 0U;
+        g_mx_emit[i]  = 0U;
+    }
+    mc_dbg_106_mx_done_x = 0U;
+    mc_dbg_107_mx_done_y = 0U;
+    mc_dbg_108_mx_done_z = 0U;
+    mc_dbg_109_mx_done_e = 0U;
+    mc_dbg_110_mx_master = 0U;
 
     mc_dbg_68_sg_start      = 0U;
     mc_dbg_69_sg_steps      = 0U;
@@ -213,6 +278,7 @@ bool mc_stepgen_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate
     g_total_steps = steps;
     g_start_ms    = mc_millis();
     g_ramp        = false;   // بند ۵.۴: اجرای ثابت‌نرخ
+    g_multi       = false;   // بند ۵.۵: اجرای یک‌محوره
     g_running     = true;
     mc_dbg_73_sg_state     = 1U;   // ۱ = در حال اجرا
     mc_dbg_74_sg_remaining = steps;
@@ -267,6 +333,7 @@ bool mc_stepgen_start_ramp(StepAxis axis, bool forward, uint32_t steps,
     g_cur_hz      = start_hz;
     g_start_ms    = mc_millis();
     g_ramp        = true;
+    g_multi       = false;   // بند ۵.۵: اجرای یک‌محوره
     g_running     = true;
 
     mc_dbg_96_ac_accel_steps = acc_steps;
@@ -289,11 +356,106 @@ bool mc_stepgen_start_ramp(StepAxis axis, bool forward, uint32_t steps,
     return true;
 }
 
+bool mc_stepgen_start_multi(const uint32_t* steps, uint8_t dir_mask,
+                            uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2) {
+    // پیدا کردن محور اصلی (بیشترین گام؛ در تساوی کوچک‌ترین شماره)
+    uint8_t master = 0U;
+    for (uint8_t i = 1U; i < 4U; ++i) {
+        if (steps[i] > steps[master]) {
+            master = i;
+        }
+    }
+    const uint32_t total = steps[master];
+
+    if (mc_is_killed() || (total == 0U) ||
+        (start_hz < kStepTimerMinHz) || (cruise_hz > kStepTimerMaxHz) || (start_hz > cruise_hz) ||
+        (accel_sps2 < kStepAccelMin) || (accel_sps2 > kStepAccelMax) || g_running) {
+        mc_dbg_78_sg_refused += 1U;
+        mc_dbg_73_sg_state = 5U;   // ۵ = شروع رد شد
+        return false;
+    }
+
+    // درایور همه محورهای دارای گام باید فعال باشد
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        if ((steps[i] != 0U) && !mc_stepper_is_enabled(static_cast<StepAxis>(i))) {
+            mc_dbg_78_sg_refused += 1U;
+            mc_dbg_73_sg_state = 5U;   // ۵ = شروع رد شد
+            return false;
+        }
+    }
+
+    // تعداد گام شتاب‌گیری (برای محور اصلی): همان فرمول بند ۵.۴
+    const uint32_t n_acc = ((cruise_hz * cruise_hz) - (start_hz * start_hz)) / (2U * accel_sps2);
+    uint32_t acc_steps = n_acc;
+    uint32_t dec_steps = n_acc;
+    if ((2U * n_acc) > total) {            // حرکت مثلثی
+        acc_steps = total / 2U;
+        dec_steps = total - acc_steps;
+    }
+
+    // جهت و حالت اولیه هر محور
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        g_mx_steps[i] = steps[i];
+        g_mx_acc[i]   = total / 2U;        // شروع از نیمه تا خطای مسیر کمتر شود
+        g_mx_emit[i]  = 0U;
+        if (steps[i] != 0U) {
+            mc_stepper_set_dir(static_cast<StepAxis>(i), ((dir_mask >> i) & 1U) != 0U);
+        }
+    }
+    g_mx_master = master;
+    g_mx_total  = total;
+
+    g_axis        = static_cast<StepAxis>(master);
+    g_remaining   = total;
+    g_total_steps = total;
+    g_start_hz    = start_hz;
+    g_cruise_hz   = cruise_hz;
+    g_accel       = accel_sps2;
+    g_v0_sq       = start_hz * start_hz;
+    g_acc_steps   = acc_steps;
+    g_dec_steps   = dec_steps;
+    g_cur_hz      = start_hz;
+    g_start_ms    = mc_millis();
+    g_ramp        = true;
+    g_multi       = true;
+    g_running     = true;
+
+    mc_dbg_110_mx_master     = master;
+    mc_dbg_96_ac_accel_steps = acc_steps;
+    mc_dbg_97_ac_decel_steps = dec_steps;
+    mc_dbg_98_ac_peak_hz     = start_hz;
+    mc_dbg_99_ac_cur_hz      = start_hz;
+    mc_dbg_95_ac_phase       = (acc_steps > 0U) ? 1U : 2U;
+    mc_dbg_73_sg_state       = 1U;   // ۱ = در حال اجرا
+    mc_dbg_74_sg_remaining   = total;
+
+    if (!mc_steptimer_start(start_hz)) {
+        g_running = false;
+        g_ramp = false;
+        g_multi = false;
+        mc_dbg_95_ac_phase = 0U;
+        mc_dbg_73_sg_state = 0U;   // بیکار
+        mc_dbg_78_sg_refused += 1U;
+        return false;
+    }
+
+    return true;
+}
+
+uint32_t mc_stepgen_axis_emitted(StepAxis axis) {
+    const uint8_t idx = static_cast<uint8_t>(axis);
+    if (idx >= 4U) {
+        return 0U;
+    }
+    return g_mx_emit[idx];
+}
+
 void mc_stepgen_stop() {
     if (g_running) {
         mc_steptimer_stop();
         g_running = false;
         g_ramp = false;              // بند ۵.۴
+        g_multi = false;             // بند ۵.۵
         mc_dbg_95_ac_phase = 0U;     // بند ۵.۴
         mc_dbg_73_sg_state = 3U;   // ۳ = متوقف شد
     }
@@ -316,6 +478,12 @@ uint32_t mc_stepgen_remaining() {
 }
 
 void mc_stepgen_poll() {
+    mc_dbg_106_mx_done_x = g_mx_emit[0];   // بند ۵.۵
+    mc_dbg_107_mx_done_y = g_mx_emit[1];
+    mc_dbg_108_mx_done_z = g_mx_emit[2];
+    mc_dbg_109_mx_done_e = g_mx_emit[3];
+    mc_dbg_110_mx_master = g_mx_master;
+
     if (mc_is_killed()) {
         return;
     }

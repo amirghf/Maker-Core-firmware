@@ -1,5 +1,5 @@
 #pragma once
-// حرکت یک محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳ و ۵.۴). هیچ هدر ST اینجا include نمی‌شود.
+// حرکت یک یا چند محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳، ۵.۴ و ۵.۵). هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 #include "hal_stepper.h"
 
@@ -43,6 +43,10 @@ bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t ra
 // یک حرکت دوزنقه‌ای را شروع می‌کند (بند ۵.۴). false اگر رد شد (دلیل در متغیر debug ثبت می‌شود).
 bool mc_axis_move_start_ramp(StepAxis axis, bool forward, uint32_t steps,
                              uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2);
+// یک حرکت چندمحوره را شروع می‌کند (بند ۵.۵). steps آرایه ۴تایی گام (X، Y، Z، E)، dir_mask ماسک جهت (بیت ۰ = X ... بیت ۳ = E؛ ۱ = مثبت).
+// نرخ و شتاب برای محور اصلی (بیشترین گام) است. false اگر رد شد (دلیل در متغیر debug ثبت می‌شود).
+bool mc_axis_move_start_multi(const uint32_t* steps, uint8_t dir_mask,
+                              uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2);
 // حرکت جاری را قطع می‌کند (بی‌اثر اگر حرکتی در جریان نیست).
 void mc_axis_move_abort();
 // آیا حرکتی در جریان است؟

@@ -1,10 +1,11 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:35:6:void mc::{anonymous}::note_refused(mc::MoveRefuse)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:44:6:void mc::{anonymous}::close_move()	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:55:6:void mc::{anonymous}::update_debug()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:63:6:void mc::mc_axis_move_init()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:86:6:bool mc::mc_axis_move_start(StepAxis, bool, uint32_t, uint32_t)	32	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:131:6:void mc::mc_axis_move_abort()	8	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:139:6:bool mc::mc_axis_move_busy()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:143:9:int32_t mc::mc_axis_position_steps(StepAxis)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:151:11:mc::MoveState mc::mc_axis_move_state()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:155:6:void mc::mc_axis_move_poll()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:39:6:void mc::{anonymous}::note_refused(mc::MoveRefuse)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:48:6:void mc::{anonymous}::close_move()	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:59:6:void mc::{anonymous}::update_debug()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:67:6:void mc::mc_axis_move_init()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:94:6:bool mc::mc_axis_move_start(StepAxis, bool, uint32_t, uint32_t)	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:139:6:bool mc::mc_axis_move_start_ramp(StepAxis, bool, uint32_t, uint32_t, uint32_t, uint32_t)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:189:6:void mc::mc_axis_move_abort()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:197:6:bool mc::mc_axis_move_busy()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:201:9:int32_t mc::mc_axis_position_steps(StepAxis)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:209:11:mc::MoveState mc::mc_axis_move_state()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:213:6:void mc::mc_axis_move_poll()	24	static
