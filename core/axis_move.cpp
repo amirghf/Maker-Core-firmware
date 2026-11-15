@@ -1,4 +1,4 @@
-// حرکت یک محور با سرعت ثابت (بند ۵.۳). هیچ هدر ST اینجا include نمی‌شود.
+// حرکت یک محور با سرعت ثابت یا دوزنقه‌ای (بند ۵.۳ و ۵.۴). هیچ هدر ST اینجا include نمی‌شود.
 #include "axis_move.h"
 #include "step_gen.h"
 #include "stepper_out.h"
@@ -17,8 +17,12 @@ volatile uint32_t mc_dbg_86_mv_abort      = 0;  // برای تست: نوشتنی
 volatile uint32_t mc_dbg_87_mv_state      = 0;  // برای تست: خواندنی. ۰ بیکار، ۱ در حال حرکت، ۲ تمام شد، ۳ قطع شد، ۴ رد شد.
 volatile int32_t  mc_dbg_88_mv_pos_steps  = 0;  // برای تست: خواندنی. موقعیت محور انتخاب‌شده بر حسب گام (با علامت).
 volatile uint32_t mc_dbg_89_mv_refused    = 0;  // برای تست: خواندنی. تعداد درخواست‌های ردشده.
-volatile uint32_t mc_dbg_90_mv_reason     = 0;  // برای تست: خواندنی. دلیل آخرین رد شدن (۱ kill، ۲ محور، ۳ گام صفر، ۴ گام زیاد، ۵ نرخ، ۶ مشغول، ۷ arm، ۸ شروع نشد).
+volatile uint32_t mc_dbg_90_mv_reason     = 0;  // برای تست: خواندنی. دلیل آخرین رد شدن (۱ kill، ۲ محور، ۳ گام صفر، ۴ گام زیاد، ۵ نرخ، ۶ مشغول، ۷ arm، ۸ شروع نشد، ۹ شتاب).
 volatile uint32_t mc_dbg_91_mv_done_steps = 0;  // برای تست: خواندنی. گام‌های انجام‌شده در آخرین حرکت (تمام یا قطع‌شده).
+
+volatile uint32_t mc_dbg_92_ac_start_hz = 0;  // برای تست: نوشتنی. نرخ شروع و پایان حرکت دوزنقه‌ای (گام بر ثانیه) — بند ۵.۴.
+volatile uint32_t mc_dbg_93_ac_accel    = 0;  // برای تست: نوشتنی. شتاب (گام بر ثانیه‌مربع).
+volatile uint32_t mc_dbg_94_ac_go       = 0;  // برای تست: نوشتنی. با ۱ شدن حرکت دوزنقه‌ای شروع می‌شود و خودش صفر می‌شود. نرخ سرعت ثابت از mc_dbg_84_mv_rate_hz خوانده می‌شود.
 }
 
 namespace mc {
@@ -81,6 +85,10 @@ void mc_axis_move_init() {
     mc_dbg_89_mv_refused    = 0U;
     mc_dbg_90_mv_reason     = 0U;
     mc_dbg_91_mv_done_steps = 0U;
+
+    mc_dbg_92_ac_start_hz   = 0U;
+    mc_dbg_93_ac_accel      = 0U;
+    mc_dbg_94_ac_go         = 0U;
 }
 
 bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate_hz) {
@@ -128,6 +136,56 @@ bool mc_axis_move_start(StepAxis axis, bool forward, uint32_t steps, uint32_t ra
     return true;
 }
 
+bool mc_axis_move_start_ramp(StepAxis axis, bool forward, uint32_t steps,
+                             uint32_t start_hz, uint32_t cruise_hz, uint32_t accel_sps2) {
+    const uint8_t idx = static_cast<uint8_t>(axis);
+
+    if (mc_is_killed()) {
+        note_refused(MoveRefuse::Killed);
+        return false;
+    }
+    if (idx >= static_cast<uint8_t>(StepAxis::Count)) {
+        note_refused(MoveRefuse::BadAxis);
+        return false;
+    }
+    if (steps == 0U) {
+        note_refused(MoveRefuse::ZeroSteps);
+        return false;
+    }
+    if (steps > kAxisMoveMaxSteps) {
+        note_refused(MoveRefuse::TooManySteps);
+        return false;
+    }
+    if ((start_hz < kStepTimerMinHz) || (cruise_hz > kAxisMoveMaxRateHz) || (start_hz > cruise_hz)) {
+        note_refused(MoveRefuse::BadRate);
+        return false;
+    }
+    if ((accel_sps2 < kAxisAccelMinSps2) || (accel_sps2 > kAxisAccelMaxSps2)) {
+        note_refused(MoveRefuse::BadAccel);
+        return false;
+    }
+    if ((g_state == MoveState::Moving) || mc_stepgen_busy()) {
+        note_refused(MoveRefuse::Busy);
+        return false;
+    }
+    if (!mc_motor_enable(axis, true)) {
+        note_refused(MoveRefuse::Killed);
+        return false;
+    }
+
+    g_axis    = axis;
+    g_forward = forward;
+    g_total   = steps;
+    if (!mc_stepgen_start_ramp(axis, forward, steps, start_hz, cruise_hz, accel_sps2)) {
+        note_refused(MoveRefuse::StartFailed);
+        return false;
+    }
+
+    g_state = MoveState::Moving;
+    mc_dbg_91_mv_done_steps = 0U;
+    return true;
+}
+
 void mc_axis_move_abort() {
     if (g_state != MoveState::Moving) {
         return;
@@ -165,6 +223,10 @@ void mc_axis_move_poll() {
             mc_dbg_85_mv_start = 0U;
             note_refused(MoveRefuse::NotArmed);
         }
+        if (mc_dbg_94_ac_go == 1U) {
+            mc_dbg_94_ac_go = 0U;
+            note_refused(MoveRefuse::NotArmed);
+        }
         mc_dbg_86_mv_abort = 0U;
         g_prev_armed = false;
         update_debug();
@@ -178,6 +240,7 @@ void mc_axis_move_poll() {
             mc_axis_move_abort();
         }
         mc_dbg_85_mv_start = 0U;
+        mc_dbg_94_ac_go    = 0U;
         mc_dbg_86_mv_abort = 0U;
         update_debug();
         return;
@@ -204,6 +267,21 @@ void mc_axis_move_poll() {
                                (mc_dbg_82_mv_dir != 0U),
                                mc_dbg_83_mv_steps,
                                mc_dbg_84_mv_rate_hz);
+        }
+    }
+
+    // ۶) درخواست شروع حرکت دوزنقه‌ای (بند ۵.۴)
+    if (mc_dbg_94_ac_go == 1U) {
+        mc_dbg_94_ac_go = 0U;
+        if (mc_dbg_81_mv_axis > 3U) {
+            note_refused(MoveRefuse::BadAxis);
+        } else {
+            mc_axis_move_start_ramp(static_cast<StepAxis>(mc_dbg_81_mv_axis),
+                                    (mc_dbg_82_mv_dir != 0U),
+                                    mc_dbg_83_mv_steps,
+                                    mc_dbg_92_ac_start_hz,
+                                    mc_dbg_84_mv_rate_hz,
+                                    mc_dbg_93_ac_accel);
         }
     }
 
