@@ -22,7 +22,8 @@ enum class MqReason : uint8_t {
     TooManySteps = 3,   // گام یک محور بیشتر از kAxisMoveMaxSteps است
     BadRate      = 4,   // نرخ شروع یا cruise یا شتاب بیرون از بازه است
     Killed       = 5,   // برد kill شده
-    NotArmed     = 6    // mc_dbg_80_mv_arm برابر 1 نیست (فقط مسیر تست)
+    NotArmed     = 6,   // mc_dbg_80_mv_arm برابر 1 نیست (فقط مسیر تست)
+    ColdExtrude  = 7     // اکستروژن سرد یا سنسور دمای اکسترودر سالم نیست (بند ۵.۹)
 };
 
 // وضعیت صف

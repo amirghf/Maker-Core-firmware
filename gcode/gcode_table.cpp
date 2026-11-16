@@ -13,6 +13,7 @@ const GcodeEntry kTable[] = {
     { 'M', 82U,  -1, mc_gcode_m82 },
     { 'M', 83U,  -1, mc_gcode_m83 },
     { 'M', 92U,  -1, mc_gcode_m92 },
+    { 'M', 302U, -1, mc_gcode_m302 },
     { 'M', 104U, -1, mc_gcode_m104 },
     { 'M', 105U, -1, mc_gcode_m105 },
     { 'M', 106U, -1, mc_gcode_m106 },

@@ -7,6 +7,7 @@
 #include "axis_move.h"
 #include "hal_step_timer.h"
 #include "error.h"
+#include "extruder.h"
 
 // متغیرهای debug بند ۵.۶ (شماره‌ها دائمی‌اند)
 extern "C" {
@@ -113,6 +114,12 @@ bool mc_mq_push(const MotionBlock& block) {
         (block.start_hz > block.cruise_hz) ||
         (block.accel_sps2 < kAxisAccelMinSps2) || (block.accel_sps2 > kAxisAccelMaxSps2)) {
         note_refused(MqReason::BadRate);
+        return false;
+    }
+    // بند ۵.۹: بلوک دارای گام E وقتی اکستروژن ممنوع است (نازل سرد یا سنسور ناسالم) رد می‌شود. این بررسی قبل از فعال‌شدن درایورهاست.
+    if ((block.steps[3] != 0U) && !mc_extruder_allowed()) {
+        note_refused(MqReason::ColdExtrude);
+        mc_extruder_note_refused();
         return false;
     }
     if (mc_plan_count() >= (kPlanQueueSize - 1U)) {
