@@ -6,13 +6,21 @@ namespace {
 // جدول دستورها. برای افزودن دستور جدید: یک فایل در gcode بساز و یک خط به این جدول اضافه کن.
 const GcodeEntry kTable[] = {
     // حرف، شماره، زیرکد (-۱ = بدون زیرکد)، تابع
+    { 'G', 0U,   -1, mc_gcode_g0 },
+    { 'G', 1U,   -1, mc_gcode_g1 },
     { 'G', 4U,   -1, mc_gcode_g4 },
     { 'G', 90U,  -1, mc_gcode_g90 },
     { 'G', 91U,  -1, mc_gcode_g91 },
     { 'G', 92U,  -1, mc_gcode_g92 },
+    { 'M', 17U,  -1, mc_gcode_m17 },
+    { 'M', 18U,  -1, mc_gcode_m18 },
     { 'M', 82U,  -1, mc_gcode_m82 },
     { 'M', 83U,  -1, mc_gcode_m83 },
+    { 'M', 84U,  -1, mc_gcode_m84 },
     { 'M', 92U,  -1, mc_gcode_m92 },
+    { 'M', 203U, -1, mc_gcode_m203 },
+    { 'M', 204U, -1, mc_gcode_m204 },
+    { 'M', 205U, -1, mc_gcode_m205 },
     { 'M', 302U, -1, mc_gcode_m302 },
     { 'M', 104U, -1, mc_gcode_m104 },
     { 'M', 105U, -1, mc_gcode_m105 },

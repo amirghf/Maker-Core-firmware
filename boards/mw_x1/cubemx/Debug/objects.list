@@ -33,6 +33,7 @@
 "./Core/core_src/pid_autotune.o"
 "./Core/core_src/planner.o"
 "./Core/core_src/scheduler.o"
+"./Core/core_src/soft_limits.o"
 "./Core/core_src/splash.o"
 "./Core/core_src/step_gen.o"
 "./Core/core_src/stepper_out.o"

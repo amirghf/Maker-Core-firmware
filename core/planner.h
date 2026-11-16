@@ -40,5 +40,8 @@ uint16_t mc_plan_count();
 bool mc_plan_isr_take(PlanExec& out);
 // وظیفه زمان‌بند (هر ۱۰ میلی‌ثانیه): اگر برنامه‌ریزی دوباره لازم است انجامش می‌دهد و متغیرهای debug را به‌روز می‌کند.
 void mc_plan_poll();
+// تنظیم و دریافت انحراف اتصال (junction deviation) به میکرومتر (بند ۵.۱۱)
+bool mc_plan_jd_set(uint32_t um);
+uint32_t mc_plan_jd_get();
 
 }  // namespace mc

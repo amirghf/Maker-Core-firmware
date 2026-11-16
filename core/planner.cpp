@@ -344,4 +344,14 @@ void mc_plan_poll() {
     update_debug();
 }
 
+bool mc_plan_jd_set(uint32_t um) {
+    if ((um < kPlanMinJunctionUm) || (um > kPlanMaxJunctionUm)) { return false; }
+    mc_dbg_120_pl_jd_um = um;
+    return true;
+}
+
+uint32_t mc_plan_jd_get() {
+    return mc_dbg_120_pl_jd_um;
+}
+
 }  // namespace mc

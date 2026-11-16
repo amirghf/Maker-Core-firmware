@@ -1,0 +1,52 @@
+#pragma once
+// حدود سرعت و شتاب حرکت (بند ۵.۱۱): M203، M204 و M205.
+// این ماژول فقط عدد نگه می‌دارد و به سخت‌افزار دست نمی‌زند.
+// هیچ هدر ST اینجا include نمی‌شود.
+#include <stdint.h>
+
+namespace mc {
+
+// مقادیر پیش‌فرض (تا بند ۷ که ذخیره‌سازی در EEPROM می‌آید موقت‌اند)
+constexpr float kMlimDefaultFeedXMmS = 20.0f;
+constexpr float kMlimDefaultFeedYMmS = 20.0f;
+constexpr float kMlimDefaultFeedZMmS = 4.0f;
+constexpr float kMlimDefaultFeedEMmS = 10.0f;
+
+constexpr float kMlimMinFeedMmS = 0.1f;
+constexpr float kMlimMaxFeedMmS = 1000.0f;
+
+constexpr float kMlimDefaultAccPrint   = 100.0f;
+constexpr float kMlimDefaultAccRetract = 100.0f;
+constexpr float kMlimDefaultAccTravel  = 100.0f;
+
+constexpr float kMlimMinAccMmS2 = 1.0f;
+constexpr float kMlimMaxAccMmS2 = 10000.0f;
+
+constexpr float kMlimDefaultMinFeedMmS = 1.0f;
+constexpr float kMlimMinMinFeedMmS     = 0.1f;
+constexpr float kMlimMaxMinFeedMmS     = 100.0f;
+
+// یک‌بار هنگام راه‌اندازی.
+void mc_mlim_init();
+// وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): متغیرهای debug را به‌روز می‌کند.
+void mc_mlim_poll();
+
+// حداکثر سرعت هر محور (mm/s): axis: 0=X, 1=Y, 2=Z, 3=E. شماره بد ← 1.0f
+float mc_mlim_feed_get(uint8_t axis);
+// false اگر شماره محور بد است یا مقدار بیرون از بازه [0.1, 1000] یا NaN است؛ در آن حالت چیزی عوض نمی‌شود.
+bool mc_mlim_feed_set(uint8_t axis, float mm_s);
+
+// شتاب هر نوع (mm/s²): kind: 0=print, 1=retract, 2=travel. نوع بد ← 100.0f
+float mc_mlim_acc_get(uint8_t kind);
+// false اگر نوع بد است یا مقدار بیرون از بازه [1, 10000] یا NaN است؛ در آن حالت چیزی عوض نمی‌شود.
+bool mc_mlim_acc_set(uint8_t kind, float mm_s2);
+
+// حداقل سرعت شروع و پایان (mm/s)
+float mc_mlim_minfeed_get();
+// false اگر مقدار بیرون از بازه [0.1, 100] یا NaN است؛ در آن حالت چیزی عوض نمی‌شود.
+bool mc_mlim_minfeed_set(float mm_s);
+
+// شمارنده debug: دستورهای ردشده
+void mc_mlim_note_refused();
+
+}  // namespace mc

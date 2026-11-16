@@ -34,6 +34,8 @@
 #include "motion_modes.h"
 #include "extruder.h"
 #include "soft_limits.h"
+#include "motion_limits.h"
+#include "motion_cmd.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -514,6 +516,8 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_mode_init();   // بند ۵.۸
     mc::mc_extruder_init();   // بند ۵.۹
     mc::mc_softlimit_init();   // بند ۵.۱۰
+    mc::mc_mlim_init();   // بند ۵.۱۱
+    mc::mc_gmove_init();  // بند ۵.۱۱
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -542,6 +546,8 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_mode_poll, 100U);   // بند ۵.۸: حالت‌ها و متغیرهای debug
     mc::g_main.add(mc::mc_extruder_poll, 100U);   // بند ۵.۹: اکسترودر و متغیرهای debug
     mc::g_main.add(mc::mc_softlimit_poll, 100U);   // بند ۵.۱۰: حدود نرم‌افزاری و متغیرهای debug
+    mc::g_main.add(mc::mc_mlim_poll, 100U);   // بند ۵.۱۱
+    mc::g_main.add(mc::mc_gmove_poll, 100U);  // بند ۵.۱۱
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
