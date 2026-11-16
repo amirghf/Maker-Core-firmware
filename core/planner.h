@@ -8,8 +8,6 @@ namespace mc {
 
 // اندازه صف برنامه‌ریز (توان ۲). ظرفیت واقعی یکی کمتر است، یعنی ۱۵ بلوک.
 constexpr uint8_t kPlanQueueSize = 16U;
-// گام بر میلی‌متر پیش‌فرض هر محور (X، Y، Z، E). موقت است تا بند ۵.۸ (M92) مقدار واقعی را بگذارد.
-constexpr float kPlanDefaultStepsPerMm = 100.0f;
 // انحراف اتصال پیش‌فرض (میکرومتر)
 constexpr uint32_t kPlanDefaultJunctionUm = 50U;
 constexpr uint32_t kPlanMinJunctionUm     = 1U;

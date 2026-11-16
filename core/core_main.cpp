@@ -31,6 +31,7 @@
 #include "axis_move.h"
 #include "motion_queue.h"
 #include "planner.h"
+#include "motion_modes.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -508,6 +509,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_stepgen_init();   // بند ۵.۲
     mc::mc_axis_move_init();   // بند ۵.۳
     mc::mc_mq_init();   // بند ۵.۶
+    mc::mc_mode_init();   // بند ۵.۸
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -533,6 +535,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_axis_move_poll, 10U);   // بند ۵.۳: حرکت یک محور با سرعت ثابت
     mc::g_main.add(mc::mc_mq_poll, 10U);   // بند ۵.۶: صف بلوک‌های حرکت
     mc::g_main.add(mc::mc_plan_poll, 10U);   // بند ۵.۷: برنامه‌ریز (lookahead و متغیرهای debug)
+    mc::g_main.add(mc::mc_mode_poll, 100U);   // بند ۵.۸: حالت‌ها و متغیرهای debug
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);

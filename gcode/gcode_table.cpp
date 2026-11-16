@@ -7,6 +7,12 @@ namespace {
 const GcodeEntry kTable[] = {
     // حرف، شماره، زیرکد (-۱ = بدون زیرکد)، تابع
     { 'G', 4U,   -1, mc_gcode_g4 },
+    { 'G', 90U,  -1, mc_gcode_g90 },
+    { 'G', 91U,  -1, mc_gcode_g91 },
+    { 'G', 92U,  -1, mc_gcode_g92 },
+    { 'M', 82U,  -1, mc_gcode_m82 },
+    { 'M', 83U,  -1, mc_gcode_m83 },
+    { 'M', 92U,  -1, mc_gcode_m92 },
     { 'M', 104U, -1, mc_gcode_m104 },
     { 'M', 105U, -1, mc_gcode_m105 },
     { 'M', 106U, -1, mc_gcode_m106 },

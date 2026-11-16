@@ -1,6 +1,7 @@
 // پیاده‌سازی برنامه‌ریز حرکت (بند ۵.۷).
 // هیچ هدر ST اینجا include نمی‌شود.
 #include "planner.h"
+#include "motion_modes.h"
 #include "step_gen.h"
 #include "hal_irq.h"
 #include <math.h>
@@ -101,7 +102,7 @@ void build_block(const MotionBlock& mb, PlanBlock& nb) {
     float d[3];
     float len2 = 0.0f;
     for (uint8_t i = 0U; i < 3U; ++i) {
-        const float mm = static_cast<float>(mb.steps[i]) / kPlanDefaultStepsPerMm;
+        const float mm = static_cast<float>(mb.steps[i]) / mc_mode_spmm_get(i);
         d[i] = (((mb.dir_mask >> i) & 1U) != 0U) ? mm : -mm;
         len2 += mm * mm;
     }
@@ -110,7 +111,7 @@ void build_block(const MotionBlock& mb, PlanBlock& nb) {
         nb.has_xyz = true;
         for (uint8_t i = 0U; i < 3U; ++i) { nb.unit[i] = d[i] / nb.len_mm; }
     } else {
-        nb.len_mm  = static_cast<float>(mb.steps[3]) / kPlanDefaultStepsPerMm;   // فقط E
+        nb.len_mm  = static_cast<float>(mb.steps[3]) / mc_mode_spmm_get(3U);   // فقط E
         nb.has_xyz = false;
         for (uint8_t i = 0U; i < 3U; ++i) { nb.unit[i] = 0.0f; }
     }
