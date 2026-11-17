@@ -3,6 +3,7 @@
 #include "machine_state.h"
 #include "motion_modes.h"
 #include "motion_queue.h"
+#include "planner.h"  // بند ۵.۱۱
 #include "motion_limits.h"
 #include "soft_limits.h"
 #include "extruder.h"
