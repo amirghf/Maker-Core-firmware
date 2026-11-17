@@ -13,3 +13,5 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/planner.cpp:326:10:uint16_t mc::mc_plan_count()	4	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/planner.cpp:330:6:bool mc::mc_plan_isr_take(PlanExec&)	32	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/planner.cpp:340:6:void mc::mc_plan_poll()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/planner.cpp:347:6:bool mc::mc_plan_jd_set(uint32_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/planner.cpp:353:10:uint32_t mc::mc_plan_jd_get()	4	static

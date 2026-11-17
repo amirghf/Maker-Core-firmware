@@ -1,0 +1,11 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:25:10:uint32_t mc::{anonymous}::to_milli(float)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:29:6:void mc::{anonymous}::refresh_debug()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:42:6:void mc::mc_mlim_init()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:55:6:void mc::mc_mlim_poll()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:59:7:float mc::mc_mlim_feed_get(uint8_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:64:6:bool mc::mc_mlim_feed_set(uint8_t, float)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:72:7:float mc::mc_mlim_acc_get(uint8_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:77:6:bool mc::mc_mlim_acc_set(uint8_t, float)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:85:7:float mc::mc_mlim_minfeed_get()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:89:6:bool mc::mc_mlim_minfeed_set(float)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_limits.cpp:96:6:void mc::mc_mlim_note_refused()	4	static
