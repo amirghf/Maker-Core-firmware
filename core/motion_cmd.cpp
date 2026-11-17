@@ -94,14 +94,16 @@ void mc_gmove_note_mt_refused() {
 
 GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
     if (first_call) {
-        // الف) F parameter
-        if (mc_gcode_has(cmd, 'F')) {
+        // الف) F parameter (اعتبارسنجی اولیه؛ فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد - بند ۵.۱۱)
+        const bool has_f = mc_gcode_has(cmd, 'F');
+        float f_pending = 0.0f;
+        if (has_f) {
             if (!mc_gcode_has_value(cmd, 'F')) {
                 record_refuse(2U);
                 return GcodeStatus::Error;
             }
-            const float f_val = mc_gcode_value(cmd, 'F', 0.0f);
-            if (!mc_mode_feed_set(f_val)) {
+            f_pending = mc_gcode_value(cmd, 'F', 0.0f);
+            if (isnan(f_pending) || !((f_pending >= kModeMinFeedMmMin) && (f_pending <= kModeMaxFeedMmMin))) {
                 record_refuse(2U);
                 return GcodeStatus::Error;
             }
@@ -191,6 +193,9 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
             for (uint8_t i = 0U; i < 4U; ++i) {
                 mc_position_set(i, target_pos[i]);
             }
+            if (has_f) {
+                (void)mc_mode_feed_set(f_pending);  // فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد (بند ۵.۱۱)
+            }
             mc_dbg_164_gm_result   = 1U;
             mc_dbg_165_gm_accepted += 1U;
             return GcodeStatus::Done;
@@ -226,7 +231,7 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
         }
 
         const float hz_per_mms = static_cast<float>(labs(delta[master])) / len_mm;
-        float v_mms = mc_mode_feed_get_mms();
+        float v_mms = has_f ? (f_pending / 60.0f) : mc_mode_feed_get_mms();  // فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد (بند ۵.۱۱)
         bool clamped = false;
 
         if (has_xyz) {
@@ -286,6 +291,10 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
 
         if (clamped) {
             mc_dbg_168_gm_clamped += 1U;
+        }
+
+        if (has_f) {
+            (void)mc_mode_feed_set(f_pending);  // فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد (بند ۵.۱۱)
         }
 
         // Segmentation into blocks
