@@ -1,8 +1,9 @@
 #include "machine_state.h"
+#include "motion_queue.h"   // بند ۵.۱۲: برای mc_mq_busy
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile uint32_t mc_dbg_motion_fake_busy = 0;   // برای تست: نوشتن عدد ۱ یعنی «حرکت در جریان است»، ۰ یعنی تمام شد
+volatile uint32_t mc_dbg_185_motion_fake_busy = 0;   // نوشتنی (تست): عدد 1 یعنی «حرکت در جریان است» (ساختگی)، 0 یعنی ساختگی خاموش. حرکت واقعی جدا حساب می‌شود (بند ۵.۱۲)
 }
 
 namespace mc {
@@ -23,7 +24,8 @@ void mc_position_set(uint8_t axis, float mm) {
 }
 
 bool mc_motion_busy() {
-    return mc_dbg_motion_fake_busy != 0U;
+    if (mc_dbg_185_motion_fake_busy != 0U) { return true; }   // مسیر تست (ساختگی)
+    return mc_mq_busy();                                       // بند ۵.۱۲: حرکت واقعی (بلوک در صف یا در اجرا)
 }
 
 }  // namespace mc

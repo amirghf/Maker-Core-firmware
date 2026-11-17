@@ -27,6 +27,7 @@ volatile int32_t  mc_dbg_171_gm_pos_z_um = 0;  // Z
 volatile int32_t  mc_dbg_172_gm_pos_e_um = 0;  // E
 volatile uint32_t mc_dbg_182_mt_en_mask  = 0;  // خواندنی: درایورهای فعال (بیت ۰ = X ... بیت ۳ = E)
 volatile uint32_t mc_dbg_183_mt_refused  = 0;  // خواندنی: تعداد M17/M18/M84 ردشده
+volatile uint32_t mc_dbg_188_motion_busy = 0;   // خواندنی: ۱ = mc_motion_busy() الان true است (حرکت واقعی یا ساختگی)، ۰ = بیکار (بند ۵.۱۲)
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
 }
@@ -86,6 +87,7 @@ void mc_gmove_poll() {
         }
     }
     mc_dbg_182_mt_en_mask = mask;
+    mc_dbg_188_motion_busy = mc_motion_busy() ? 1U : 0U;
 }
 
 void mc_gmove_note_mt_refused() {
