@@ -42,6 +42,7 @@ extern "C" {
 volatile uint32_t mc_dbg_sched_100ms          = 0;  // هر ۱۰۰ میلی‌ثانیه یکی زیاد می‌شود
 volatile uint32_t mc_dbg_25_sched_1s          = 0;  // هر ۱ ثانیه یکی زیاد می‌شود
 volatile uint32_t mc_dbg_26_sched_max_task_us = 0;  // طولانی‌ترین اجرای یک وظیفه (میکروثانیه)
+volatile uint32_t mc_dbg_184_sched_count       = 0;  // خواندنی: تعداد وظیفه‌های ثبت‌شده در زمان‌بند (بند ۵.۱۱)
 volatile uint32_t mc_dbg_kill_request         = 0;  // برای تست: نوشتن عدد ۱ در این متغیر، kill را اجرا می‌کند
 volatile uint32_t mc_dbg_log_test_request  = 0;  // برای تست: نوشتن عدد ۱ در این متغیر، چند خط آزمایشی لاگ می‌کند
 volatile uint32_t mc_dbg_uptime_s          = 0;  // ثانیه از روشن‌شدن برد
@@ -94,6 +95,7 @@ void task_100ms() {
 void task_1s() {
     mc_dbg_25_sched_1s = mc_dbg_25_sched_1s + 1U;
     mc_dbg_26_sched_max_task_us = g_main.max_task_us();
+    mc_dbg_184_sched_count = g_main.count();
     mc_dbg_uptime_s = mc_millis() / 1000U;
 }
 
