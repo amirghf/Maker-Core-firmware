@@ -2,6 +2,7 @@
 #include "endstop.h"
 #include "hal_gpio.h"
 #include "hal_time.h"
+#include "log.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند. شماره‌ها دائمی‌اند.
 // ماسک‌ها: بیت ۰ = X ، بیت ۱ = Y ، بیت ۲ = Z.
@@ -38,6 +39,7 @@ uint32_t g_last_poll_ms = 0U;
 bool     g_pulse_active   = false;   // پالس ساختگی در جریان است
 uint32_t g_pulse_start_ms = 0U;
 uint32_t g_pulse_len_ms   = 0U;
+uint32_t g_log_ms         = 0U;      // لحظه آخرین لاگ موقت (بند ۶.۱)
 
 void refresh_masks() {
     uint32_t raw_mask = 0U;
@@ -133,6 +135,13 @@ void mc_endstop_poll() {
         }
     }
     refresh_masks();
+
+    // لاگ موقت برای تست بدون دیباگر (بند ۶.۱). در بند ۶.۴ با M119 جایگزین می‌شود.
+    if ((now - g_log_ms) >= 1000U) {
+        g_log_ms = now;
+        mc_log_value(LogLevel::Info, "es_raw", mc_dbg_189_es_raw_mask);
+        mc_log_value(LogLevel::Info, "es_stable", mc_dbg_190_es_stable_mask);
+    }
 }
 
 bool mc_endstop_raw(uint8_t axis) {
