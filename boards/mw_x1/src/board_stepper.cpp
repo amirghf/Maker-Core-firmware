@@ -20,8 +20,8 @@ const AxisPins kAxisPins[4] = {
     { PinId::EStep,  PinId::EDir,  PinId::EEn }
 };
 
-// سمت درست هر محور در بند ۵.۳ مشخص می‌شود
-const bool kDirInvert[4] = { false, false, false, false };
+// بند ۶.۳: محور Y معکوس شد چون سوئیچ Y جلوی دستگاه است و جهت منفی باید به سمت سوئیچ برود. X و Z و E بدون تغییر.
+const bool kDirInvert[4] = { false, true, false, false };
 
 inline bool valid_axis(StepAxis axis) {
     return static_cast<uint8_t>(axis) < static_cast<uint8_t>(StepAxis::Count);
