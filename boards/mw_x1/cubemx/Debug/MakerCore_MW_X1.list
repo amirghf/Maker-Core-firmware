@@ -79365,8 +79365,8 @@ extern "C" void mc_steptimer_isr_c(void) {
 08020ca4 <_ZN2mc12_GLOBAL__N_110valid_axisENS_8StepAxisE>:
 };
 
-// سمت درست هر محور در بند ۵.۳ مشخص می‌شود
-const bool kDirInvert[4] = { false, false, false, false };
+// بند ۶.۳: محور Y معکوس شد چون سوئیچ Y جلوی دستگاه است و جهت منفی باید به سمت سوئیچ برود. X و Z و E بدون تغییر.
+const bool kDirInvert[4] = { false, true, false, false };
 
 inline bool valid_axis(StepAxis axis) {
  8020ca4:	b480      	push	{r7}
