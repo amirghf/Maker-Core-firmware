@@ -6,6 +6,7 @@
 #include "machine_state.h"
 #include "motion_modes.h"
 #include "motion_queue.h"
+#include "endstop_guard.h"   // بند ۶.۲
 
 namespace mc {
 
@@ -38,7 +39,10 @@ GcodeStatus mc_gcode_g92(const GcodeCommand& cmd, bool first_call) {
             any = true;
         }
     }
-    if (any) { mc_mode_note_applied(); }
+    if (any) {
+        mc_mode_note_applied();
+        mc_eguard_snapshot();   // بند ۶.۲: صف خالی است (بالاتر Busy برگردانده می‌شد)
+    }
     return GcodeStatus::Done;
 }
 

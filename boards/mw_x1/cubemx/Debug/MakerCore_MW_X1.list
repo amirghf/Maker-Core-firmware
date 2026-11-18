@@ -7,19 +7,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00022ea8  08000188  08000188  00001188  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       000011a4  08023030  08023030  00024030  2**2
+  2 .rodata       0000119c  08023030  08023030  00024030  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  080241d4  080241d4  00026250  2**0
+  3 .ARM.extab    00000000  080241cc  080241cc  00026250  2**0
                   CONTENTS, READONLY
-  4 .ARM          00000008  080241d4  080241d4  000251d4  2**2
+  4 .ARM          00000008  080241cc  080241cc  000251cc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  080241dc  080241dc  00026250  2**0
+  5 .preinit_array 00000000  080241d4  080241d4  00026250  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  080241dc  080241dc  000251dc  2**2
+  6 .init_array   00000004  080241d4  080241d4  000251d4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  080241e0  080241e0  000251e0  2**2
+  7 .fini_array   00000004  080241d8  080241d8  000251d8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         00000250  20000000  080241e4  00026000  2**2
+  8 .data         00000250  20000000  080241dc  00026000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
   9 .ccmram       00000000  10000000  10000000  00026250  2**0
                   CONTENTS
@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00026250  2**0
                   CONTENTS, READONLY
- 13 .debug_info   0004dc79  00000000  00000000  00026280  2**0
+ 13 .debug_info   0004dc3b  00000000  00000000  00026280  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 000118a4  00000000  00000000  00073ef9  2**0
+ 14 .debug_abbrev 000118a4  00000000  00000000  00073ebb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 000034d8  00000000  00000000  000857a0  2**3
+ 15 .debug_aranges 000034d8  00000000  00000000  00085760  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00002724  00000000  00000000  00088c78  2**0
+ 16 .debug_rnglists 00002724  00000000  00000000  00088c38  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  000361c2  00000000  00000000  0008b39c  2**0
+ 17 .debug_macro  000361b7  00000000  00000000  0008b35c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0005b167  00000000  00000000  000c155e  2**0
+ 18 .debug_line   0005b167  00000000  00000000  000c1513  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000f6908  00000000  00000000  0011c6c5  2**0
+ 19 .debug_str    000f68c4  00000000  00000000  0011c67a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00212fcd  2**0
+ 20 .comment      00000043  00000000  00000000  00212f3e  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  0000c234  00000000  00000000  00213010  2**2
+ 21 .debug_frame  0000c234  00000000  00000000  00212f84  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000009b  00000000  00000000  0021f244  2**0
+ 22 .debug_line_str 0000009b  00000000  00000000  0021f1b8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -3986,7 +3986,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8001e2c:	20000250 	.word	0x20000250
   ldr r2, =_sidata
- 8001e30:	080241e4 	.word	0x080241e4
+ 8001e30:	080241dc 	.word	0x080241dc
   ldr r2, =_sbss
  8001e34:	20000250 	.word	0x20000250
   ldr r4, =_ebss
@@ -75548,7 +75548,7 @@ inline bool valid(PinId p) {
  801f22c:	71fb      	strb	r3, [r7, #7]
     return static_cast<unsigned>(p) < kPinCount;
  801f22e:	79fb      	ldrb	r3, [r7, #7]
- 801f230:	2b21      	cmp	r3, #33	@ 0x21
+ 801f230:	2b20      	cmp	r3, #32
  801f232:	bf94      	ite	ls
  801f234:	2301      	movls	r3, #1
  801f236:	2300      	movhi	r3, #0
@@ -75862,7 +75862,7 @@ bool mc_gpio_selftest() {
  801f44e:	3301      	adds	r3, #1
  801f450:	60fb      	str	r3, [r7, #12]
  801f452:	68fb      	ldr	r3, [r7, #12]
- 801f454:	2b21      	cmp	r3, #33	@ 0x21
+ 801f454:	2b20      	cmp	r3, #32
  801f456:	d9df      	bls.n	801f418 <_ZN2mc16mc_gpio_selftestEv+0xc>
     }
     // ۲) هیچ دو پینی نباید یک پورت و پین مشترک داشته باشند
@@ -75903,14 +75903,14 @@ bool mc_gpio_selftest() {
  801f498:	3301      	adds	r3, #1
  801f49a:	607b      	str	r3, [r7, #4]
  801f49c:	687b      	ldr	r3, [r7, #4]
- 801f49e:	2b21      	cmp	r3, #33	@ 0x21
+ 801f49e:	2b20      	cmp	r3, #32
  801f4a0:	d9e1      	bls.n	801f466 <_ZN2mc16mc_gpio_selftestEv+0x5a>
     for (unsigned i = 0; i < kPinCount; ++i) {
  801f4a2:	68bb      	ldr	r3, [r7, #8]
  801f4a4:	3301      	adds	r3, #1
  801f4a6:	60bb      	str	r3, [r7, #8]
  801f4a8:	68bb      	ldr	r3, [r7, #8]
- 801f4aa:	2b21      	cmp	r3, #33	@ 0x21
+ 801f4aa:	2b20      	cmp	r3, #32
  801f4ac:	d9d7      	bls.n	801f45e <_ZN2mc16mc_gpio_selftestEv+0x52>
         }
     }
@@ -75962,7 +75962,7 @@ bool mc_gpio_selftest() {
  801f50a:	e008      	b.n	801f51e <_ZN2mc16mc_gpio_selftestEv+0x112>
     // ۵) شماره نامعتبر نباید خطا بدهد
     if (mc_gpio_read(PinId::Count)) { return false; }
- 801f50c:	2022      	movs	r0, #34	@ 0x22
+ 801f50c:	2021      	movs	r0, #33	@ 0x21
  801f50e:	f7ff ff55 	bl	801f3bc <_ZN2mc12mc_gpio_readENS_5PinIdE>
  801f512:	4603      	mov	r3, r0
  801f514:	2b00      	cmp	r3, #0
@@ -76418,7 +76418,7 @@ void mc_board_safe_state() {
  801f7e2:	3720      	adds	r7, #32
  801f7e4:	46bd      	mov	sp, r7
  801f7e6:	bd80      	pop	{r7, pc}
- 801f7e8:	08023ef4 	.word	0x08023ef4
+ 801f7e8:	08023eec 	.word	0x08023eec
 
 0801f7ec <_ZN2mc25mc_board_safe_state_checkEv>:
 
@@ -76502,7 +76502,7 @@ bool mc_board_safe_state_check() {
  801f86e:	3710      	adds	r7, #16
  801f870:	46bd      	mov	sp, r7
  801f872:	bd80      	pop	{r7, pc}
- 801f874:	08023ef4 	.word	0x08023ef4
+ 801f874:	08023eec 	.word	0x08023eec
 
 0801f878 <mc_board_safe_state_c>:
 
@@ -77586,7 +77586,7 @@ void mc_stepper_enable(StepAxis axis, bool on) {
  801ff5a:	46bd      	mov	sp, r7
  801ff5c:	bd80      	pop	{r7, pc}
  801ff5e:	bf00      	nop
- 801ff60:	08024008 	.word	0x08024008
+ 801ff60:	08024000 	.word	0x08024000
 
 0801ff64 <_ZN2mc21mc_stepper_is_enabledENS_8StepAxisE>:
 
@@ -77629,7 +77629,7 @@ bool mc_stepper_is_enabled(StepAxis axis) {
  801ffaa:	3710      	adds	r7, #16
  801ffac:	46bd      	mov	sp, r7
  801ffae:	bd80      	pop	{r7, pc}
- 801ffb0:	08024008 	.word	0x08024008
+ 801ffb0:	08024000 	.word	0x08024000
 
 0801ffb4 <_ZN2mc18mc_stepper_set_dirENS_8StepAxisEb>:
 
@@ -77687,8 +77687,8 @@ void mc_stepper_set_dir(StepAxis axis, bool forward) {
  8020012:	3710      	adds	r7, #16
  8020014:	46bd      	mov	sp, r7
  8020016:	bd80      	pop	{r7, pc}
- 8020018:	08024014 	.word	0x08024014
- 802001c:	08024008 	.word	0x08024008
+ 8020018:	0802400c 	.word	0x0802400c
+ 802001c:	08024000 	.word	0x08024000
 
 08020020 <_ZN2mc18mc_stepper_get_dirENS_8StepAxisE>:
 
@@ -77741,8 +77741,8 @@ bool mc_stepper_get_dir(StepAxis axis) {
  8020076:	46bd      	mov	sp, r7
  8020078:	bd80      	pop	{r7, pc}
  802007a:	bf00      	nop
- 802007c:	08024008 	.word	0x08024008
- 8020080:	08024014 	.word	0x08024014
+ 802007c:	08024000 	.word	0x08024000
+ 8020080:	0802400c 	.word	0x0802400c
 
 08020084 <_ZN2mc16mc_stepper_pulseENS_8StepAxisE>:
 
@@ -77799,7 +77799,7 @@ void mc_stepper_pulse(StepAxis axis) {
  80200e2:	3710      	adds	r7, #16
  80200e4:	46bd      	mov	sp, r7
  80200e6:	bd80      	pop	{r7, pc}
- 80200e8:	08024008 	.word	0x08024008
+ 80200e8:	08024000 	.word	0x08024000
 
 080200ec <_ZN2mc21mc_stepper_step_levelENS_8StepAxisE>:
 
@@ -77841,7 +77841,7 @@ bool mc_stepper_step_level(StepAxis axis) {
  802012e:	46bd      	mov	sp, r7
  8020130:	bd80      	pop	{r7, pc}
  8020132:	bf00      	nop
- 8020134:	08024008 	.word	0x08024008
+ 8020134:	08024000 	.word	0x08024000
 
 08020138 <_ZN2mc20mc_thermistor_paramsENS_10AdcChannelEPNS_16ThermistorParamsE>:
     { 4700.0f, 100000.0f, 25.0f, 3950.0f }    // بستر
@@ -77889,7 +77889,7 @@ bool mc_thermistor_params(AdcChannel ch, ThermistorParams* out) {
  8020176:	bc90      	pop	{r4, r7}
  8020178:	4770      	bx	lr
  802017a:	bf00      	nop
- 802017c:	08024018 	.word	0x08024018
+ 802017c:	08024010 	.word	0x08024010
 
 08020180 <_ZN2mc12mc_time_initEv>:
 volatile uint32_t g_ticks = 0;     // فقط وقفه TIM6 این را زیاد می‌کند
@@ -78547,7 +78547,7 @@ bool mc_touch_init() {
  80205cc:	f7fe fec2 	bl	801f354 <_ZN2mc13mc_gpio_writeENS_5PinIdEb>
     mc_gpio_set_mode(PinId::TouchIrq, PinMode::InputPullUp);
  80205d0:	2102      	movs	r1, #2
- 80205d2:	2021      	movs	r0, #33	@ 0x21
+ 80205d2:	2020      	movs	r0, #32
  80205d4:	f7fe fe6a 	bl	801f2ac <_ZN2mc16mc_gpio_set_modeENS_5PinIdENS_7PinModeE>
     g_inited = true;
  80205d8:	4b02      	ldr	r3, [pc, #8]	@ (80205e4 <_ZN2mc13mc_touch_initEv+0x28>)
@@ -78566,7 +78566,7 @@ bool mc_touch_pressed() {
  80205e8:	b580      	push	{r7, lr}
  80205ea:	af00      	add	r7, sp, #0
     return !mc_gpio_read(PinId::TouchIrq);   // PEN فعال LOW است
- 80205ec:	2021      	movs	r0, #33	@ 0x21
+ 80205ec:	2020      	movs	r0, #32
  80205ee:	f7fe fee5 	bl	801f3bc <_ZN2mc12mc_gpio_readENS_5PinIdE>
  80205f2:	4603      	mov	r3, r0
  80205f4:	f083 0301 	eor.w	r3, r3, #1
@@ -79373,7 +79373,7 @@ GcodeStatus mc_gcode_g92(const GcodeCommand& cmd, bool first_call) {
  8020b72:	46bd      	mov	sp, r7
  8020b74:	bd90      	pop	{r4, r7, pc}
  8020b76:	bf00      	nop
- 8020b78:	08024038 	.word	0x08024038
+ 8020b78:	08024030 	.word	0x08024030
  8020b7c:	00000000 	.word	0x00000000
  8020b80:	c7c34f80 	.word	0xc7c34f80
  8020b84:	47c34f80 	.word	0x47c34f80
@@ -79702,7 +79702,7 @@ const GcodeEntry* mc_gcode_find(char letter, uint16_t number, int8_t sub) {
  8020dc0:	46bd      	mov	sp, r7
  8020dc2:	f85d 7b04 	ldr.w	r7, [sp], #4
  8020dc6:	4770      	bx	lr
- 8020dc8:	0802403c 	.word	0x0802403c
+ 8020dc8:	08024034 	.word	0x08024034
 
 08020dcc <_ZN2mc16mc_temp_c_to_x10Ef>:
 // هیچ هدر ST اینجا include نمی‌شود.
@@ -80436,7 +80436,7 @@ GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call) {
  802137a:	bd80      	pop	{r7, pc}
  802137c:	080236e8 	.word	0x080236e8
  8021380:	0802372c 	.word	0x0802372c
- 8021384:	080241a4 	.word	0x080241a4
+ 8021384:	0802419c 	.word	0x0802419c
 
 08021388 <_ZN2mc13mc_gcode_m140ERKNS_12GcodeCommandEb>:
 #include "temp_param.h"
@@ -80690,7 +80690,7 @@ GcodeStatus mc_gcode_m17(const GcodeCommand& cmd, bool first_call) {
  802154e:	3710      	adds	r7, #16
  8021550:	46bd      	mov	sp, r7
  8021552:	bd80      	pop	{r7, pc}
- 8021554:	080241c0 	.word	0x080241c0
+ 8021554:	080241b8 	.word	0x080241b8
 
 08021558 <_ZN2mc12mc_gcode_m18ERKNS_12GcodeCommandEb>:
 #include "motion_queue.h"
@@ -80796,7 +80796,7 @@ GcodeStatus mc_gcode_m18(const GcodeCommand& cmd, bool first_call) {
  80215ea:	46bd      	mov	sp, r7
  80215ec:	bd80      	pop	{r7, pc}
  80215ee:	bf00      	nop
- 80215f0:	080241c4 	.word	0x080241c4
+ 80215f0:	080241bc 	.word	0x080241bc
 
 080215f4 <_ZN2mc13mc_gcode_m190ERKNS_12GcodeCommandEb>:
 #include "temp_param.h"
@@ -81190,7 +81190,7 @@ GcodeStatus mc_gcode_m203(const GcodeCommand& cmd, bool first_call) {
  8021942:	378c      	adds	r7, #140	@ 0x8c
  8021944:	46bd      	mov	sp, r7
  8021946:	bd90      	pop	{r4, r7, pc}
- 8021948:	080241c8 	.word	0x080241c8
+ 8021948:	080241c0 	.word	0x080241c0
  802194c:	00000000 	.word	0x00000000
  8021950:	3dcccccd 	.word	0x3dcccccd
  8021954:	447a0000 	.word	0x447a0000
@@ -82932,7 +82932,7 @@ GcodeStatus mc_gcode_m84(const GcodeCommand& cmd, bool first_call) {
  802284a:	46bd      	mov	sp, r7
  802284c:	bd80      	pop	{r7, pc}
  802284e:	bf00      	nop
- 8022850:	080241cc 	.word	0x080241cc
+ 8022850:	080241c4 	.word	0x080241c4
 
 08022854 <_ZN2mc12mc_gcode_m92ERKNS_12GcodeCommandEb>:
 #include "motion_queue.h"
@@ -83224,7 +83224,7 @@ GcodeStatus mc_gcode_m92(const GcodeCommand& cmd, bool first_call) {
  8022af2:	46bd      	mov	sp, r7
  8022af4:	bd90      	pop	{r4, r7, pc}
  8022af6:	bf00      	nop
- 8022af8:	080241d0 	.word	0x080241d0
+ 8022af8:	080241c8 	.word	0x080241c8
  8022afc:	00000000 	.word	0x00000000
  8022b00:	461c4000 	.word	0x461c4000
  8022b04:	080239d8 	.word	0x080239d8
@@ -83715,10 +83715,10 @@ GcodeStatus mc_gcode_m9999(const GcodeCommand& cmd, bool first_call) {
  8022f4e:	4798      	blx	r3
  8022f50:	3601      	adds	r6, #1
  8022f52:	e7f2      	b.n	8022f3a <__libc_init_array+0x1e>
- 8022f54:	080241dc 	.word	0x080241dc
- 8022f58:	080241dc 	.word	0x080241dc
- 8022f5c:	080241dc 	.word	0x080241dc
- 8022f60:	080241e0 	.word	0x080241e0
+ 8022f54:	080241d4 	.word	0x080241d4
+ 8022f58:	080241d4 	.word	0x080241d4
+ 8022f5c:	080241d4 	.word	0x080241d4
+ 8022f60:	080241d8 	.word	0x080241d8
 
 08022f64 <__retarget_lock_acquire_recursive>:
  8022f64:	4770      	bx	lr

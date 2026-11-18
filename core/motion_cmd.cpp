@@ -1,4 +1,3 @@
-// اجرای دستورهای حرکت G0 و G1 (بند ۵.۱۱). فقط منطق دستورها و تولید بلوک‌ها.
 #include "motion_cmd.h"
 #include "machine_state.h"
 #include "motion_modes.h"
@@ -11,12 +10,14 @@
 #include "axis_move.h"
 #include "hal_step_timer.h"
 #include "error.h"
+#include "endstop_guard.h"   // بند ۶.۲
+#include "step_gen.h"        // بند ۶.۲
 #include <math.h>
 #include <stdlib.h>
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند. شماره‌ها دائمی‌اند.
 extern "C" {
-volatile uint32_t mc_dbg_164_gm_result   = 0;  // خواندنی: نتیجه آخرین G0/G1 (0 هیچ، 1 پذیرفته، 2 پارامتر نامعتبر، 3 حد نرم‌افزاری، 4 kill یا arm نیست، 5 اکستروژن سرد، 6 خطا وسط ورود، 7 حرکت بیش از حد بزرگ)
+volatile uint32_t mc_dbg_164_gm_result   = 0;  // خواندنی: نتیجه آخرین G0/G1 (0 هیچ، 1 پذیرفته، 2 پارامتر نامعتبر، 3 حد نرم‌افزاری، 4 kill یا arm نیست، 5 اکستروژن سرد، 6 خطا وسط ورود، 7 حرکت بیش از حد بزرگ، 8 اندستاپ زده شد (بند ۶.۲))
 volatile uint32_t mc_dbg_165_gm_accepted = 0;  // خواندنی: تعداد G0/G1 پذیرفته‌شده
 volatile uint32_t mc_dbg_166_gm_refused  = 0;  // خواندنی: تعداد G0/G1 ردشده
 volatile uint32_t mc_dbg_167_gm_segments = 0;  // خواندنی: تعداد کل بلوک‌های واردشده به صف
@@ -48,6 +49,7 @@ struct MoveStateCtx {
     uint32_t cruise_hz;
     uint32_t accel_sps2;
     uint8_t  dir_mask;
+    uint32_t hit_seq;   // بند ۶.۲: تعداد توقف‌های اندستاپ در لحظه شروع این دستور
 };
 
 MoveStateCtx g_move = {};
@@ -96,6 +98,13 @@ void mc_gmove_note_mt_refused() {
 
 GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
     if (first_call) {
+        // بند ۶.۲: اگر توقف اندستاپ تازه‌ای هنوز پردازش نشده، همین حالا پردازشش کن تا موقعیت منطقی درست باشد
+        mc_eguard_poll();
+        // وقتی صف خالی است موقعیت منطقی و گام واقعی با هم می‌خوانند؛ اختلافشان را ذخیره کن
+        if (!mc_mq_busy()) {
+            mc_eguard_snapshot();
+        }
+
         // الف) F parameter (اعتبارسنجی اولیه؛ فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد - بند ۵.۱۱)
         const bool has_f = mc_gcode_has(cmd, 'F');
         float f_pending = 0.0f;
@@ -317,10 +326,25 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
             g_move.spmm[i]         = spmm[i];
             g_move.queued_steps[i] = 0;
         }
+        g_move.hit_seq = mc_stepgen_endstop_hits();
+    }
+
+    // بند ۶.۲: اگر بعد از شروع این دستور اندستاپی باعث توقف شده، بقیه بلوک‌ها وارد صف نشوند
+    if (mc_stepgen_endstop_hits() != g_move.hit_seq) {
+        g_move.current_block_k = g_move.num_blocks;
+        record_refuse(8U);
+        return GcodeStatus::Error;
     }
 
     // Phase 2: Queueing blocks
     while ((g_move.current_block_k < g_move.num_blocks) && (mc_plan_count() < (kPlanQueueSize - 1U))) {
+        // بند ۶.۲: اگر بعد از شروع این دستور اندستاپی باعث توقف شده، بقیه بلوک‌ها وارد صف نشوند
+        if (mc_stepgen_endstop_hits() != g_move.hit_seq) {
+            g_move.current_block_k = g_move.num_blocks;
+            record_refuse(8U);
+            return GcodeStatus::Error;
+        }
+
         if (mc_is_killed() || (mc_dbg_80_mv_arm != 1U)) {
             for (uint8_t i = 0U; i < 4U; ++i) {
                 const float added_mm = static_cast<float>(g_move.queued_steps[i]) / g_move.spmm[i];

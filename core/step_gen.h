@@ -48,6 +48,11 @@ bool mc_stepgen_set_rate(uint32_t rate_hz);
 bool mc_stepgen_busy();
 // تعداد گام باقی‌مانده.
 uint32_t mc_stepgen_remaining();
+// بند ۶.۲: تعداد دفعاتی که مولد گام به‌خاطر اندستاپ متوقف شده (از روشن‌شدن برد).
+uint32_t mc_stepgen_endstop_hits();
+// بند ۶.۲: ماسک محورهایی که در آخرین توقف اندستاپ، اندستاپشان زده بود (بیت ۰ = X ، ۱ = Y ، ۲ = Z).
+uint8_t mc_stepgen_endstop_last_mask();
+
 // هوک وقفه را ثبت می‌کند و حالت را صفر می‌کند. یک‌بار هنگام راه‌اندازی.
 void mc_stepgen_init();
 // وظیفه زمان‌بند (هر ۱۰ میلی‌ثانیه): تست با متغیرهای debug و به‌روزرسانی آن‌ها.

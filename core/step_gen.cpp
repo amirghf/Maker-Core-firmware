@@ -7,6 +7,7 @@
 #include "hal_irq.h"
 #include "planner.h"
 #include "error.h"
+#include "endstop.h"   // بند ۶.۲
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -15,7 +16,7 @@ volatile uint32_t mc_dbg_69_sg_steps       = 0;  // برای تست: نوشتن�
 volatile uint32_t mc_dbg_70_sg_rate_hz     = 0;  // برای تست: نوشتنی. نرخ شروع (گام در ثانیه).
 volatile uint32_t mc_dbg_71_sg_stop        = 0;  // برای تست: نوشتنی. ۱ = اجرا را همین حالا متوقف کن (وظیفه به ۰ برمی‌گرداند).
 volatile uint32_t mc_dbg_72_sg_new_rate    = 0;  // برای تست: نوشتنی. عدد غیرصفر = نرخ را حین اجرا به این مقدار عوض کن (وظیفه به ۰ برمی‌گرداند).
-volatile uint32_t mc_dbg_73_sg_state       = 0;  // برای تست: خواندنی. ۰ = بیکار، ۱ = در حال اجرا، ۲ = تمام شد، ۳ = متوقف شد (stop دستی یا درایور غیرفعال شد)، ۴ = kill، ۵ = شروع رد شد.
+volatile uint32_t mc_dbg_73_sg_state       = 0;  // برای تست: خواندنی. ۰ = بیکار، ۱ = در حال اجرا، ۲ = تمام شد، ۳ = متوقف شد (stop دستی یا درایور غیرفعال شد)، ۴ = kill، ۵ = شروع رد شد، ۶ = متوقف شد چون اندستاپ زده شد (بند ۶.۲).
 volatile uint32_t mc_dbg_74_sg_remaining   = 0;  // برای تست: خواندنی. گام باقی‌مانده.
 volatile uint32_t mc_dbg_75_sg_emitted     = 0;  // برای تست: خواندنی. مجموع گام‌های داده‌شده توسط این تولیدکننده از روشن‌شدن برد.
 volatile uint32_t mc_dbg_76_sg_elapsed_ms  = 0;  // برای تست: خواندنی. مدت آخرین اجرای کامل‌شده (میلی‌ثانیه، از شروع تا آخرین گام).
@@ -85,6 +86,32 @@ bool     volatile g_cur_open     = false;  // آیا بلوک جاری هنوز 
 uint32_t volatile g_cur_dirs     = 0U;     // ماسک جهت بلوک جاری
 uint32_t volatile g_hand_hz[8]   = {0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};  // نرخ تایمر در هر تعویض بلوک
 uint32_t volatile g_plan_start_ms = 0U;
+
+// بند ۶.۲: توقف به‌خاطر اندستاپ
+uint8_t  volatile g_neg_mask = 0U;   // بیت i (۰ = X ، ۱ = Y ، ۲ = Z) = ۱ یعنی در اجرای جاری این محور گام دارد و جهتش منفی (سمت اندستاپ min) است
+uint32_t volatile g_eg_hits  = 0U;   // تعداد توقف‌ها به‌خاطر اندستاپ
+uint8_t  volatile g_eg_last  = 0U;   // ماسک محورهای آخرین توقف
+
+// ماسک محورهای رو به اندستاپ را از گام و ماسک جهت می‌سازد (فقط X و Y و Z).
+uint8_t make_neg_mask(uint32_t sx, uint32_t sy, uint32_t sz, uint8_t dirs) {
+    uint8_t m = 0U;
+    if ((sx != 0U) && ((dirs & 0x1U) == 0U)) { m = static_cast<uint8_t>(m | 0x1U); }
+    if ((sy != 0U) && ((dirs & 0x2U) == 0U)) { m = static_cast<uint8_t>(m | 0x2U); }
+    if ((sz != 0U) && ((dirs & 0x4U) == 0U)) { m = static_cast<uint8_t>(m | 0x4U); }
+    return m;
+}
+
+// ماسک محورهایی که رو به اندستاپ می‌روند و اندستاپشان همین الان زده است (داخل وقفه صدا زده می‌شود؛ باید کوتاه باشد).
+uint8_t endstop_hit_now() {
+    uint8_t hit = 0U;
+    const uint8_t neg = g_neg_mask;
+    for (uint8_t i = 0U; i < 3U; ++i) {
+        if ((((neg >> i) & 1U) != 0U) && mc_endstop_triggered(i)) {
+            hit = static_cast<uint8_t>(hit | (1U << i));
+        }
+    }
+    return hit;
+}
 
 // ریشه دوم صحیح (کف) بدون float، به روش بیت‌به‌بیت.
 uint32_t isqrt_u32(uint32_t x) {
@@ -192,6 +219,7 @@ void plan_apply(const PlanExec& p) {
         }
     }
     g_cur_dirs    = p.dir_mask;
+    g_neg_mask    = make_neg_mask(p.steps[0], p.steps[1], p.steps[2], p.dir_mask);   // بند ۶.۲
     g_cur_open    = true;
     g_mx_master   = p.master;
     g_mx_total    = p.total;
@@ -256,6 +284,23 @@ void stepgen_isr_callback() {
         plan_end_flags();
         mc_dbg_95_ac_phase = 0U;
         mc_dbg_73_sg_state = 3U;   // ۳ = متوقف شد (درایور غیرفعال شد)
+        return;
+    }
+
+    // ۴ب) بند ۶.۲: محوری که به سمت اندستاپ min می‌رود و اندستاپش زده شده است: قبل از پالس بعدی همه‌چیز را متوقف کن
+    const uint8_t es_hit = endstop_hit_now();
+    if (es_hit != 0U) {
+        mc_steptimer_stop();
+        g_running = false;
+        g_ramp = false;
+        g_multi = false;
+        plan_fold_current();
+        plan_end_flags();
+        g_eg_last = es_hit;
+        g_eg_hits += 1U;
+        mc_dbg_95_ac_phase = 0U;
+        mc_dbg_73_sg_state = 6U;   // ۶ = متوقف شد چون اندستاپ زده شد
+        mc_dbg_74_sg_remaining = g_remaining;
         return;
     }
 
@@ -360,6 +405,9 @@ void mc_stepgen_init() {
     g_cur_open      = false;
     g_cur_dirs      = 0U;
     g_plan_start_ms = 0U;
+    g_neg_mask      = 0U;
+    g_eg_hits       = 0U;
+    g_eg_last       = 0U;
     for (uint8_t i = 0U; i < 4U; ++i) { g_fold[i] = 0; }
     for (uint8_t i = 0U; i < 8U; ++i) { g_hand_hz[i] = 0U; }
     mc_dbg_129_pl_hand_cnt    = 0U;
@@ -399,6 +447,8 @@ bool mc_stepgen_start(StepAxis axis, bool forward, uint32_t steps, uint32_t rate
     }
 
     mc_stepper_set_dir(axis, forward);
+    g_neg_mask = ((!forward) && (static_cast<uint8_t>(axis) < 3U))
+                     ? static_cast<uint8_t>(1U << static_cast<uint8_t>(axis)) : 0U;   // بند ۶.۲
 
     g_axis        = axis;
     g_remaining   = steps;
@@ -448,6 +498,8 @@ bool mc_stepgen_start_ramp(StepAxis axis, bool forward, uint32_t steps,
     }
 
     mc_stepper_set_dir(axis, forward);
+    g_neg_mask = ((!forward) && (static_cast<uint8_t>(axis) < 3U))
+                     ? static_cast<uint8_t>(1U << static_cast<uint8_t>(axis)) : 0U;   // بند ۶.۲
 
     g_axis        = axis;
     g_remaining   = steps;
@@ -534,6 +586,7 @@ bool mc_stepgen_start_multi(const uint32_t* steps, uint8_t dir_mask,
     }
     g_mx_master = master;
     g_mx_total  = total;
+    g_neg_mask  = make_neg_mask(steps[0], steps[1], steps[2], dir_mask);   // بند ۶.۲
 
     g_axis        = static_cast<StepAxis>(master);
     g_remaining   = total;
@@ -697,6 +750,14 @@ bool mc_stepgen_busy() {
 
 uint32_t mc_stepgen_remaining() {
     return g_remaining;
+}
+
+uint32_t mc_stepgen_endstop_hits() {
+    return g_eg_hits;
+}
+
+uint8_t mc_stepgen_endstop_last_mask() {
+    return g_eg_last;
 }
 
 void mc_stepgen_poll() {

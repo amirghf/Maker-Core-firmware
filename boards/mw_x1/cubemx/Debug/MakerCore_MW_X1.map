@@ -10848,7 +10848,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_buzzer.o
  .debug_macro   0x00000000       0x9e ./board_src/board_buzzer.o
  .debug_macro   0x00000000      0x12d ./board_src/board_buzzer.o
- .debug_macro   0x00000000      0x34e ./board_src/board_buzzer.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_buzzer.o
  .group         0x00000000        0xc ./board_src/board_display.o
  .group         0x00000000        0xc ./board_src/board_display.o
  .group         0x00000000        0xc ./board_src/board_display.o
@@ -10973,7 +10973,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_display.o
  .debug_macro   0x00000000       0x9e ./board_src/board_display.o
  .debug_macro   0x00000000      0x12d ./board_src/board_display.o
- .debug_macro   0x00000000      0x34e ./board_src/board_display.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_display.o
  .group         0x00000000        0xc ./board_src/board_flash.o
  .group         0x00000000        0xc ./board_src/board_flash.o
  .group         0x00000000        0xc ./board_src/board_flash.o
@@ -11102,7 +11102,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_flash.o
  .debug_macro   0x00000000       0x9e ./board_src/board_flash.o
  .debug_macro   0x00000000      0x12d ./board_src/board_flash.o
- .debug_macro   0x00000000      0x34e ./board_src/board_flash.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_flash.o
  .group         0x00000000        0xc ./board_src/board_gpio.o
  .group         0x00000000        0xc ./board_src/board_gpio.o
  .group         0x00000000        0xc ./board_src/board_gpio.o
@@ -11209,7 +11209,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_gpio.o
  .debug_macro   0x00000000       0x9e ./board_src/board_gpio.o
  .debug_macro   0x00000000      0x12d ./board_src/board_gpio.o
- .debug_macro   0x00000000      0x34e ./board_src/board_gpio.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_gpio.o
  .group         0x00000000        0xc ./board_src/board_i2c.o
  .group         0x00000000        0xc ./board_src/board_i2c.o
  .group         0x00000000        0xc ./board_src/board_i2c.o
@@ -11320,7 +11320,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_i2c.o
  .debug_macro   0x00000000       0x9e ./board_src/board_i2c.o
  .debug_macro   0x00000000      0x12d ./board_src/board_i2c.o
- .debug_macro   0x00000000      0x34e ./board_src/board_i2c.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_i2c.o
  .group         0x00000000        0xc ./board_src/board_irq.o
  .group         0x00000000        0xc ./board_src/board_irq.o
  .group         0x00000000        0xc ./board_src/board_irq.o
@@ -11532,7 +11532,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_safe_state.o
  .debug_macro   0x00000000       0x9e ./board_src/board_safe_state.o
  .debug_macro   0x00000000      0x12d ./board_src/board_safe_state.o
- .debug_macro   0x00000000      0x34e ./board_src/board_safe_state.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_safe_state.o
  .group         0x00000000        0xc ./board_src/board_serial.o
  .group         0x00000000        0xc ./board_src/board_serial.o
  .group         0x00000000        0xc ./board_src/board_serial.o
@@ -11683,7 +11683,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_serial.o
  .debug_macro   0x00000000       0x9e ./board_src/board_serial.o
  .debug_macro   0x00000000      0x12d ./board_src/board_serial.o
- .debug_macro   0x00000000      0x34e ./board_src/board_serial.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_serial.o
  .debug_macro   0x00000000       0x10 ./board_src/board_serial.o
  .debug_macro   0x00000000       0x61 ./board_src/board_serial.o
  .debug_macro   0x00000000       0x2a ./board_src/board_serial.o
@@ -11818,7 +11818,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_spi.o
  .debug_macro   0x00000000       0x9e ./board_src/board_spi.o
  .debug_macro   0x00000000      0x12d ./board_src/board_spi.o
- .debug_macro   0x00000000      0x34e ./board_src/board_spi.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_spi.o
  .group         0x00000000        0xc ./board_src/board_step_timer.o
  .group         0x00000000        0xc ./board_src/board_step_timer.o
  .group         0x00000000        0xc ./board_src/board_step_timer.o
@@ -12152,7 +12152,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_time.o
  .debug_macro   0x00000000       0x9e ./board_src/board_time.o
  .debug_macro   0x00000000      0x12d ./board_src/board_time.o
- .debug_macro   0x00000000      0x34e ./board_src/board_time.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_time.o
  .group         0x00000000        0xc ./board_src/board_touch.o
  .group         0x00000000        0xc ./board_src/board_touch.o
  .group         0x00000000        0xc ./board_src/board_touch.o
@@ -12265,7 +12265,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_touch.o
  .debug_macro   0x00000000       0x9e ./board_src/board_touch.o
  .debug_macro   0x00000000      0x12d ./board_src/board_touch.o
- .debug_macro   0x00000000      0x34e ./board_src/board_touch.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_touch.o
  .group         0x00000000        0xc ./board_src/board_watchdog.o
  .group         0x00000000        0xc ./board_src/board_watchdog.o
  .group         0x00000000        0xc ./board_src/board_watchdog.o
@@ -12376,7 +12376,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xba ./board_src/board_watchdog.o
  .debug_macro   0x00000000       0x9e ./board_src/board_watchdog.o
  .debug_macro   0x00000000      0x12d ./board_src/board_watchdog.o
- .debug_macro   0x00000000      0x34e ./board_src/board_watchdog.o
+ .debug_macro   0x00000000      0x343 ./board_src/board_watchdog.o
  .group         0x00000000        0xc ./gcode/g0.o
  .group         0x00000000        0xc ./gcode/g0.o
  .group         0x00000000        0xc ./gcode/g0.o
@@ -16749,7 +16749,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
 .iplt           0x08023030        0x0
  .iplt          0x08023030        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rodata         0x08023030     0x11a4
+.rodata         0x08023030     0x119c
                 0x08023030                        . = ALIGN (0x4)
  *(.rodata)
  .rodata        0x08023030      0x2e3 ./Core/core_src/core_main.o
@@ -16848,76 +16848,76 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
                 0x08023cb0      0x132 ./board_src/board_display.o
  *fill*         0x08023de2        0x2 
  .rodata._ZN2mc12_GLOBAL__N_1L5kPinsE
-                0x08023de4      0x110 ./board_src/board_gpio.o
+                0x08023de4      0x108 ./board_src/board_gpio.o
  .rodata._ZN2mc12_GLOBAL__N_1L12kSafeOutputsE
-                0x08023ef4      0x114 ./board_src/board_safe_state.o
+                0x08023eec      0x114 ./board_src/board_safe_state.o
  .rodata._ZN2mc12_GLOBAL__N_1L9kAxisPinsE
-                0x08024008        0xc ./board_src/board_stepper.o
+                0x08024000        0xc ./board_src/board_stepper.o
  .rodata._ZN2mc12_GLOBAL__N_1L10kDirInvertE
-                0x08024014        0x4 ./board_src/board_stepper.o
+                0x0802400c        0x4 ./board_src/board_stepper.o
  .rodata._ZN2mc12_GLOBAL__N_1L7kParamsE
-                0x08024018       0x20 ./board_src/board_thermistor.o
+                0x08024010       0x20 ./board_src/board_thermistor.o
  .rodata._ZZN2mc12mc_gcode_g92ERKNS_12GcodeCommandEbE8kLetters
-                0x08024038        0x4 ./gcode/g92.o
+                0x08024030        0x4 ./gcode/g92.o
  .rodata._ZN2mc12_GLOBAL__N_1L6kTableE
-                0x0802403c      0x168 ./gcode/gcode_table.o
+                0x08024034      0x168 ./gcode/gcode_table.o
  .rodata._ZN2mc12_GLOBAL__N_1L5kCapsE
-                0x080241a4       0x1c ./gcode/m115.o
+                0x0802419c       0x1c ./gcode/m115.o
  .rodata._ZZN2mc12mc_gcode_m17ERKNS_12GcodeCommandEbE8kLetters
-                0x080241c0        0x4 ./gcode/m17.o
+                0x080241b8        0x4 ./gcode/m17.o
  .rodata._ZZN2mc12mc_gcode_m18ERKNS_12GcodeCommandEbE8kLetters
-                0x080241c4        0x4 ./gcode/m18.o
+                0x080241bc        0x4 ./gcode/m18.o
  .rodata._ZZN2mc13mc_gcode_m203ERKNS_12GcodeCommandEbE8kLetters
-                0x080241c8        0x4 ./gcode/m203.o
+                0x080241c0        0x4 ./gcode/m203.o
  .rodata._ZZN2mc12mc_gcode_m84ERKNS_12GcodeCommandEbE8kLetters
-                0x080241cc        0x4 ./gcode/m84.o
+                0x080241c4        0x4 ./gcode/m84.o
  .rodata._ZZN2mc12mc_gcode_m92ERKNS_12GcodeCommandEbE8kLetters
-                0x080241d0        0x4 ./gcode/m92.o
-                0x080241d4                        . = ALIGN (0x4)
+                0x080241c8        0x4 ./gcode/m92.o
+                0x080241cc                        . = ALIGN (0x4)
 
-.ARM.extab      0x080241d4        0x0
-                0x080241d4                        . = ALIGN (0x4)
+.ARM.extab      0x080241cc        0x0
+                0x080241cc                        . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x080241d4                        . = ALIGN (0x4)
+                0x080241cc                        . = ALIGN (0x4)
 
-.ARM            0x080241d4        0x8
-                0x080241d4                        . = ALIGN (0x4)
-                0x080241d4                        __exidx_start = .
+.ARM            0x080241cc        0x8
+                0x080241cc                        . = ALIGN (0x4)
+                0x080241cc                        __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x080241d4        0x8 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
-                0x080241dc                        __exidx_end = .
-                0x080241dc                        . = ALIGN (0x4)
+ .ARM.exidx     0x080241cc        0x8 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+                0x080241d4                        __exidx_end = .
+                0x080241d4                        . = ALIGN (0x4)
 
-.preinit_array  0x080241dc        0x0
-                0x080241dc                        . = ALIGN (0x4)
-                0x080241dc                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x080241d4        0x0
+                0x080241d4                        . = ALIGN (0x4)
+                0x080241d4                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x080241dc                        PROVIDE (__preinit_array_end = .)
-                0x080241dc                        . = ALIGN (0x4)
+                0x080241d4                        PROVIDE (__preinit_array_end = .)
+                0x080241d4                        . = ALIGN (0x4)
 
-.init_array     0x080241dc        0x4
-                0x080241dc                        . = ALIGN (0x4)
-                0x080241dc                        PROVIDE (__init_array_start = .)
+.init_array     0x080241d4        0x4
+                0x080241d4                        . = ALIGN (0x4)
+                0x080241d4                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x080241dc        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x080241e0                        PROVIDE (__init_array_end = .)
-                0x080241e0                        . = ALIGN (0x4)
+ .init_array    0x080241d4        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x080241d8                        PROVIDE (__init_array_end = .)
+                0x080241d8                        . = ALIGN (0x4)
 
-.fini_array     0x080241e0        0x4
-                0x080241e0                        . = ALIGN (0x4)
+.fini_array     0x080241d8        0x4
+                0x080241d8                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x080241e0        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .fini_array    0x080241d8        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x080241e4                        . = ALIGN (0x4)
-                0x080241e4                        _sidata = LOADADDR (.data)
+                0x080241dc                        . = ALIGN (0x4)
+                0x080241dc                        _sidata = LOADADDR (.data)
 
-.rel.dyn        0x080241e4        0x0
- .rel.iplt      0x080241e4        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.rel.dyn        0x080241dc        0x0
+ .rel.iplt      0x080241dc        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.data           0x20000000      0x250 load address 0x080241e4
+.data           0x20000000      0x250 load address 0x080241dc
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -17067,12 +17067,12 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  *(.RamFunc*)
                 0x20000250                        . = ALIGN (0x4)
                 0x20000250                        _edata = .
-                0x08024434                        _siccmram = LOADADDR (.ccmram)
+                0x0802442c                        _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x20000250        0x0 load address 0x08024434
+.igot.plt       0x20000250        0x0 load address 0x0802442c
  .igot.plt      0x20000250        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x08024434
+.ccmram         0x10000000        0x0 load address 0x0802442c
                 0x10000000                        . = ALIGN (0x4)
                 0x10000000                        _sccmram = .
  *(.ccmram)
@@ -18778,7 +18778,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
 LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a
 LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard\libgcc.a
 
-.debug_info     0x00000000    0x4dc79
+.debug_info     0x00000000    0x4dc3b
  .debug_info    0x00000000      0x995 ./Core/Src/adc.o
  .debug_info    0x00000995      0x441 ./Core/Src/gpio.o
  .debug_info    0x00000dd6      0x968 ./Core/Src/i2c.o
@@ -18795,121 +18795,121 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_info    0x000064f4      0x5ba ./Core/core_src/command_queue.o
  .debug_info    0x00006aae     0x1919 ./Core/core_src/core_main.o
  .debug_info    0x000083c7      0x75a ./Core/core_src/core_selftest.o
- .debug_info    0x00008b21      0x640 ./Core/core_src/endstop.o
- .debug_info    0x00009161      0x3e2 ./Core/core_src/error.o
- .debug_info    0x00009543      0x3f6 ./Core/core_src/extruder.o
- .debug_info    0x00009939      0x71c ./Core/core_src/gcode_parser.o
- .debug_info    0x0000a055      0x932 ./Core/core_src/gfx.o
- .debug_info    0x0000a987      0x4e4 ./Core/core_src/heater_bed.o
- .debug_info    0x0000ae6b      0x87e ./Core/core_src/heater_ex.o
- .debug_info    0x0000b6e9      0x474 ./Core/core_src/host_reply.o
- .debug_info    0x0000bb5d      0x606 ./Core/core_src/line_check.o
- .debug_info    0x0000c163      0x2e3 ./Core/core_src/line_reader.o
- .debug_info    0x0000c446      0x65d ./Core/core_src/log.o
- .debug_info    0x0000caa3      0x200 ./Core/core_src/machine_state.o
- .debug_info    0x0000cca3     0x2c15 ./Core/core_src/motion_cmd.o
- .debug_info    0x0000f8b8      0x4cf ./Core/core_src/motion_limits.o
- .debug_info    0x0000fd87      0x4e0 ./Core/core_src/motion_modes.o
- .debug_info    0x00010267      0x6d0 ./Core/core_src/motion_queue.o
- .debug_info    0x00010937      0x645 ./Core/core_src/output_pwm.o
- .debug_info    0x00010f7c      0x327 ./Core/core_src/pid.o
- .debug_info    0x000112a3      0x884 ./Core/core_src/pid_autotune.o
- .debug_info    0x00011b27     0x2388 ./Core/core_src/planner.o
- .debug_info    0x00013eaf      0x322 ./Core/core_src/scheduler.o
- .debug_info    0x000141d1      0x66b ./Core/core_src/soft_limits.o
- .debug_info    0x0001483c      0x436 ./Core/core_src/splash.o
- .debug_info    0x00014c72     0x1093 ./Core/core_src/step_gen.o
- .debug_info    0x00015d05      0x4cf ./Core/core_src/stepper_out.o
- .debug_info    0x000161d4      0x592 ./Core/core_src/temp_limits.o
- .debug_info    0x00016766      0x774 ./Core/core_src/temp_protect.o
- .debug_info    0x00016eda      0x5fc ./Core/core_src/temp_report.o
- .debug_info    0x000174d6      0x4e7 ./Core/core_src/temp_wait.o
- .debug_info    0x000179bd      0x37b ./Core/core_src/text_format.o
- .debug_info    0x00017d38      0x6be ./Core/core_src/thermistor.o
- .debug_info    0x000183f6      0x4a3 ./Core/core_src/touch.o
- .debug_info    0x00018899      0x944 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_info    0x000191dd      0xce3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
- .debug_info    0x00019ec0      0xd8c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_info    0x0001ac4c      0x6c3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_info    0x0001b30f     0x114c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.o
- .debug_info    0x0001c45b     0x2415 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
- .debug_info    0x0001e870     0x156f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.o
- .debug_info    0x0001fddf      0x6ea ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.o
- .debug_info    0x000204c9      0x8c3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_info    0x00020d8c     0x1525 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_info    0x000222b1     0x299d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
- .debug_info    0x00024c4e     0x14db ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
- .debug_info    0x00026129     0x1993 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.o
- .debug_info    0x00027abc      0x549 ./FATFS/App/fatfs.o
- .debug_info    0x00028005      0xe77 ./FATFS/Target/usbh_diskio.o
- .debug_info    0x00028e7c      0x328 ./FATFS/Target/user_diskio.o
- .debug_info    0x000291a4     0x12a5 ./Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o
- .debug_info    0x0002a449      0xe12 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o
- .debug_info    0x0002b25b      0xaeb ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o
- .debug_info    0x0002bd46      0x762 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o
- .debug_info    0x0002c4a8     0x1517 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.o
- .debug_info    0x0002d9bf     0x11a7 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.o
- .debug_info    0x0002eb66     0x115d ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.o
- .debug_info    0x0002fcc3      0xfa9 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.o
- .debug_info    0x00030c6c      0xfaf ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.o
- .debug_info    0x00031c1b      0xc2e ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.o
- .debug_info    0x00032849      0xa91 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.o
- .debug_info    0x000332da      0x37f ./Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
- .debug_info    0x00033659      0x70e ./USB_DEVICE/App/usb_device.o
- .debug_info    0x00033d67      0x955 ./USB_DEVICE/App/usbd_cdc_if.o
- .debug_info    0x000346bc      0x458 ./USB_DEVICE/App/usbd_desc.o
- .debug_info    0x00034b14     0x1c77 ./USB_DEVICE/Target/usbd_conf.o
- .debug_info    0x0003678b      0xa12 ./USB_HOST/App/usb_host.o
- .debug_info    0x0003719d     0x1cdd ./USB_HOST/Target/usbh_conf.o
- .debug_info    0x00038e7a      0xaea ./board_src/board_adc.o
- .debug_info    0x00039964      0x41b ./board_src/board_buzzer.o
- .debug_info    0x00039d7f      0xf62 ./board_src/board_display.o
- .debug_info    0x0003ace1      0xd91 ./board_src/board_flash.o
- .debug_info    0x0003ba72      0x875 ./board_src/board_gpio.o
- .debug_info    0x0003c2e7      0x94f ./board_src/board_i2c.o
- .debug_info    0x0003cc36      0x176 ./board_src/board_irq.o
- .debug_info    0x0003cdac       0x68 ./board_src/board_name.o
- .debug_info    0x0003ce14      0x7a6 ./board_src/board_safe_state.o
- .debug_info    0x0003d5ba     0x1183 ./board_src/board_serial.o
- .debug_info    0x0003e73d      0x99a ./board_src/board_spi.o
- .debug_info    0x0003f0d7      0x918 ./board_src/board_step_timer.o
- .debug_info    0x0003f9ef      0x770 ./board_src/board_stepper.o
- .debug_info    0x0004015f      0x1b2 ./board_src/board_thermistor.o
- .debug_info    0x00040311      0xa48 ./board_src/board_time.o
- .debug_info    0x00040d59      0xb0f ./board_src/board_touch.o
- .debug_info    0x00041868      0x4ef ./board_src/board_watchdog.o
- .debug_info    0x00041d57      0x257 ./gcode/g0.o
- .debug_info    0x00041fae      0x257 ./gcode/g1.o
- .debug_info    0x00042205      0x3ec ./gcode/g4.o
- .debug_info    0x000425f1      0x2eb ./gcode/g90.o
- .debug_info    0x000428dc      0x2eb ./gcode/g91.o
- .debug_info    0x00042bc7      0x467 ./gcode/g92.o
- .debug_info    0x0004302e      0x535 ./gcode/gcode_dispatch.o
- .debug_info    0x00043563      0x69f ./gcode/gcode_table.o
- .debug_info    0x00043c02      0x449 ./gcode/m104.o
- .debug_info    0x0004404b      0x29e ./gcode/m105.o
- .debug_info    0x000442e9      0x363 ./gcode/m106.o
- .debug_info    0x0004464c      0x324 ./gcode/m107.o
- .debug_info    0x00044970      0x4ce ./gcode/m109.o
- .debug_info    0x00044e3e      0x2a7 ./gcode/m110.o
- .debug_info    0x000450e5      0x363 ./gcode/m114.o
- .debug_info    0x00045448      0x31e ./gcode/m115.o
- .debug_info    0x00045766      0x437 ./gcode/m140.o
- .debug_info    0x00045b9d      0x29c ./gcode/m155.o
- .debug_info    0x00045e39      0x30e ./gcode/m17.o
- .debug_info    0x00046147      0x320 ./gcode/m18.o
- .debug_info    0x00046467      0x4bc ./gcode/m190.o
- .debug_info    0x00046923     0x1a75 ./gcode/m203.o
- .debug_info    0x00048398     0x1a45 ./gcode/m204.o
- .debug_info    0x00049ddd     0x1abf ./gcode/m205.o
- .debug_info    0x0004b89c      0x46f ./gcode/m302.o
- .debug_info    0x0004bd0b      0xa31 ./gcode/m303.o
- .debug_info    0x0004c73c      0x30c ./gcode/m400.o
- .debug_info    0x0004ca48      0x2eb ./gcode/m82.o
- .debug_info    0x0004cd33      0x2eb ./gcode/m83.o
- .debug_info    0x0004d01e      0x320 ./gcode/m84.o
- .debug_info    0x0004d33e      0x4ee ./gcode/m92.o
- .debug_info    0x0004d82c      0x44d ./gcode/m9999.o
+ .debug_info    0x00008b21      0x63a ./Core/core_src/endstop.o
+ .debug_info    0x0000915b      0x3e2 ./Core/core_src/error.o
+ .debug_info    0x0000953d      0x3f6 ./Core/core_src/extruder.o
+ .debug_info    0x00009933      0x71c ./Core/core_src/gcode_parser.o
+ .debug_info    0x0000a04f      0x932 ./Core/core_src/gfx.o
+ .debug_info    0x0000a981      0x4e4 ./Core/core_src/heater_bed.o
+ .debug_info    0x0000ae65      0x87e ./Core/core_src/heater_ex.o
+ .debug_info    0x0000b6e3      0x474 ./Core/core_src/host_reply.o
+ .debug_info    0x0000bb57      0x606 ./Core/core_src/line_check.o
+ .debug_info    0x0000c15d      0x2e3 ./Core/core_src/line_reader.o
+ .debug_info    0x0000c440      0x65d ./Core/core_src/log.o
+ .debug_info    0x0000ca9d      0x200 ./Core/core_src/machine_state.o
+ .debug_info    0x0000cc9d     0x2c15 ./Core/core_src/motion_cmd.o
+ .debug_info    0x0000f8b2      0x4cf ./Core/core_src/motion_limits.o
+ .debug_info    0x0000fd81      0x4e0 ./Core/core_src/motion_modes.o
+ .debug_info    0x00010261      0x6d0 ./Core/core_src/motion_queue.o
+ .debug_info    0x00010931      0x63f ./Core/core_src/output_pwm.o
+ .debug_info    0x00010f70      0x327 ./Core/core_src/pid.o
+ .debug_info    0x00011297      0x884 ./Core/core_src/pid_autotune.o
+ .debug_info    0x00011b1b     0x2388 ./Core/core_src/planner.o
+ .debug_info    0x00013ea3      0x322 ./Core/core_src/scheduler.o
+ .debug_info    0x000141c5      0x66b ./Core/core_src/soft_limits.o
+ .debug_info    0x00014830      0x436 ./Core/core_src/splash.o
+ .debug_info    0x00014c66     0x1093 ./Core/core_src/step_gen.o
+ .debug_info    0x00015cf9      0x4cf ./Core/core_src/stepper_out.o
+ .debug_info    0x000161c8      0x592 ./Core/core_src/temp_limits.o
+ .debug_info    0x0001675a      0x774 ./Core/core_src/temp_protect.o
+ .debug_info    0x00016ece      0x5fc ./Core/core_src/temp_report.o
+ .debug_info    0x000174ca      0x4e7 ./Core/core_src/temp_wait.o
+ .debug_info    0x000179b1      0x37b ./Core/core_src/text_format.o
+ .debug_info    0x00017d2c      0x6be ./Core/core_src/thermistor.o
+ .debug_info    0x000183ea      0x4a3 ./Core/core_src/touch.o
+ .debug_info    0x0001888d      0x944 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_info    0x000191d1      0xce3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
+ .debug_info    0x00019eb4      0xd8c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_info    0x0001ac40      0x6c3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_info    0x0001b303     0x114c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.o
+ .debug_info    0x0001c44f     0x2415 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_info    0x0001e864     0x156f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.o
+ .debug_info    0x0001fdd3      0x6ea ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.o
+ .debug_info    0x000204bd      0x8c3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_info    0x00020d80     0x1525 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_info    0x000222a5     0x299d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_info    0x00024c42     0x14db ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_info    0x0002611d     0x1993 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.o
+ .debug_info    0x00027ab0      0x549 ./FATFS/App/fatfs.o
+ .debug_info    0x00027ff9      0xe77 ./FATFS/Target/usbh_diskio.o
+ .debug_info    0x00028e70      0x328 ./FATFS/Target/user_diskio.o
+ .debug_info    0x00029198     0x12a5 ./Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o
+ .debug_info    0x0002a43d      0xe12 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o
+ .debug_info    0x0002b24f      0xaeb ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o
+ .debug_info    0x0002bd3a      0x762 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o
+ .debug_info    0x0002c49c     0x1517 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.o
+ .debug_info    0x0002d9b3     0x11a7 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.o
+ .debug_info    0x0002eb5a     0x115d ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.o
+ .debug_info    0x0002fcb7      0xfa9 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.o
+ .debug_info    0x00030c60      0xfaf ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.o
+ .debug_info    0x00031c0f      0xc2e ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.o
+ .debug_info    0x0003283d      0xa91 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.o
+ .debug_info    0x000332ce      0x37f ./Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
+ .debug_info    0x0003364d      0x70e ./USB_DEVICE/App/usb_device.o
+ .debug_info    0x00033d5b      0x955 ./USB_DEVICE/App/usbd_cdc_if.o
+ .debug_info    0x000346b0      0x458 ./USB_DEVICE/App/usbd_desc.o
+ .debug_info    0x00034b08     0x1c77 ./USB_DEVICE/Target/usbd_conf.o
+ .debug_info    0x0003677f      0xa12 ./USB_HOST/App/usb_host.o
+ .debug_info    0x00037191     0x1cdd ./USB_HOST/Target/usbh_conf.o
+ .debug_info    0x00038e6e      0xaea ./board_src/board_adc.o
+ .debug_info    0x00039958      0x415 ./board_src/board_buzzer.o
+ .debug_info    0x00039d6d      0xf5c ./board_src/board_display.o
+ .debug_info    0x0003acc9      0xd8b ./board_src/board_flash.o
+ .debug_info    0x0003ba54      0x867 ./board_src/board_gpio.o
+ .debug_info    0x0003c2bb      0x94f ./board_src/board_i2c.o
+ .debug_info    0x0003cc0a      0x176 ./board_src/board_irq.o
+ .debug_info    0x0003cd80       0x68 ./board_src/board_name.o
+ .debug_info    0x0003cde8      0x7a6 ./board_src/board_safe_state.o
+ .debug_info    0x0003d58e     0x1183 ./board_src/board_serial.o
+ .debug_info    0x0003e711      0x994 ./board_src/board_spi.o
+ .debug_info    0x0003f0a5      0x918 ./board_src/board_step_timer.o
+ .debug_info    0x0003f9bd      0x76a ./board_src/board_stepper.o
+ .debug_info    0x00040127      0x1b2 ./board_src/board_thermistor.o
+ .debug_info    0x000402d9      0xa48 ./board_src/board_time.o
+ .debug_info    0x00040d21      0xb09 ./board_src/board_touch.o
+ .debug_info    0x0004182a      0x4ef ./board_src/board_watchdog.o
+ .debug_info    0x00041d19      0x257 ./gcode/g0.o
+ .debug_info    0x00041f70      0x257 ./gcode/g1.o
+ .debug_info    0x000421c7      0x3ec ./gcode/g4.o
+ .debug_info    0x000425b3      0x2eb ./gcode/g90.o
+ .debug_info    0x0004289e      0x2eb ./gcode/g91.o
+ .debug_info    0x00042b89      0x467 ./gcode/g92.o
+ .debug_info    0x00042ff0      0x535 ./gcode/gcode_dispatch.o
+ .debug_info    0x00043525      0x69f ./gcode/gcode_table.o
+ .debug_info    0x00043bc4      0x449 ./gcode/m104.o
+ .debug_info    0x0004400d      0x29e ./gcode/m105.o
+ .debug_info    0x000442ab      0x363 ./gcode/m106.o
+ .debug_info    0x0004460e      0x324 ./gcode/m107.o
+ .debug_info    0x00044932      0x4ce ./gcode/m109.o
+ .debug_info    0x00044e00      0x2a7 ./gcode/m110.o
+ .debug_info    0x000450a7      0x363 ./gcode/m114.o
+ .debug_info    0x0004540a      0x31e ./gcode/m115.o
+ .debug_info    0x00045728      0x437 ./gcode/m140.o
+ .debug_info    0x00045b5f      0x29c ./gcode/m155.o
+ .debug_info    0x00045dfb      0x30e ./gcode/m17.o
+ .debug_info    0x00046109      0x320 ./gcode/m18.o
+ .debug_info    0x00046429      0x4bc ./gcode/m190.o
+ .debug_info    0x000468e5     0x1a75 ./gcode/m203.o
+ .debug_info    0x0004835a     0x1a45 ./gcode/m204.o
+ .debug_info    0x00049d9f     0x1abf ./gcode/m205.o
+ .debug_info    0x0004b85e      0x46f ./gcode/m302.o
+ .debug_info    0x0004bccd      0xa31 ./gcode/m303.o
+ .debug_info    0x0004c6fe      0x30c ./gcode/m400.o
+ .debug_info    0x0004ca0a      0x2eb ./gcode/m82.o
+ .debug_info    0x0004ccf5      0x2eb ./gcode/m83.o
+ .debug_info    0x0004cfe0      0x320 ./gcode/m84.o
+ .debug_info    0x0004d300      0x4ee ./gcode/m92.o
+ .debug_info    0x0004d7ee      0x44d ./gcode/m9999.o
 
 .debug_abbrev   0x00000000    0x118a4
  .debug_abbrev  0x00000000      0x1f3 ./Core/Src/adc.o
@@ -19573,7 +19573,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_rnglists
                 0x0000270a       0x1a ./gcode/m9999.o
 
-.debug_macro    0x00000000    0x361c2
+.debug_macro    0x00000000    0x361b7
  .debug_macro   0x00000000      0x252 ./Core/Src/adc.o
  .debug_macro   0x00000252      0xad8 ./Core/Src/adc.o
  .debug_macro   0x00000d2a      0x2b3 ./Core/Src/adc.o
@@ -19809,61 +19809,61 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_macro   0x000309c3      0x3cb ./USB_HOST/Target/usbh_conf.o
  .debug_macro   0x00030d8e      0x268 ./board_src/board_adc.o
  .debug_macro   0x00030ff6     0x1011 ./board_src/board_adc.o
- .debug_macro   0x00032007      0x34e ./board_src/board_adc.o
- .debug_macro   0x00032355      0x259 ./board_src/board_buzzer.o
- .debug_macro   0x000325ae      0x268 ./board_src/board_display.o
- .debug_macro   0x00032816      0x268 ./board_src/board_flash.o
- .debug_macro   0x00032a7e      0x250 ./board_src/board_gpio.o
- .debug_macro   0x00032cce      0x264 ./board_src/board_i2c.o
- .debug_macro   0x00032f32      0x247 ./board_src/board_irq.o
- .debug_macro   0x00033179       0x1e ./board_src/board_name.o
- .debug_macro   0x00033197       0x10 ./board_src/board_name.o
- .debug_macro   0x000331a7      0x250 ./board_src/board_safe_state.o
- .debug_macro   0x000333f7      0x446 ./board_src/board_serial.o
- .debug_macro   0x0003383d       0x10 ./board_src/board_serial.o
- .debug_macro   0x0003384d      0x115 ./board_src/board_serial.o
- .debug_macro   0x00033962       0x10 ./board_src/board_serial.o
- .debug_macro   0x00033972       0x1c ./board_src/board_serial.o
- .debug_macro   0x0003398e       0xde ./board_src/board_serial.o
- .debug_macro   0x00033a6c      0x268 ./board_src/board_spi.o
- .debug_macro   0x00033cd4      0x25b ./board_src/board_step_timer.o
- .debug_macro   0x00033f2f      0x24b ./board_src/board_stepper.o
- .debug_macro   0x0003417a       0x70 ./board_src/board_thermistor.o
- .debug_macro   0x000341ea      0x264 ./board_src/board_time.o
- .debug_macro   0x0003444e      0x268 ./board_src/board_touch.o
- .debug_macro   0x000346b6      0x250 ./board_src/board_watchdog.o
- .debug_macro   0x00034906       0x78 ./gcode/g0.o
- .debug_macro   0x0003497e       0x78 ./gcode/g1.o
- .debug_macro   0x000349f6       0x7c ./gcode/g4.o
- .debug_macro   0x00034a72       0x78 ./gcode/g90.o
- .debug_macro   0x00034aea       0x78 ./gcode/g91.o
- .debug_macro   0x00034b62       0x80 ./gcode/g92.o
- .debug_macro   0x00034be2       0x88 ./gcode/gcode_dispatch.o
- .debug_macro   0x00034c6a       0x74 ./gcode/gcode_table.o
- .debug_macro   0x00034cde       0x84 ./gcode/m104.o
- .debug_macro   0x00034d62       0x7c ./gcode/m105.o
- .debug_macro   0x00034dde       0x7c ./gcode/m106.o
- .debug_macro   0x00034e5a       0x7c ./gcode/m107.o
- .debug_macro   0x00034ed6       0x88 ./gcode/m109.o
- .debug_macro   0x00034f5e       0x78 ./gcode/m110.o
- .debug_macro   0x00034fd6       0x80 ./gcode/m114.o
- .debug_macro   0x00035056       0x89 ./gcode/m115.o
- .debug_macro   0x000350df       0x84 ./gcode/m140.o
- .debug_macro   0x00035163       0x78 ./gcode/m155.o
- .debug_macro   0x000351db       0x80 ./gcode/m17.o
- .debug_macro   0x0003525b       0x84 ./gcode/m18.o
- .debug_macro   0x000352df       0x88 ./gcode/m190.o
- .debug_macro   0x00035367      0x369 ./gcode/m203.o
- .debug_macro   0x000356d0      0x369 ./gcode/m204.o
- .debug_macro   0x00035a39      0x371 ./gcode/m205.o
- .debug_macro   0x00035daa       0x80 ./gcode/m302.o
- .debug_macro   0x00035e2a       0xa4 ./gcode/m303.o
- .debug_macro   0x00035ece       0x7c ./gcode/m400.o
- .debug_macro   0x00035f4a       0x78 ./gcode/m82.o
- .debug_macro   0x00035fc2       0x78 ./gcode/m83.o
- .debug_macro   0x0003603a       0x84 ./gcode/m84.o
- .debug_macro   0x000360be       0x84 ./gcode/m92.o
- .debug_macro   0x00036142       0x80 ./gcode/m9999.o
+ .debug_macro   0x00032007      0x343 ./board_src/board_adc.o
+ .debug_macro   0x0003234a      0x259 ./board_src/board_buzzer.o
+ .debug_macro   0x000325a3      0x268 ./board_src/board_display.o
+ .debug_macro   0x0003280b      0x268 ./board_src/board_flash.o
+ .debug_macro   0x00032a73      0x250 ./board_src/board_gpio.o
+ .debug_macro   0x00032cc3      0x264 ./board_src/board_i2c.o
+ .debug_macro   0x00032f27      0x247 ./board_src/board_irq.o
+ .debug_macro   0x0003316e       0x1e ./board_src/board_name.o
+ .debug_macro   0x0003318c       0x10 ./board_src/board_name.o
+ .debug_macro   0x0003319c      0x250 ./board_src/board_safe_state.o
+ .debug_macro   0x000333ec      0x446 ./board_src/board_serial.o
+ .debug_macro   0x00033832       0x10 ./board_src/board_serial.o
+ .debug_macro   0x00033842      0x115 ./board_src/board_serial.o
+ .debug_macro   0x00033957       0x10 ./board_src/board_serial.o
+ .debug_macro   0x00033967       0x1c ./board_src/board_serial.o
+ .debug_macro   0x00033983       0xde ./board_src/board_serial.o
+ .debug_macro   0x00033a61      0x268 ./board_src/board_spi.o
+ .debug_macro   0x00033cc9      0x25b ./board_src/board_step_timer.o
+ .debug_macro   0x00033f24      0x24b ./board_src/board_stepper.o
+ .debug_macro   0x0003416f       0x70 ./board_src/board_thermistor.o
+ .debug_macro   0x000341df      0x264 ./board_src/board_time.o
+ .debug_macro   0x00034443      0x268 ./board_src/board_touch.o
+ .debug_macro   0x000346ab      0x250 ./board_src/board_watchdog.o
+ .debug_macro   0x000348fb       0x78 ./gcode/g0.o
+ .debug_macro   0x00034973       0x78 ./gcode/g1.o
+ .debug_macro   0x000349eb       0x7c ./gcode/g4.o
+ .debug_macro   0x00034a67       0x78 ./gcode/g90.o
+ .debug_macro   0x00034adf       0x78 ./gcode/g91.o
+ .debug_macro   0x00034b57       0x80 ./gcode/g92.o
+ .debug_macro   0x00034bd7       0x88 ./gcode/gcode_dispatch.o
+ .debug_macro   0x00034c5f       0x74 ./gcode/gcode_table.o
+ .debug_macro   0x00034cd3       0x84 ./gcode/m104.o
+ .debug_macro   0x00034d57       0x7c ./gcode/m105.o
+ .debug_macro   0x00034dd3       0x7c ./gcode/m106.o
+ .debug_macro   0x00034e4f       0x7c ./gcode/m107.o
+ .debug_macro   0x00034ecb       0x88 ./gcode/m109.o
+ .debug_macro   0x00034f53       0x78 ./gcode/m110.o
+ .debug_macro   0x00034fcb       0x80 ./gcode/m114.o
+ .debug_macro   0x0003504b       0x89 ./gcode/m115.o
+ .debug_macro   0x000350d4       0x84 ./gcode/m140.o
+ .debug_macro   0x00035158       0x78 ./gcode/m155.o
+ .debug_macro   0x000351d0       0x80 ./gcode/m17.o
+ .debug_macro   0x00035250       0x84 ./gcode/m18.o
+ .debug_macro   0x000352d4       0x88 ./gcode/m190.o
+ .debug_macro   0x0003535c      0x369 ./gcode/m203.o
+ .debug_macro   0x000356c5      0x369 ./gcode/m204.o
+ .debug_macro   0x00035a2e      0x371 ./gcode/m205.o
+ .debug_macro   0x00035d9f       0x80 ./gcode/m302.o
+ .debug_macro   0x00035e1f       0xa4 ./gcode/m303.o
+ .debug_macro   0x00035ec3       0x7c ./gcode/m400.o
+ .debug_macro   0x00035f3f       0x78 ./gcode/m82.o
+ .debug_macro   0x00035fb7       0x78 ./gcode/m83.o
+ .debug_macro   0x0003602f       0x84 ./gcode/m84.o
+ .debug_macro   0x000360b3       0x84 ./gcode/m92.o
+ .debug_macro   0x00036137       0x80 ./gcode/m9999.o
 
 .debug_line     0x00000000    0x5b167
  .debug_line    0x00000000      0x8a7 ./Core/Src/adc.o
@@ -19998,139 +19998,139 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_line    0x0005a4c8      0x65a ./gcode/m92.o
  .debug_line    0x0005ab22      0x645 ./gcode/m9999.o
 
-.debug_str      0x00000000    0xf6908
- .debug_str     0x00000000    0xf6908 ./Core/Src/adc.o
+.debug_str      0x00000000    0xf68c4
+ .debug_str     0x00000000    0xf68c4 ./Core/Src/adc.o
                               0xd33e0 (size before relaxing)
- .debug_str     0x000f6908    0xd2f6e ./Core/Src/gpio.o
- .debug_str     0x000f6908    0xd349d ./Core/Src/i2c.o
- .debug_str     0x000f6908    0xd95d3 ./Core/Src/main.o
- .debug_str     0x000f6908    0xd3420 ./Core/Src/spi.o
- .debug_str     0x000f6908    0xd2ea3 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_str     0x000f6908    0xd3a09 ./Core/Src/stm32f4xx_it.o
- .debug_str     0x000f6908     0x773f ./Core/Src/sysmem.o
- .debug_str     0x000f6908    0xd2f53 ./Core/Src/system_stm32f4xx.o
- .debug_str     0x000f6908    0xd3be8 ./Core/Src/tim.o
- .debug_str     0x000f6908       0xb7 ./Core/Startup/startup_stm32f407vgtx.o
- .debug_str     0x000f6908     0x47f5 ./Core/core_src/adc_sampler.o
- .debug_str     0x000f6908     0x4e4f ./Core/core_src/axis_move.o
- .debug_str     0x000f6908     0x48b6 ./Core/core_src/command_queue.o
- .debug_str     0x000f6908     0x5e8a ./Core/core_src/core_main.o
- .debug_str     0x000f6908     0x4856 ./Core/core_src/core_selftest.o
- .debug_str     0x000f6908     0x490d ./Core/core_src/endstop.o
- .debug_str     0x000f6908     0x4879 ./Core/core_src/error.o
- .debug_str     0x000f6908     0x483d ./Core/core_src/extruder.o
- .debug_str     0x000f6908     0x476e ./Core/core_src/gcode_parser.o
- .debug_str     0x000f6908     0x4799 ./Core/core_src/gfx.o
- .debug_str     0x000f6908     0x48f2 ./Core/core_src/heater_bed.o
- .debug_str     0x000f6908     0x4bb1 ./Core/core_src/heater_ex.o
- .debug_str     0x000f6908     0x46d3 ./Core/core_src/host_reply.o
- .debug_str     0x000f6908     0x472f ./Core/core_src/line_check.o
- .debug_str     0x000f6908     0x46cf ./Core/core_src/line_reader.o
- .debug_str     0x000f6908     0x4758 ./Core/core_src/log.o
- .debug_str     0x000f6908     0x45ae ./Core/core_src/machine_state.o
- .debug_str     0x000f6908    0x11e28 ./Core/core_src/motion_cmd.o
- .debug_str     0x000f6908     0x4869 ./Core/core_src/motion_limits.o
- .debug_str     0x000f6908     0x48fa ./Core/core_src/motion_modes.o
- .debug_str     0x000f6908     0x4bbd ./Core/core_src/motion_queue.o
- .debug_str     0x000f6908     0x495b ./Core/core_src/output_pwm.o
- .debug_str     0x000f6908     0x45f3 ./Core/core_src/pid.o
- .debug_str     0x000f6908     0x4a79 ./Core/core_src/pid_autotune.o
- .debug_str     0x000f6908    0x1169d ./Core/core_src/planner.o
- .debug_str     0x000f6908     0x4622 ./Core/core_src/scheduler.o
- .debug_str     0x000f6908     0x4998 ./Core/core_src/soft_limits.o
- .debug_str     0x000f6908     0x47e2 ./Core/core_src/splash.o
- .debug_str     0x000f6908     0x508e ./Core/core_src/step_gen.o
- .debug_str     0x000f6908     0x4949 ./Core/core_src/stepper_out.o
- .debug_str     0x000f6908     0x4960 ./Core/core_src/temp_limits.o
- .debug_str     0x000f6908     0x4af8 ./Core/core_src/temp_protect.o
- .debug_str     0x000f6908     0x49d9 ./Core/core_src/temp_report.o
- .debug_str     0x000f6908     0x47ff ./Core/core_src/temp_wait.o
- .debug_str     0x000f6908     0x4586 ./Core/core_src/text_format.o
- .debug_str     0x000f6908     0x7dc1 ./Core/core_src/thermistor.o
- .debug_str     0x000f6908     0x4642 ./Core/core_src/touch.o
- .debug_str     0x000f6908    0xd3ad7 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_str     0x000f6908    0xd3540 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
- .debug_str     0x000f6908    0xd3853 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_str     0x000f6908    0xd30ce ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_str     0x000f6908    0xd383b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.o
- .debug_str     0x000f6908    0xd3f71 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
- .debug_str     0x000f6908    0xd3a31 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.o
- .debug_str     0x000f6908    0xd3321 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.o
- .debug_str     0x000f6908    0xd3387 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_str     0x000f6908    0xd3811 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_str     0x000f6908    0xd42dd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
- .debug_str     0x000f6908    0xd3ae9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
- .debug_str     0x000f6908    0xd390c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.o
- .debug_str     0x000f6908    0xd8619 ./FATFS/App/fatfs.o
- .debug_str     0x000f6908    0xd8f59 ./FATFS/Target/usbh_diskio.o
- .debug_str     0x000f6908    0xd84dd ./FATFS/Target/user_diskio.o
- .debug_str     0x000f6908    0xd7f52 ./Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o
- .debug_str     0x000f6908    0xd78b2 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o
- .debug_str     0x000f6908    0xd76dd ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o
- .debug_str     0x000f6908    0xd75b2 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o
- .debug_str     0x000f6908    0xd8d2f ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.o
- .debug_str     0x000f6908    0xd8cb4 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.o
- .debug_str     0x000f6908    0xd8b65 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.o
- .debug_str     0x000f6908    0xd82f7 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.o
- .debug_str     0x000f6908    0xd82a6 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.o
- .debug_str     0x000f6908    0xd8099 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.o
- .debug_str     0x000f6908    0xd802f ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.o
- .debug_str     0x000f6908    0xd8538 ./Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
- .debug_str     0x000f6908    0xd7965 ./USB_DEVICE/App/usb_device.o
- .debug_str     0x000f6908    0xd79c4 ./USB_DEVICE/App/usbd_cdc_if.o
- .debug_str     0x000f6908    0xd74aa ./USB_DEVICE/App/usbd_desc.o
- .debug_str     0x000f6908    0xd87a7 ./USB_DEVICE/Target/usbd_conf.o
- .debug_str     0x000f6908    0xd8705 ./USB_HOST/App/usb_host.o
- .debug_str     0x000f6908    0xd8f75 ./USB_HOST/Target/usbh_conf.o
- .debug_str     0x000f6908    0xd4982 ./board_src/board_adc.o
- .debug_str     0x000f6908    0xd43a7 ./board_src/board_buzzer.o
- .debug_str     0x000f6908    0xd4b79 ./board_src/board_display.o
- .debug_str     0x000f6908    0xd4b0e ./board_src/board_flash.o
- .debug_str     0x000f6908    0xd45c3 ./board_src/board_gpio.o
- .debug_str     0x000f6908    0xd494e ./board_src/board_i2c.o
- .debug_str     0x000f6908    0xd34e0 ./board_src/board_irq.o
- .debug_str     0x000f6908     0x360a ./board_src/board_name.o
- .debug_str     0x000f6908    0xd44ed ./board_src/board_safe_state.o
- .debug_str     0x000f6908    0xdb727 ./board_src/board_serial.o
- .debug_str     0x000f6908    0xd499b ./board_src/board_spi.o
- .debug_str     0x000f6908    0xd3d69 ./board_src/board_step_timer.o
- .debug_str     0x000f6908    0xd399f ./board_src/board_stepper.o
- .debug_str     0x000f6908     0x4573 ./board_src/board_thermistor.o
- .debug_str     0x000f6908    0xd4a46 ./board_src/board_time.o
- .debug_str     0x000f6908    0xd49fa ./board_src/board_touch.o
- .debug_str     0x000f6908    0xd44b0 ./board_src/board_watchdog.o
- .debug_str     0x000f6908     0x45e2 ./gcode/g0.o
- .debug_str     0x000f6908     0x45e2 ./gcode/g1.o
- .debug_str     0x000f6908     0x472a ./gcode/g4.o
- .debug_str     0x000f6908     0x469f ./gcode/g90.o
- .debug_str     0x000f6908     0x469f ./gcode/g91.o
- .debug_str     0x000f6908     0x47d3 ./gcode/g92.o
- .debug_str     0x000f6908     0x48a8 ./gcode/gcode_dispatch.o
- .debug_str     0x000f6908     0x4c7d ./gcode/gcode_table.o
- .debug_str     0x000f6908     0x482d ./gcode/m104.o
- .debug_str     0x000f6908     0x4614 ./gcode/m105.o
- .debug_str     0x000f6908     0x4719 ./gcode/m106.o
- .debug_str     0x000f6908     0x46d6 ./gcode/m107.o
- .debug_str     0x000f6908     0x48aa ./gcode/m109.o
- .debug_str     0x000f6908     0x4679 ./gcode/m110.o
- .debug_str     0x000f6908     0x467a ./gcode/m114.o
- .debug_str     0x000f6908     0x4663 ./gcode/m115.o
- .debug_str     0x000f6908     0x480e ./gcode/m140.o
- .debug_str     0x000f6908     0x4669 ./gcode/m155.o
- .debug_str     0x000f6908     0x4678 ./gcode/m17.o
- .debug_str     0x000f6908     0x4690 ./gcode/m18.o
- .debug_str     0x000f6908     0x488b ./gcode/m190.o
- .debug_str     0x000f6908    0x11469 ./gcode/m203.o
- .debug_str     0x000f6908    0x1148c ./gcode/m204.o
- .debug_str     0x000f6908    0x11538 ./gcode/m205.o
- .debug_str     0x000f6908     0x483e ./gcode/m302.o
- .debug_str     0x000f6908     0x4cbb ./gcode/m303.o
- .debug_str     0x000f6908     0x466d ./gcode/m400.o
- .debug_str     0x000f6908     0x46a3 ./gcode/m82.o
- .debug_str     0x000f6908     0x46a3 ./gcode/m83.o
- .debug_str     0x000f6908     0x4690 ./gcode/m84.o
- .debug_str     0x000f6908     0x4853 ./gcode/m92.o
- .debug_str     0x000f6908     0x47b0 ./gcode/m9999.o
+ .debug_str     0x000f68c4    0xd2f6e ./Core/Src/gpio.o
+ .debug_str     0x000f68c4    0xd349d ./Core/Src/i2c.o
+ .debug_str     0x000f68c4    0xd95d3 ./Core/Src/main.o
+ .debug_str     0x000f68c4    0xd3420 ./Core/Src/spi.o
+ .debug_str     0x000f68c4    0xd2ea3 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_str     0x000f68c4    0xd3a09 ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x000f68c4     0x773f ./Core/Src/sysmem.o
+ .debug_str     0x000f68c4    0xd2f53 ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x000f68c4    0xd3be8 ./Core/Src/tim.o
+ .debug_str     0x000f68c4       0xb7 ./Core/Startup/startup_stm32f407vgtx.o
+ .debug_str     0x000f68c4     0x47f5 ./Core/core_src/adc_sampler.o
+ .debug_str     0x000f68c4     0x4e4f ./Core/core_src/axis_move.o
+ .debug_str     0x000f68c4     0x48b6 ./Core/core_src/command_queue.o
+ .debug_str     0x000f68c4     0x5e8a ./Core/core_src/core_main.o
+ .debug_str     0x000f68c4     0x4856 ./Core/core_src/core_selftest.o
+ .debug_str     0x000f68c4     0x4902 ./Core/core_src/endstop.o
+ .debug_str     0x000f68c4     0x4879 ./Core/core_src/error.o
+ .debug_str     0x000f68c4     0x483d ./Core/core_src/extruder.o
+ .debug_str     0x000f68c4     0x476e ./Core/core_src/gcode_parser.o
+ .debug_str     0x000f68c4     0x4799 ./Core/core_src/gfx.o
+ .debug_str     0x000f68c4     0x48f2 ./Core/core_src/heater_bed.o
+ .debug_str     0x000f68c4     0x4bb1 ./Core/core_src/heater_ex.o
+ .debug_str     0x000f68c4     0x46d3 ./Core/core_src/host_reply.o
+ .debug_str     0x000f68c4     0x472f ./Core/core_src/line_check.o
+ .debug_str     0x000f68c4     0x46cf ./Core/core_src/line_reader.o
+ .debug_str     0x000f68c4     0x4758 ./Core/core_src/log.o
+ .debug_str     0x000f68c4     0x45ae ./Core/core_src/machine_state.o
+ .debug_str     0x000f68c4    0x11e28 ./Core/core_src/motion_cmd.o
+ .debug_str     0x000f68c4     0x4869 ./Core/core_src/motion_limits.o
+ .debug_str     0x000f68c4     0x48fa ./Core/core_src/motion_modes.o
+ .debug_str     0x000f68c4     0x4bbd ./Core/core_src/motion_queue.o
+ .debug_str     0x000f68c4     0x4950 ./Core/core_src/output_pwm.o
+ .debug_str     0x000f68c4     0x45f3 ./Core/core_src/pid.o
+ .debug_str     0x000f68c4     0x4a79 ./Core/core_src/pid_autotune.o
+ .debug_str     0x000f68c4    0x1169d ./Core/core_src/planner.o
+ .debug_str     0x000f68c4     0x4622 ./Core/core_src/scheduler.o
+ .debug_str     0x000f68c4     0x4998 ./Core/core_src/soft_limits.o
+ .debug_str     0x000f68c4     0x47e2 ./Core/core_src/splash.o
+ .debug_str     0x000f68c4     0x508e ./Core/core_src/step_gen.o
+ .debug_str     0x000f68c4     0x4949 ./Core/core_src/stepper_out.o
+ .debug_str     0x000f68c4     0x4960 ./Core/core_src/temp_limits.o
+ .debug_str     0x000f68c4     0x4af8 ./Core/core_src/temp_protect.o
+ .debug_str     0x000f68c4     0x49d9 ./Core/core_src/temp_report.o
+ .debug_str     0x000f68c4     0x47ff ./Core/core_src/temp_wait.o
+ .debug_str     0x000f68c4     0x4586 ./Core/core_src/text_format.o
+ .debug_str     0x000f68c4     0x7dc1 ./Core/core_src/thermistor.o
+ .debug_str     0x000f68c4     0x4642 ./Core/core_src/touch.o
+ .debug_str     0x000f68c4    0xd3ad7 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_str     0x000f68c4    0xd3540 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
+ .debug_str     0x000f68c4    0xd3853 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_str     0x000f68c4    0xd30ce ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_str     0x000f68c4    0xd383b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.o
+ .debug_str     0x000f68c4    0xd3f71 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_str     0x000f68c4    0xd3a31 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.o
+ .debug_str     0x000f68c4    0xd3321 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.o
+ .debug_str     0x000f68c4    0xd3387 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_str     0x000f68c4    0xd3811 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_str     0x000f68c4    0xd42dd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_str     0x000f68c4    0xd3ae9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_str     0x000f68c4    0xd390c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.o
+ .debug_str     0x000f68c4    0xd8619 ./FATFS/App/fatfs.o
+ .debug_str     0x000f68c4    0xd8f59 ./FATFS/Target/usbh_diskio.o
+ .debug_str     0x000f68c4    0xd84dd ./FATFS/Target/user_diskio.o
+ .debug_str     0x000f68c4    0xd7f52 ./Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o
+ .debug_str     0x000f68c4    0xd78b2 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o
+ .debug_str     0x000f68c4    0xd76dd ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o
+ .debug_str     0x000f68c4    0xd75b2 ./Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o
+ .debug_str     0x000f68c4    0xd8d2f ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.o
+ .debug_str     0x000f68c4    0xd8cb4 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.o
+ .debug_str     0x000f68c4    0xd8b65 ./Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.o
+ .debug_str     0x000f68c4    0xd82f7 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.o
+ .debug_str     0x000f68c4    0xd82a6 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.o
+ .debug_str     0x000f68c4    0xd8099 ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.o
+ .debug_str     0x000f68c4    0xd802f ./Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.o
+ .debug_str     0x000f68c4    0xd8538 ./Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
+ .debug_str     0x000f68c4    0xd7965 ./USB_DEVICE/App/usb_device.o
+ .debug_str     0x000f68c4    0xd79c4 ./USB_DEVICE/App/usbd_cdc_if.o
+ .debug_str     0x000f68c4    0xd74aa ./USB_DEVICE/App/usbd_desc.o
+ .debug_str     0x000f68c4    0xd87a7 ./USB_DEVICE/Target/usbd_conf.o
+ .debug_str     0x000f68c4    0xd8705 ./USB_HOST/App/usb_host.o
+ .debug_str     0x000f68c4    0xd8f75 ./USB_HOST/Target/usbh_conf.o
+ .debug_str     0x000f68c4    0xd4949 ./board_src/board_adc.o
+ .debug_str     0x000f68c4    0xd4363 ./board_src/board_buzzer.o
+ .debug_str     0x000f68c4    0xd4b35 ./board_src/board_display.o
+ .debug_str     0x000f68c4    0xd4aca ./board_src/board_flash.o
+ .debug_str     0x000f68c4    0xd457f ./board_src/board_gpio.o
+ .debug_str     0x000f68c4    0xd4915 ./board_src/board_i2c.o
+ .debug_str     0x000f68c4    0xd34e0 ./board_src/board_irq.o
+ .debug_str     0x000f68c4     0x360a ./board_src/board_name.o
+ .debug_str     0x000f68c4    0xd44b4 ./board_src/board_safe_state.o
+ .debug_str     0x000f68c4    0xdb6ee ./board_src/board_serial.o
+ .debug_str     0x000f68c4    0xd4957 ./board_src/board_spi.o
+ .debug_str     0x000f68c4    0xd3d69 ./board_src/board_step_timer.o
+ .debug_str     0x000f68c4    0xd3994 ./board_src/board_stepper.o
+ .debug_str     0x000f68c4     0x4573 ./board_src/board_thermistor.o
+ .debug_str     0x000f68c4    0xd4a0d ./board_src/board_time.o
+ .debug_str     0x000f68c4    0xd49b6 ./board_src/board_touch.o
+ .debug_str     0x000f68c4    0xd4477 ./board_src/board_watchdog.o
+ .debug_str     0x000f68c4     0x45e2 ./gcode/g0.o
+ .debug_str     0x000f68c4     0x45e2 ./gcode/g1.o
+ .debug_str     0x000f68c4     0x472a ./gcode/g4.o
+ .debug_str     0x000f68c4     0x469f ./gcode/g90.o
+ .debug_str     0x000f68c4     0x469f ./gcode/g91.o
+ .debug_str     0x000f68c4     0x47d3 ./gcode/g92.o
+ .debug_str     0x000f68c4     0x48a8 ./gcode/gcode_dispatch.o
+ .debug_str     0x000f68c4     0x4c7d ./gcode/gcode_table.o
+ .debug_str     0x000f68c4     0x482d ./gcode/m104.o
+ .debug_str     0x000f68c4     0x4614 ./gcode/m105.o
+ .debug_str     0x000f68c4     0x4719 ./gcode/m106.o
+ .debug_str     0x000f68c4     0x46d6 ./gcode/m107.o
+ .debug_str     0x000f68c4     0x48aa ./gcode/m109.o
+ .debug_str     0x000f68c4     0x4679 ./gcode/m110.o
+ .debug_str     0x000f68c4     0x467a ./gcode/m114.o
+ .debug_str     0x000f68c4     0x4663 ./gcode/m115.o
+ .debug_str     0x000f68c4     0x480e ./gcode/m140.o
+ .debug_str     0x000f68c4     0x4669 ./gcode/m155.o
+ .debug_str     0x000f68c4     0x4678 ./gcode/m17.o
+ .debug_str     0x000f68c4     0x4690 ./gcode/m18.o
+ .debug_str     0x000f68c4     0x488b ./gcode/m190.o
+ .debug_str     0x000f68c4    0x11469 ./gcode/m203.o
+ .debug_str     0x000f68c4    0x1148c ./gcode/m204.o
+ .debug_str     0x000f68c4    0x11538 ./gcode/m205.o
+ .debug_str     0x000f68c4     0x483e ./gcode/m302.o
+ .debug_str     0x000f68c4     0x4cbb ./gcode/m303.o
+ .debug_str     0x000f68c4     0x466d ./gcode/m400.o
+ .debug_str     0x000f68c4     0x46a3 ./gcode/m82.o
+ .debug_str     0x000f68c4     0x46a3 ./gcode/m83.o
+ .debug_str     0x000f68c4     0x4690 ./gcode/m84.o
+ .debug_str     0x000f68c4     0x4853 ./gcode/m92.o
+ .debug_str     0x000f68c4     0x47b0 ./gcode/m9999.o
 
 .comment        0x00000000       0x43
  .comment       0x00000000       0x43 ./Core/Src/adc.o
