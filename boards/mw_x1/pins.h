@@ -47,23 +47,26 @@
 //--------- Axis_X ---------
 // Limit Type      : NC
 // Active Level    : HIGH (NC: عادی LOW، فعال یا قطع‌سیم HIGH؛ تست‌شده روی برد)
+// پین: PD2 (قبلاً PA15 که پین JTDI دیباگر است و در دیباگ ناپایدار بود)
 
-#define MC_X_LIMIT_MIN_PORT            GPIOA
-#define MC_X_LIMIT_MIN_PIN             GPIO_PIN_15
+#define MC_X_LIMIT_MIN_PORT            GPIOD
+#define MC_X_LIMIT_MIN_PIN             GPIO_PIN_2
 
 //--------- Axis_Y ---------
 // Limit Type      : NC
 // Active Level    : HIGH (NC: عادی LOW، فعال یا قطع‌سیم HIGH؛ تست‌شده روی برد)
+// پین: PC8 (قبلاً PD2)
 
-#define MC_Y_LIMIT_MIN_PORT            GPIOD
-#define MC_Y_LIMIT_MIN_PIN             GPIO_PIN_2
+#define MC_Y_LIMIT_MIN_PORT            GPIOC
+#define MC_Y_LIMIT_MIN_PIN             GPIO_PIN_8
 
 //--------- Axis_Z ---------
 // Limit Type      : NC
 // Active Level    : HIGH (NC: عادی LOW، فعال یا قطع‌سیم HIGH؛ تست‌شده روی برد)
+// پین: PC4 (قبلاً PC8؛ همان پین سیگنال پراب BLTouch، پول‌آپ روی برد دارد)
 
 #define MC_Z_LIMIT_MIN_PORT            GPIOC
-#define MC_Z_LIMIT_MIN_PIN             GPIO_PIN_8
+#define MC_Z_LIMIT_MIN_PIN             GPIO_PIN_4
 
 /*----- LCD -----------------------------------------------------------*/
 
@@ -139,8 +142,7 @@
 // Probe Active Level: TODO
 #define MC_BLTOUCH_SERVO_PORT          GPIOA         // Servo control (PWM)
 #define MC_BLTOUCH_SERVO_PIN           GPIO_PIN_8
-#define MC_BLTOUCH_KEY_PORT            GPIOC         // Probe signal
-#define MC_BLTOUCH_KEY_PIN             GPIO_PIN_4
+// سیگنال پراب BLTouch در بند 6.5 روی ورودی Z-min (PC4) می‌آید؛ برای همین PinId جداگانه ندارد.
 
 //--------- Filament Sensor ---------
 // Active Level    : HIGH

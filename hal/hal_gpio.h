@@ -16,7 +16,7 @@ enum class PinId : uint8_t {
     TouchCs, SdCs, FlashCs, WifiCs,
     KeyStart, KeyStop, EncBtn,
     LimitXMin, LimitYMin, LimitZMin,
-    FilamentSensor, BltouchKey, SdDet, TouchIrq,
+    FilamentSensor, SdDet, TouchIrq,
     Count  // همیشه آخر؛ تعداد پین‌ها
 };
 
