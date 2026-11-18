@@ -52,6 +52,15 @@ void mc_eguard_snapshot() {
     publish();
 }
 
+void mc_eguard_resync() {
+    for (uint8_t i = 0U; i < 4U; ++i) {
+        const float spmm = mc_mode_spmm_get(i);
+        const int32_t steps = mc_axis_position_steps(static_cast<StepAxis>(i));
+        mc_position_set(i, static_cast<float>(steps + g_off[i]) / spmm);
+    }
+    publish();
+}
+
 void mc_eguard_poll() {
     const uint32_t hits = mc_stepgen_endstop_hits();
     if (hits == g_seen_hits) {

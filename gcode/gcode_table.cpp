@@ -9,6 +9,7 @@ const GcodeEntry kTable[] = {
     { 'G', 0U,   -1, mc_gcode_g0 },
     { 'G', 1U,   -1, mc_gcode_g1 },
     { 'G', 4U,   -1, mc_gcode_g4 },
+    { 'G', 28U,  -1, mc_gcode_g28 },
     { 'G', 90U,  -1, mc_gcode_g90 },
     { 'G', 91U,  -1, mc_gcode_g91 },
     { 'G', 92U,  -1, mc_gcode_g92 },
