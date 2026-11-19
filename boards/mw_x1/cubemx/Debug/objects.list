@@ -12,7 +12,6 @@
 "./Core/Startup/startup_stm32f407vgtx.o"
 "./Core/core_src/adc_sampler.o"
 "./Core/core_src/axis_move.o"
-"./Core/core_src/boot_diag.o"
 "./Core/core_src/command_queue.o"
 "./Core/core_src/core_main.o"
 "./Core/core_src/core_selftest.o"

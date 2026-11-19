@@ -117,6 +117,7 @@ int main(void)
   MX_SPI3_Init();
   MX_FATFS_Init();
   MX_USB_HOST_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   mc_board_safe_state_c();  // دوباره، چون MX_TIM پین هیتر را AF کرده بود
   mc_boot_safe_ok = mc_board_safe_state_check_c();
