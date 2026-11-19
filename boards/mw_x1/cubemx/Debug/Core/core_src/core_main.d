@@ -25,6 +25,7 @@ Core/core_src/core_main.o: \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/output_pwm.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/heater_ex.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_limits.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/../config/mc_config.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/heater_bed.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_protect.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_report.h \
@@ -70,6 +71,7 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Cor
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/output_pwm.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/heater_ex.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_limits.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/../config/mc_config.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/heater_bed.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_protect.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/core/temp_report.h:
