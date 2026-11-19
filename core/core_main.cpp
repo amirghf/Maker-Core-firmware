@@ -39,7 +39,6 @@
 #include "endstop.h"
 #include "endstop_guard.h"
 #include "homing.h"
-#include "boot_diag.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -527,7 +526,6 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_endstop_init();   // بند ۶.۱
     mc::mc_eguard_init();   // بند ۶.۲
     mc::mc_homing_init();   // بند ۶.۳
-    mc::mc_diag_init();   // بند ۶.۴: تشخیص
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -561,7 +559,6 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_endstop_poll, mc::kEndstopPollMs);   // بند ۶.۱: خواندن اندستاپ‌ها هر ۱ میلی‌ثانیه
     mc::g_main.add(mc::mc_eguard_poll, mc::kEguardPollMs);   // بند ۶.۲: پردازش توقف اندستاپ
     mc::g_main.add(mc::mc_homing_poll, 100U);   // بند ۶.۳: متغیرهای debug هومینگ
-    mc::g_main.add(mc::mc_diag_poll, 100U);   // بند ۶.۴: تشخیص
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
