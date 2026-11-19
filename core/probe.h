@@ -1,15 +1,16 @@
 #pragma once
 // کاوش با پراب BLTouch (بند ۶.۶): دستور G30 و آفست پراب (M851). هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 #include "gcode_handlers.h"
 
 namespace mc {
 
-constexpr float kProbeMaxMm          = 10.0f;   // سقف مسافت پایین‌رفتن Z (میلی‌متر)
-constexpr float kProbeApproachMmS    = 1.0f;    // سرعت پایین‌رفتن تا برخورد (میلی‌متر بر ثانیه)
-constexpr float kProbeReturnMmS      = 2.0f;    // سرعت برگشت به ارتفاع شروع (میلی‌متر بر ثانیه)
-constexpr float kProbeOffsetXYMaxMm  = 50.0f;   // حد قدر مطلق آفست X و Y
-constexpr float kProbeOffsetZMaxMm   = 20.0f;   // حد قدر مطلق آفست Z
+constexpr float kProbeMaxMm          = MC_PROBE_MAX_MM;       // سقف مسافت پایین‌رفتن Z (میلی‌متر)
+constexpr float kProbeApproachMmS    = MC_PROBE_APPROACH_MM_S;  // سرعت پایین‌رفتن تا برخورد (میلی‌متر بر ثانیه)
+constexpr float kProbeReturnMmS      = MC_PROBE_RETURN_MM_S;    // سرعت برگشت به ارتفاع شروع (میلی‌متر بر ثانیه)
+constexpr float kProbeOffsetXYMaxMm  = MC_PROBE_OFFSET_XY_LIMIT_MM; // حد قدر مطلق آفست X و Y
+constexpr float kProbeOffsetZMaxMm   = MC_PROBE_OFFSET_Z_LIMIT_MM;  // حد قدر مطلق آفست Z
 
 // یک‌بار هنگام راه‌اندازی. به سخت‌افزار دست نمی‌زند.
 void mc_probe_init();

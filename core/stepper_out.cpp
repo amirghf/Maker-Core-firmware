@@ -1,5 +1,6 @@
 // خروجی‌های استپر در هسته (بند ۵.۱). هیچ هدر ST اینجا include نمی‌شود.
 #include "stepper_out.h"
+#include "../config/mc_config.h"
 #include "step_gen.h"
 #include "hal_time.h"
 #include "error.h"
@@ -26,7 +27,7 @@ namespace {
 constexpr uint32_t kPollMs       = 10U;
 constexpr uint32_t kPerPollMin   = 1U;
 constexpr uint32_t kPerPollMax   = 20U;
-constexpr uint32_t kTestIdleMs   = 30000U;   // فقط برای تست؛ بعداً با M84 و تنظیمات جایگزین می‌شود
+constexpr uint32_t kTestIdleMs   = MC_STEPPER_IDLE_DISABLE_MS;   // خاموشی خودکار درایورها (از config/mc_config.h)
 
 uint32_t g_last_activity_ms = 0U;
 bool     g_prev_arm_was_one = false;

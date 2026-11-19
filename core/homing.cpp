@@ -2,6 +2,7 @@
 // X و Y: (اگر اندستاپ زده است عقب‌نشینی) ← سریع تا اندستاپ ← عقب‌نشینی ← آهسته تا اندستاپ ← موقعیت = صفر.
 // Z: بررسی هوم بودن X و Y ← بررسی حدود نقطه امن (120, 60) ← حرکت X سپس Y به نقطه امن ← Deploy پراب ← سریع ← عقب‌نشینی ← آهسته ← موقعیت = -آفست Z ← Stow پین.
 #include "homing.h"
+#include "../config/mc_config.h"
 #include "machine_state.h"
 #include "motion_modes.h"
 #include "motion_limits.h"
@@ -42,18 +43,18 @@ extern volatile uint32_t mc_dbg_112_mq_run;
 namespace mc {
 namespace {
 
-// سقف مسافت جست‌وجوی مرحله سریع (میلی‌متر): X و Y و Z.
-constexpr float kHomeMaxMm[3]     = { 260.0f, 130.0f, 210.0f };
-// سرعت مرحله سریع (میلی‌متر بر ثانیه)
-constexpr float kHomeFastMmS[3]   = { 10.0f, 4.0f, 2.0f };
-// سرعت مرحله آهسته و عقب‌نشینی (میلی‌متر بر ثانیه)
-constexpr float kHomeSlowMmS[3]   = { 2.0f, 1.0f, 0.5f };
-// فاصله عقب‌نشینی (میلی‌متر)
-constexpr float kHomeBackoffMm[3] = { 5.0f, 5.0f, 3.0f };
+// سقف مسافت جست‌وجوی مرحله سریع (میلی‌متر): X و Y و Z (از config/mc_config.h)
+constexpr float kHomeMaxMm[3]     = { MC_HOME_MAX_X_MM, MC_HOME_MAX_Y_MM, MC_HOME_MAX_Z_MM };
+// سرعت مرحله سریع (میلی‌متر بر ثانیه) (از config/mc_config.h)
+constexpr float kHomeFastMmS[3]   = { MC_HOME_FAST_X_MM_S, MC_HOME_FAST_Y_MM_S, MC_HOME_FAST_Z_MM_S };
+// سرعت مرحله آهسته و عقب‌نشینی (میلی‌متر بر ثانیه) (از config/mc_config.h)
+constexpr float kHomeSlowMmS[3]   = { MC_HOME_SLOW_X_MM_S, MC_HOME_SLOW_Y_MM_S, MC_HOME_SLOW_Z_MM_S };
+// فاصله عقب‌نشینی (میلی‌متر) (از config/mc_config.h)
+constexpr float kHomeBackoffMm[3] = { MC_HOME_BACKOFF_X_MM, MC_HOME_BACKOFF_Y_MM, MC_HOME_BACKOFF_Z_MM };
 
-// نقطه امن هومینگ Z (میلی‌متر)
-constexpr float kSafeHomeXMm      = 120.0f;
-constexpr float kSafeHomeYMm      = 60.0f;
+// نقطه امن هومینگ Z (میلی‌متر) (از config/mc_config.h)
+constexpr float kSafeHomeXMm      = MC_SAFE_HOME_X_MM;
+constexpr float kSafeHomeYMm      = MC_SAFE_HOME_Y_MM;
 
 enum class Stage : uint8_t {
     Idle         = 0,

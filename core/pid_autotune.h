@@ -2,6 +2,7 @@
 // تنظیم خودکار PID هیتر اکسترودر با روش رله (بند ۴.۹). هیچ هدر ST اینجا include نمی‌شود.
 // فقط محاسبه و ماشین حالت است؛ توان را برمی‌گرداند و خودش به خروجی دست نمی‌زند.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
@@ -23,7 +24,7 @@ enum class AutotuneFail : uint8_t {
 };
 
 constexpr int32_t  kAutotuneMinTargetX10  = 500;    // کمترین هدف مجاز ×۱۰ (50 درجه)
-constexpr uint8_t  kAutotuneCyclesDefault = 5;
+constexpr uint8_t  kAutotuneCyclesDefault = MC_AUTOTUNE_CYCLES_DEFAULT;
 constexpr uint8_t  kAutotuneCyclesMin     = 3;
 constexpr uint8_t  kAutotuneCyclesMax     = 20;
 

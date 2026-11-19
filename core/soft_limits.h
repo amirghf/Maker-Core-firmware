@@ -4,14 +4,15 @@
 // بند ۵.۱۱ (G0 و G1) از mc_softlimit_allows و mc_softlimit_allows_all استفاده می‌کند.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
 // مقدارهای پیش‌فرض (اندازه مسیر قابل استفاده دستگاه؛ بعد از هومینگ در مرحله ۶ دقیق می‌شوند)
-constexpr float kSoftLimitDefaultMinMm  = 0.0f;
-constexpr float kSoftLimitDefaultMaxXMm = 240.0f;
-constexpr float kSoftLimitDefaultMaxYMm = 120.0f;
-constexpr float kSoftLimitDefaultMaxZMm = 200.0f;
+constexpr float kSoftLimitDefaultMinMm  = MC_SOFT_MIN_MM;
+constexpr float kSoftLimitDefaultMaxXMm = MC_SOFT_MAX_X_MM;
+constexpr float kSoftLimitDefaultMaxYMm = MC_SOFT_MAX_Y_MM;
+constexpr float kSoftLimitDefaultMaxZMm = MC_SOFT_MAX_Z_MM;
 
 // یک‌بار هنگام راه‌اندازی.
 void mc_softlimit_init();

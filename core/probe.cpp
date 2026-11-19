@@ -1,5 +1,6 @@
 // کاوش با پراب BLTouch و آفست پراب (بند ۶.۶). جزئیات در probe.h.
 #include "probe.h"
+#include "../config/mc_config.h"
 #include "bltouch.h"
 #include "machine_state.h"
 #include "motion_modes.h"
@@ -85,7 +86,7 @@ struct Ctx {
 };
 
 Ctx   g           = {};
-float g_offset[3] = { 0.0f, 0.0f, 0.0f };
+float g_offset[3] = { MC_PROBE_OFFSET_X_MM, MC_PROBE_OFFSET_Y_MM, MC_PROBE_OFFSET_Z_MM };
 
 uint32_t clamp_u32(long v, uint32_t lo, uint32_t hi) {
     if (v < static_cast<long>(lo)) { return lo; }
@@ -196,9 +197,9 @@ GcodeStatus finish_g30() {
 void mc_probe_init() {
     g = Ctx{};
     g.stage = Stage::Idle;
-    g_offset[0] = 0.0f;
-    g_offset[1] = 0.0f;
-    g_offset[2] = 0.0f;
+    g_offset[0] = MC_PROBE_OFFSET_X_MM;
+    g_offset[1] = MC_PROBE_OFFSET_Y_MM;
+    g_offset[2] = MC_PROBE_OFFSET_Z_MM;
     mc_dbg_236_pr_state        = kStateIdle;
     mc_dbg_237_pr_stage        = 0U;
     mc_dbg_238_pr_result       = 0U;

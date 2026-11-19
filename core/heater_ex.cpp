@@ -1,5 +1,6 @@
 // کنترل PID هیتر اکسترودر (بند ۴.۴ و ۴.۹). هیچ هدر ST اینجا include نمی‌شود.
 #include "heater_ex.h"
+#include "../config/mc_config.h"
 #include "pid.h"
 #include "pid_autotune.h"
 #include "thermistor.h"
@@ -9,9 +10,9 @@
 extern "C" {
 volatile uint32_t mc_dbg_03_hex_arm           = 0;      // برای تست: فقط وقتی ۱ باشد PID هیتر اکسترودر کار می‌کند
 volatile int32_t  mc_dbg_01_hex_target_x10    = 0;      // برای تست: دمای هدف ×۱۰ (2000 = 200.0 درجه)؛ صفر یا منفی = خاموش
-volatile uint32_t mc_dbg_39_hex_kp_x100       = 2000;   // Kp ×۱۰۰ (2000 = 20.00)؛ M303 با U1 این را عوض می‌کند
-volatile uint32_t mc_dbg_40_hex_ki_x100       = 100;    // Ki ×۱۰۰ (100 = 1.00)؛ M303 با U1 این را عوض می‌کند
-volatile uint32_t mc_dbg_41_hex_kd_x100       = 10000;  // Kd ×۱۰۰ (10000 = 100.00)؛ M303 با U1 این را عوض می‌کند
+volatile uint32_t mc_dbg_39_hex_kp_x100       = static_cast<uint32_t>((MC_HOTEND_PID_KP * 100.0f) + 0.5f);   // Kp ×۱۰۰ (از config/mc_config.h)؛ M303 با U1 این را عوض می‌کند
+volatile uint32_t mc_dbg_40_hex_ki_x100       = static_cast<uint32_t>((MC_HOTEND_PID_KI * 100.0f) + 0.5f);   // Ki ×۱۰۰ (از config/mc_config.h)؛ M303 با U1 این را عوض می‌کند
+volatile uint32_t mc_dbg_41_hex_kd_x100       = static_cast<uint32_t>((MC_HOTEND_PID_KD * 100.0f) + 0.5f);  // Kd ×۱۰۰ (از config/mc_config.h)؛ M303 با U1 این را عوض می‌کند
 volatile uint32_t mc_dbg_13_hex_state         = 0;      // وضعیت: 0=Off 1=SensorBad 2=FullOn 3=Active(PID) 4=CutOff 5=Tuning
 volatile uint32_t mc_dbg_14_hex_power         = 0;      // توان محاسبه‌شده توسط PID (۰ تا ۲۵۵)
 volatile int32_t  mc_dbg_hex_target_applied_x10 = 0;    // هدفی که واقعاً اعمال می‌شود (بعد از سقف موقت)؛ ۰ وقتی خاموش است

@@ -1,4 +1,5 @@
 #include "gcode_dispatch.h"
+#include "../config/mc_config.h"
 #include "gcode_handlers.h"
 #include "command_queue.h"
 #include "log.h"
@@ -25,7 +26,7 @@ const GcodeEntry*  g_entry  = nullptr;    // ردیف جدول برای دستو
 bool               g_active = false;      // یک دستور در حال اجراست
 bool               g_first  = true;       // بار اول صدا زدن تابع این دستور
 uint32_t           g_busy_ms = 0;         // آخرین باری که پیام busy فرستادیم (یا شروع دستور)
-constexpr uint32_t kBusyIntervalMs = 2000;   // هر ۲ ثانیه یک پیام busy در دستور طولانی
+constexpr uint32_t kBusyIntervalMs = MC_BUSY_REPLY_INTERVAL_MS;   // هر ۲ ثانیه یک پیام busy در دستور طولانی (از config/mc_config.h)
 
 }  // namespace
 

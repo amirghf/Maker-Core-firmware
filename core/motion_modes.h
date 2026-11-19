@@ -2,13 +2,14 @@
 // حالت‌ها و واحدهای حرکت (بند ۵.۸): حالت مطلق/نسبی، حالت E، گام بر میلی‌متر (M92) و سرعت پیشروی (فید).
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
-constexpr float kModeDefaultStepsPerMm = 100.0f;    // گام بر میلی‌متر پیش‌فرض هر محور (تا بند ۷ که ذخیره‌سازی می‌آید)
+constexpr float kModeDefaultStepsPerMm[4] = { MC_STEPS_PER_MM_X, MC_STEPS_PER_MM_Y, MC_STEPS_PER_MM_Z, MC_STEPS_PER_MM_E }; // گام بر میلی‌متر پیش‌فرض هر محور (بند ۶.۷، تا بند ۷ که ذخیره‌سازی می‌آید)
 constexpr float kModeMinStepsPerMm     = 1.0f;      // کمترین مقدار مجاز M92
 constexpr float kModeMaxStepsPerMm     = 10000.0f;  // بیشترین مقدار مجاز M92
-constexpr float kModeDefaultFeedMmMin  = 1500.0f;   // فید پیش‌فرض (میلی‌متر بر دقیقه)
+constexpr float kModeDefaultFeedMmMin  = MC_DEFAULT_FEED_MM_MIN; // فید پیش‌فرض (میلی‌متر بر دقیقه)
 constexpr float kModeMinFeedMmMin      = 1.0f;      // کمترین فید مجاز
 constexpr float kModeMaxFeedMmMin      = 60000.0f;  // بیشترین فید مجاز
 constexpr float kModeMaxPositionMm     = 99999.0f;  // بیشترین قدر مطلق موقعیت مجاز در G92

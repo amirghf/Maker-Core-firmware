@@ -1,5 +1,6 @@
 // حالت‌ها و واحدهای حرکت (بند ۵.۸). فقط حالت و عدد نگه می‌دارد و به سخت‌افزار دست نمی‌زند.
 #include "motion_modes.h"
+#include "../config/mc_config.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -20,8 +21,8 @@ namespace {
 
 bool  g_relative   = false;   // G90 / G91
 bool  g_e_relative = false;   // M82 / M83
-float g_spmm[4]    = { kModeDefaultStepsPerMm, kModeDefaultStepsPerMm,
-                       kModeDefaultStepsPerMm, kModeDefaultStepsPerMm };
+float g_spmm[4]    = { kModeDefaultStepsPerMm[0], kModeDefaultStepsPerMm[1],
+                       kModeDefaultStepsPerMm[2], kModeDefaultStepsPerMm[3] };
 float g_feed_mmin  = kModeDefaultFeedMmMin;
 
 uint32_t to_milli(float v) {
@@ -43,7 +44,7 @@ void refresh_debug() {
 void mc_mode_init() {
     g_relative   = false;
     g_e_relative = false;
-    for (uint8_t i = 0U; i < 4U; ++i) { g_spmm[i] = kModeDefaultStepsPerMm; }
+    for (uint8_t i = 0U; i < 4U; ++i) { g_spmm[i] = kModeDefaultStepsPerMm[i]; }
     g_feed_mmin = kModeDefaultFeedMmMin;
     mc_dbg_142_mm_feed_set = 0U;
     mc_dbg_143_mm_refused  = 0U;
@@ -71,7 +72,7 @@ bool mc_mode_e_relative_get() { return g_relative || g_e_relative; }
 void mc_mode_e_relative_set(bool relative) { g_e_relative = relative; refresh_debug(); }
 
 float mc_mode_spmm_get(uint8_t axis) {
-    if (axis >= 4U) { return kModeDefaultStepsPerMm; }
+    if (axis >= 4U) { return kModeDefaultStepsPerMm[0]; }
     return g_spmm[axis];
 }
 

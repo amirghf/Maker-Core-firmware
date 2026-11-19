@@ -3,6 +3,7 @@
 // سیگنال پراب روی ورودی Z-min (PC4) می‌آید. در این بند فقط سطح خام آن نمایش داده می‌شود.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
@@ -22,10 +23,10 @@ enum class BltouchPin : uint8_t {
 };
 
 constexpr uint32_t kBltouchPeriodMs         = 10U;     // دوره وظیفه زمان‌بند
-constexpr uint32_t kBltouchHoldMs           = 500U;    // مدت ارسال پالس برای هر فرمان
-constexpr uint32_t kBltouchSettleMs         = 300U;    // صبر بعد از Deploy و Stow
-constexpr uint32_t kBltouchSelfTestSettleMs = 3000U;   // صبر بعد از SelfTest
-constexpr uint32_t kBltouchAlarmSettleMs    = 500U;    // صبر بعد از AlarmRelease
+constexpr uint32_t kBltouchHoldMs           = MC_BLTOUCH_HOLD_MS;    // مدت ارسال پالس برای هر فرمان
+constexpr uint32_t kBltouchSettleMs         = MC_BLTOUCH_SETTLE_MS;  // صبر بعد از Deploy و Stow
+constexpr uint32_t kBltouchSelfTestSettleMs = MC_BLTOUCH_SELFTEST_MS; // صبر بعد از SelfTest
+constexpr uint32_t kBltouchAlarmSettleMs    = MC_BLTOUCH_ALARM_MS;   // صبر بعد از AlarmRelease
 
 // یک‌بار هنگام راه‌اندازی. به سخت‌افزار دست نمی‌زند.
 void mc_bltouch_init();

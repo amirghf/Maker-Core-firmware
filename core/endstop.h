@@ -5,12 +5,13 @@
 // بند ۶.۲ و ۶.۳ از mc_endstop_triggered استفاده می‌کنند.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
 constexpr uint8_t  kEndstopAxes       = 3U;   // X=0 ، Y=1 ، Z=2 (مثل kAxisX و kAxisY و kAxisZ)
 constexpr uint32_t kEndstopPollMs     = 1U;   // دوره وظیفه زمان‌بند (میلی‌ثانیه)
-constexpr uint32_t kEndstopDebounceMs = 5U;   // حداقل مدت پایداری سطح برای پذیرفتن تغییر (میلی‌ثانیه)
+constexpr uint32_t kEndstopDebounceMs = MC_ENDSTOP_DEBOUNCE_MS; // حداقل مدت پایداری سطح برای پذیرفتن تغییر (میلی‌ثانیه)
 
 // یک‌بار هنگام راه‌اندازی.
 void mc_endstop_init();

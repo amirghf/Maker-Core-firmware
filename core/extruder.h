@@ -2,10 +2,11 @@
 // اکسترودر (بند ۵.۹): جلوگیری از اکستروژن سرد و دستور M302.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
-constexpr int32_t kExDefaultMinTempX10 = 1700;   // حداقل دمای اکستروژن پیش‌فرض ×۱۰ (170 درجه)
+constexpr int32_t kExDefaultMinTempX10 = MC_EXTRUDE_MIN_TEMP_C * 10;   // حداقل دمای اکستروژن پیش‌فرض ×۱۰ (از config/mc_config.h)
 constexpr int32_t kExMaxMinTempDeg     = 275;    // بیشترین مقدار مجاز S در M302 (درجه)
 
 // یک‌بار هنگام راه‌اندازی.

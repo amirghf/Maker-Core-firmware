@@ -2,6 +2,7 @@
 // صبر برای رسیدن دما به هدف (M109 و M190، بند ۴.۸). بدون حلقه انتظار: هر بار فقط یک بررسی انجام می‌شود.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
@@ -10,8 +11,8 @@ enum class WaitHeater : uint8_t {
     Bed      = 1
 };
 
-constexpr int32_t  kWaitWindowX10   = 10;       // پنجره ±۱ درجه
-constexpr uint32_t kWaitResidencyMs = 10000U;   // باید این مدت پیوسته داخل پنجره بماند
+constexpr int32_t  kWaitWindowX10   = MC_TEMP_WAIT_WINDOW_C * 10;   // پنجره ±درجه (از config/mc_config.h)
+constexpr uint32_t kWaitResidencyMs = MC_TEMP_WAIT_RESIDENCY_MS;  // باید این مدت پیوسته داخل پنجره بماند
 constexpr uint32_t kWaitReportMs    = 1000U;    // هر ۱ ثانیه یک خط گزارش دما
 
 // شروع صبر. target_x10 هدفِ اعمال‌شده (بعد از سقف) و بزرگ‌تر از صفر است.

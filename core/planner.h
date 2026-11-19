@@ -2,6 +2,7 @@
 // برنامه‌ریز حرکت (بند ۵.۷): پروفایل دوزنقه‌ای هر بلوک، سرعت اتصال بین بلوک‌ها (junction deviation)
 // و lookahead. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 #include "motion_queue.h"
 
 namespace mc {
@@ -9,7 +10,7 @@ namespace mc {
 // اندازه صف برنامه‌ریز (توان ۲). ظرفیت واقعی یکی کمتر است، یعنی ۱۵ بلوک.
 constexpr uint8_t kPlanQueueSize = 16U;
 // انحراف اتصال پیش‌فرض (میکرومتر)
-constexpr uint32_t kPlanDefaultJunctionUm = 50U;
+constexpr uint32_t kPlanDefaultJunctionUm = MC_JUNCTION_DEVIATION_UM;
 constexpr uint32_t kPlanMinJunctionUm     = 1U;
 constexpr uint32_t kPlanMaxJunctionUm     = 5000U;
 

@@ -3,26 +3,27 @@
 // این ماژول فقط عدد نگه می‌دارد و به سخت‌افزار دست نمی‌زند.
 // هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+#include "../config/mc_config.h"
 
 namespace mc {
 
 // مقادیر پیش‌فرض (تا بند ۷ که ذخیره‌سازی در EEPROM می‌آید موقت‌اند)
-constexpr float kMlimDefaultFeedXMmS = 20.0f;
-constexpr float kMlimDefaultFeedYMmS = 20.0f;
-constexpr float kMlimDefaultFeedZMmS = 4.0f;
-constexpr float kMlimDefaultFeedEMmS = 10.0f;
+constexpr float kMlimDefaultFeedXMmS = MC_MAX_FEED_X_MM_S;
+constexpr float kMlimDefaultFeedYMmS = MC_MAX_FEED_Y_MM_S;
+constexpr float kMlimDefaultFeedZMmS = MC_MAX_FEED_Z_MM_S;
+constexpr float kMlimDefaultFeedEMmS = MC_MAX_FEED_E_MM_S;
 
 constexpr float kMlimMinFeedMmS = 0.1f;
 constexpr float kMlimMaxFeedMmS = 1000.0f;
 
-constexpr float kMlimDefaultAccPrint   = 100.0f;
-constexpr float kMlimDefaultAccRetract = 100.0f;
-constexpr float kMlimDefaultAccTravel  = 100.0f;
+constexpr float kMlimDefaultAccPrint   = MC_ACCEL_PRINT_MM_S2;
+constexpr float kMlimDefaultAccRetract = MC_ACCEL_RETRACT_MM_S2;
+constexpr float kMlimDefaultAccTravel  = MC_ACCEL_TRAVEL_MM_S2;
 
 constexpr float kMlimMinAccMmS2 = 1.0f;
 constexpr float kMlimMaxAccMmS2 = 10000.0f;
 
-constexpr float kMlimDefaultMinFeedMmS = 1.0f;
+constexpr float kMlimDefaultMinFeedMmS = MC_MIN_FEED_MM_S;
 constexpr float kMlimMinMinFeedMmS     = 0.1f;
 constexpr float kMlimMaxMinFeedMmS     = 100.0f;
 

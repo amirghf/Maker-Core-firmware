@@ -1,5 +1,6 @@
 // تنظیم خودکار PID هیتر اکسترودر با روش رله (بند ۴.۹). هیچ هدر ST اینجا include نمی‌شود.
 #include "pid_autotune.h"
+#include "../config/mc_config.h"
 #include "hal_time.h"
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
@@ -21,7 +22,7 @@ namespace mc {
 namespace {
 
 constexpr float    kPi              = 3.14159265f;
-constexpr uint32_t kTimeoutDefaultS = 1200U;    // زمان کل پیش‌فرض (۲۰ دقیقه)
+constexpr uint32_t kTimeoutDefaultS = MC_AUTOTUNE_TIMEOUT_S;    // زمان کل پیش‌فرض (از config/mc_config.h)
 constexpr uint32_t kMinPhaseMs      = 3000U;    // کمترین مدت هر فاز رله
 constexpr int32_t  kHystX10         = 10;       // هیسترزیس رله ±۱ درجه
 constexpr int32_t  kOverTempX10     = 200;      // بیشتر از ۲۰ درجه بالای هدف = شکست
