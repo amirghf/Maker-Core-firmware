@@ -41,6 +41,7 @@
 #include "homing.h"
 #include "bltouch.h"
 #include "probe.h"
+#include "eeprom_at24.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -530,6 +531,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_homing_init();   // بند ۶.۳
     mc::mc_bltouch_init();   // بند ۶.۵
     mc::mc_probe_init();   // بند ۶.۶
+    mc::mc_eeprom_init();   // بند ۷.۱
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -565,6 +567,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_homing_poll, 100U);   // بند ۶.۳: متغیرهای debug هومینگ
     mc::g_main.add(mc::mc_bltouch_poll, mc::kBltouchPeriodMs);   // بند ۶.۵: BLTouch و متغیرهای debug
     mc::g_main.add(mc::mc_probe_poll, 100U);   // بند ۶.۶: G30 و متغیرهای debug
+    mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);

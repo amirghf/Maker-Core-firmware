@@ -129,3 +129,15 @@
 // ===================== ۹. ارتباط با کامپیوتر (بند ۳) =====================
 // فاصله پیام echo:busy: processing در دستور طولانی (میلی‌ثانیه)
 #define MC_BUSY_REPLY_INTERVAL_MS   2000U
+
+// ===================== ۱۰. ذخیره‌سازی EEPROM (بند ۷.۱) =====================
+#define MC_EEPROM_I2C_ADDR          0x50    // آدرس I2C هفت‌بیتی تراشه AT24C32D (A0 تا A2 به GND)
+#define MC_EEPROM_SIZE_BYTES        4096    // ظرفیت تراشه به بایت (32 کیلوبیت)
+#define MC_EEPROM_PAGE_BYTES        32      // اندازه صفحه نوشتن به بایت (یک نوشتن نباید از مرز صفحه رد شود)
+#define MC_EEPROM_I2C_TIMEOUT_MS    20      // حداکثر زمان یک انتقال I2C (میلی‌ثانیه)
+#define MC_EEPROM_WRITE_TIMEOUT_MS  25      // حداکثر انتظار تراشه بعد از هر نوشتن (میلی‌ثانیه؛ زمان واقعی حدود 5)
+#define MC_EEPROM_POLL_PERIOD_MS    2       // دوره وظیفه درایور (میلی‌ثانیه)
+#define MC_EEPROM_TEST_ADDR         4032    // شروع «ناحیه تست» (آخرین 64 بایت حافظه؛ فقط فرمان‌های آزمایشی اینجا می‌نویسند)
+#define MC_EEPROM_TEST_LEN          64      // اندازه ناحیه تست به بایت
+#define MC_EEPROM_TEST_MIS_OFFSET   20      // فاصله شروع نوشتن «نامرتب» از ابتدای ناحیه تست (برای رد شدن از مرز صفحه)
+#define MC_EEPROM_TEST_MIS_LEN      40      // طول نوشتن «نامرتب» (بایت)
