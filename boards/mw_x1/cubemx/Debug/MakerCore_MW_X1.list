@@ -41,13 +41,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   00067bbf  00000000  00000000  000d7469  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000f8602  00000000  00000000  0013f028  2**0
+ 19 .debug_str    000f8601  00000000  00000000  0013f028  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0023762a  2**0
+ 20 .comment      00000043  00000000  00000000  00237629  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  0000cbb4  00000000  00000000  00237670  2**2
+ 21 .debug_frame  0000cbb4  00000000  00000000  0023766c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000009b  00000000  00000000  00244224  2**0
+ 22 .debug_line_str 0000009b  00000000  00000000  00244220  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -14962,9 +14962,9 @@ GcodeStatus begin_next_axis() {
  8006c64:	0802763c 	.word	0x0802763c
  8006c68:	20002a94 	.word	0x20002a94
  8006c6c:	08027648 	.word	0x08027648
- 8006c70:	42f00000 	.word	0x42f00000
+ 8006c70:	42c80000 	.word	0x42c80000
  8006c74:	3c23d70a 	.word	0x3c23d70a
- 8006c78:	42f00000 	.word	0x42f00000
+ 8006c78:	42c80000 	.word	0x42c80000
  8006c7c:	42700000 	.word	0x42700000
  8006c80:	42700000 	.word	0x42700000
 
@@ -16011,7 +16011,7 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
  8007498:	08026854 	.word	0x08026854
  800749c:	20002acc 	.word	0x20002acc
  80074a0:	0802692c 	.word	0x0802692c
- 80074a4:	42f00000 	.word	0x42f00000
+ 80074a4:	42c80000 	.word	0x42c80000
  80074a8:	42700000 	.word	0x42700000
  80074ac:	08026948 	.word	0x08026948
  80074b0:	08026970 	.word	0x08026970
@@ -21071,7 +21071,7 @@ float mc_mode_spmm_get(uint8_t axis) {
  8009cc0:	46bd      	mov	sp, r7
  8009cc2:	f85d 7b04 	ldr.w	r7, [sp], #4
  8009cc6:	4770      	bx	lr
- 8009cc8:	42c80000 	.word	0x42c80000
+ 8009cc8:	42200000 	.word	0x42200000
  8009ccc:	2000004c 	.word	0x2000004c
 
 08009cd0 <_ZN2mc16mc_mode_spmm_setEhf>:
