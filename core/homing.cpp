@@ -1,6 +1,6 @@
 // هومینگ (بند ۶.۳ و ۶.۷): G28 دو مرحله‌ای X و Y، و هومینگ ایمن Z با BLTouch.
 // X و Y: (اگر اندستاپ زده است عقب‌نشینی) ← سریع تا اندستاپ ← عقب‌نشینی ← آهسته تا اندستاپ ← موقعیت = صفر.
-// Z: بررسی هوم بودن X و Y ← بررسی حدود نقطه امن (100, 60) ← حرکت X سپس Y به نقطه امن ← Deploy پراب ← سریع ← عقب‌نشینی ← آهسته ← موقعیت = -آفست Z ← Stow پین.
+// Z: بررسی هوم بودن X و Y ← بررسی حدود نقطه امن (100, 60) ← حرکت X سپس Y به نقطه امن ← Deploy پراب ← سریع ← عقب‌نشینی ← ریست پراب (AlarmRelease) ← Deploy دوباره ← آهسته ← موقعیت = -آفست Z ← Stow پین.
 #include "homing.h"
 #include "../config/mc_config.h"
 #include "machine_state.h"
@@ -26,8 +26,8 @@
 extern "C" {
 volatile uint32_t mc_dbg_206_hm_state        = 0;    // خواندنی: وضعیت G28 (0 بیکار، 1 در حال کار، 2 تمام شد، 3 خطا)
 volatile uint32_t mc_dbg_207_hm_axis         = 255;  // خواندنی: محوری که الان هوم می‌شود (0 X، 1 Y، 2 Z، 255 هیچ)
-volatile uint32_t mc_dbg_208_hm_stage        = 0;    // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain)
-volatile uint32_t mc_dbg_209_hm_result       = 0;    // خواندنی: نتیجه آخرین G28 (0 هیچ، 1 موفق، 2 kill یا arm نیست، 3 فعال‌شدن درایور ناموفق، 4 اندستاپ گیر کرده، 5 اندستاپ پیدا نشد، 6 صف رد کرد، 7 توقف غیرمنتظره، 8 نیاز به هوم X و Y، 9 نقطه امن خارج از حدود، 10 خطای BLTouch، 11 سیگنال قبل Deploy بالا، 12 سیگنال بعد Deploy بالا، 13 سیگنال بعد Stow بالا)
+volatile uint32_t mc_dbg_208_hm_stage        = 0;    // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy)
+volatile uint32_t mc_dbg_209_hm_result       = 0;    // خواندنی: نتیجه آخرین G28 (0 هیچ، 1 موفق، 2 kill یا arm نیست، 3 فعال‌شدن درایور ناموفق، 4 اندستاپ گیر کرده، 5 اندستاپ پیدا نشد، 6 صف رد کرد، 7 توقف غیرمنتظره، 8 نیاز به هوم X و Y، 9 نقطه امن خارج از حدود، 10 خطای BLTouch، 11 سیگنال قبل Deploy بالا، 12 سیگنال بعد Deploy بالا، 13 سیگنال بعد Stow بالا، 14 سیگنال بعد از ریست و Deploy دوباره بالا)
 volatile uint32_t mc_dbg_210_hm_homed_mask   = 0;    // خواندنی: ماسک محورهای هوم‌شده (بیت ۰ X، ۱ Y، ۲ Z)
 volatile uint32_t mc_dbg_211_hm_runs         = 0;    // خواندنی: تعداد G28 هایی که کامل و موفق تمام شدند
 volatile uint32_t mc_dbg_212_hm_cap_mm       = 0;    // نوشتنی: سقف مسافت جست‌وجوی مرحله سریع (میلی‌متر). 0 = مقدار پیش‌فرض
@@ -35,6 +35,7 @@ volatile uint32_t mc_dbg_213_hm_fast_um      = 0;    // خواندنی: مساف
 volatile uint32_t mc_dbg_214_hm_slow_um      = 0;    // خواندنی: مسافت طی‌شده در آخرین مرحله آهسته (میکرومتر)
 volatile int32_t  mc_dbg_249_hm_z_set_um    = 0;    // خواندنی: موقعیت Z که بعد از آخرین هومینگ موفق Z گذاشته شد (میکرومتر)
 volatile uint32_t mc_dbg_250_hm_post_stow_hi = 0;   // خواندنی: 1 یعنی در آخرین هومینگ Z بعد از اولین Stow سیگنال پراب هنوز بالا بود
+volatile uint32_t mc_dbg_251_hm_reset_cnt    = 0;    // خواندنی: تعداد ریست‌های پراب (AlarmRelease بعد از زدن) در آخرین G28 (برای یک G28 Z درست باید 1 باشد)
 
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
@@ -68,7 +69,9 @@ enum class Stage : uint8_t {
     Deploy       = 8,
     Stow         = 9,
     AlarmRelease = 10,
-    StowAgain    = 11
+    StowAgain    = 11,
+    ProbeReset   = 12,   // بعد از زدن پراب و عقب‌نشینی: فرمان AlarmRelease
+    ProbeRedeploy = 13   // بعد از ریست: Deploy دوباره، بررسی سیگنال، شروع مرحله آهسته
 };
 
 constexpr uint32_t kStateIdle  = 0U;
@@ -89,6 +92,7 @@ constexpr uint32_t kResBltouchFail           = 10U;
 constexpr uint32_t kResSignalPreDeployHigh   = 11U;
 constexpr uint32_t kResSignalPostDeployHigh  = 12U;
 constexpr uint32_t kResSignalPostStowHigh    = 13U;
+constexpr uint32_t kResSignalPostResetHigh   = 14U;
 
 struct Ctx {
     Stage    stage;
@@ -202,6 +206,17 @@ GcodeStatus start_z_bltouch() {
     g.pin_out = true;
     if (!mc_bltouch_start(BltouchCmd::Deploy)) {
         return fail(kResBltouchFail, "homing: bltouch deploy start failed");
+    }
+    return GcodeStatus::Busy;
+}
+
+// بعد از زدن پراب و عقب‌نشینی Z: سیگنال پراب هنوز بالاست (BLTouch حالت آلارم دارد)، پس فرمان ریست (AlarmRelease) می‌فرستد.
+GcodeStatus start_z_probe_reset() {
+    g.stage = Stage::ProbeReset;
+    mc_dbg_208_hm_stage = static_cast<uint32_t>(Stage::ProbeReset);
+    mc_dbg_251_hm_reset_cnt = mc_dbg_251_hm_reset_cnt + 1U;
+    if (!mc_bltouch_start(BltouchCmd::AlarmRelease)) {
+        return fail(kResBltouchFail, "homing: bltouch probe reset start failed");
     }
     return GcodeStatus::Busy;
 }
@@ -363,6 +378,11 @@ GcodeStatus step_move() {
         return start_z_bltouch();
     }
 
+    // Z بعد از عقب‌نشینی: سیگنال پراب هنوز بالاست. اول ریست پراب، نه خطای گیرکردن.
+    if ((g.stage == Stage::BackOff) && (a == 2U)) {
+        return start_z_probe_reset();
+    }
+
     if (mc_endstop_triggered(a)) {
         return fail(kResStuck, "homing: endstop stuck");
     }
@@ -399,6 +419,7 @@ void mc_homing_init() {
     mc_dbg_214_hm_slow_um      = 0U;
     mc_dbg_249_hm_z_set_um     = 0;
     mc_dbg_250_hm_post_stow_hi = 0U;
+    mc_dbg_251_hm_reset_cnt    = 0U;
 }
 
 void mc_homing_poll() {
@@ -426,6 +447,7 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
         mc_dbg_213_hm_fast_um      = 0U;
         mc_dbg_214_hm_slow_um      = 0U;
         mc_dbg_250_hm_post_stow_hi = 0U;
+        mc_dbg_251_hm_reset_cnt    = 0U;
     }
 
     mc_eguard_poll();
@@ -503,6 +525,28 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
                 return fail(kResSignalPostStowHigh, "homing: probe signal high after stow");
             }
             return begin_next_axis();
+
+        case Stage::ProbeReset:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            g.stage = Stage::ProbeRedeploy;
+            mc_dbg_208_hm_stage = static_cast<uint32_t>(Stage::ProbeRedeploy);
+            g.pin_out = true;
+            if (!mc_bltouch_start(BltouchCmd::Deploy)) {
+                return fail(kResBltouchFail, "homing: bltouch redeploy start failed");
+            }
+            return GcodeStatus::Busy;
+
+        case Stage::ProbeRedeploy:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            if (mc_bltouch_pin_state() != BltouchPin::Deployed) {
+                return fail(kResBltouchFail, "homing: bltouch pin not deployed after reset");
+            }
+            if (mc_endstop_triggered(2U)) {
+                return fail(kResSignalPostResetHigh, "homing: probe signal high after reset");
+            }
+            g.mv_axis = 2U;
+            start_move(Stage::Slow, false, mm_to_steps(2U, kHomeBackoffMm[2U] * 2.0f), kHomeSlowMmS[2U]);
+            return GcodeStatus::Busy;
 
         case Stage::Idle:
         default:
