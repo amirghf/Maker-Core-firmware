@@ -43,10 +43,15 @@ const GcodeEntry kTable[] = {
     { 'M', 190U, -1, mc_gcode_m190 },
     { 'M', 303U, -1, mc_gcode_m303 },
     { 'M', 400U, -1, mc_gcode_m400 },
-    { 'M', 9999U, -1, mc_gcode_m9999 },   // دستور تست بند ۳.۵ (موقت)
+    { 'M', 500U, -1, mc_gcode_m500 },
+    { 'M', 501U, -1, mc_gcode_m501 },
+    { 'M', 502U, -1, mc_gcode_m502 },
+    { 'M', 503U, -1, mc_gcode_m503 },
+    { 'M', 9999U, -1, mc_gcode_m9999 }   // دستور تست بند ۳.۵ (موقت)
 };
 
 constexpr uint16_t kTableCount = static_cast<uint16_t>(sizeof(kTable) / sizeof(kTable[0]));
+
 
 }  // namespace
 

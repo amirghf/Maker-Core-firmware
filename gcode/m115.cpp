@@ -11,8 +11,9 @@ namespace {
 // فهرست امکانات (۰ = فعلاً ندارد)
 const char* const kCaps[] = {
     "Cap:SERIAL_XON_XOFF:0",
-    "Cap:EEPROM:0",
+    "Cap:EEPROM:1",
     "Cap:AUTOREPORT_TEMP:1",
+
     "Cap:AUTOREPORT_POS:0",
     "Cap:SDCARD:0",
     "Cap:EMERGENCY_PARSER:0",

@@ -36,4 +36,8 @@ int32_t mc_heater_ex_set_target_x10(int32_t t_x10);
 // ضرایب PID را می‌گذارد (×۱۰۰؛ مثلاً 2000 = 20.00). برای M303 با U1 (بند ۴.۹). تا ریست می‌ماند؛ ذخیره دائمی کار بند ۷.۳ است.
 void mc_heater_ex_set_gains_x100(uint32_t kp_x100, uint32_t ki_x100, uint32_t kd_x100);
 
+// دریافت ضرایب PID فعلی (×۱۰۰؛ مثلاً 2000 = 20.00) (بند ۷.۳)
+void mc_heater_ex_get_gains_x100(uint32_t& kp_x100, uint32_t& ki_x100, uint32_t& kd_x100);
+
+
 }  // namespace mc

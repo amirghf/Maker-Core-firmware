@@ -138,4 +138,11 @@ void mc_heater_ex_set_gains_x100(uint32_t kp_x100, uint32_t ki_x100, uint32_t kd
     mc_dbg_41_hex_kd_x100 = kd_x100;
 }
 
+void mc_heater_ex_get_gains_x100(uint32_t& kp_x100, uint32_t& ki_x100, uint32_t& kd_x100) {
+    kp_x100 = mc_dbg_39_hex_kp_x100;
+    ki_x100 = mc_dbg_40_hex_ki_x100;
+    kd_x100 = mc_dbg_41_hex_kd_x100;
+}
+
+
 }  // namespace mc
