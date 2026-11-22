@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-extern volatile uint32_t mc_dbg_323_ui_page;  // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)
+extern volatile uint32_t mc_dbg_323_ui_page;  // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)، ۲ = صفحه حرکت (بند ۸.۸)
 
 #ifdef __cplusplus
 }

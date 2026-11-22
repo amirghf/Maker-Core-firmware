@@ -236,6 +236,12 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::Back;
+        } else if (g_menu_sel == 0U) { // MOVE (بند ۸.۸)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 0U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenMove;
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;

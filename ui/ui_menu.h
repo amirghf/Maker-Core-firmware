@@ -21,7 +21,8 @@ namespace mc {
 
 enum class MenuResult : uint8_t {
     Stay = 0,
-    Back = 1
+    Back = 1,
+    OpenMove = 2
 };
 
 // آمادگی منو برای نقاشی از اول (انتخاب = ۰، اولین ردیف = ۰، شروع نقاشی مرحله‌ای).

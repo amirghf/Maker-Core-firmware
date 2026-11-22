@@ -4,6 +4,7 @@
 #include "ui_colors.h"
 #include "ui_icons.h"
 #include "ui_menu.h"
+#include "ui_move.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -45,7 +46,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)
 }
 
 namespace mc {
@@ -847,6 +848,11 @@ void mc_ui_init() {
     mc_dbg_326_menu_enter_cnt = 0U;
     mc_dbg_327_menu_enter_idx = 255U;
     mc_dbg_328_menu_force = 0U;
+    mc_dbg_329_move_sel_shown = 12U;
+    mc_dbg_330_move_enter_cnt = 0U;
+    mc_dbg_331_move_enter_idx = 255U;
+    mc_dbg_332_move_force = 0U;
+    mc_dbg_333_move_step_shown = 1U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -899,6 +905,11 @@ void mc_ui_poll() {
     (void)mc_dbg_326_menu_enter_cnt;
     (void)mc_dbg_327_menu_enter_idx;
     (void)mc_dbg_328_menu_force;
+    (void)mc_dbg_329_move_sel_shown;
+    (void)mc_dbg_330_move_enter_cnt;
+    (void)mc_dbg_331_move_enter_idx;
+    (void)mc_dbg_332_move_force;
+    (void)mc_dbg_333_move_step_shown;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -922,12 +933,51 @@ void mc_ui_poll() {
                 mc_dbg_294_ui_state = 3U;     // بازنقاشی کامل صفحه اصلی
                 mc_dbg_319_ui_sel_shown = 4U; // هایلایت روی گزینه منو (اندیس ۴)
             }
+        } else if (m_res == MenuResult::OpenMove) {
+            mc_dbg_323_ui_page = 2U;
+            mc_ui_move_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
             mc_dbg_296_ui_max_tick_us = elapsed_us;
         }
         return;
+    }
+
+    // اگر صفحه فعال صفحه حرکت باشد (۲)
+    if (mc_dbg_323_ui_page == 2U) {
+        const MoveResult mv_res = mc_ui_move_poll();
+        if (mv_res == MoveResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open();
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_332_move_force جهت ورود مستقیم به صفحه حرکت
+    if (mc_dbg_332_move_force != 0U) {
+        const uint32_t f_move = mc_dbg_332_move_force;
+        if ((f_move == 1U) || ((f_move >= 3U) && (f_move <= 15U))) {
+            if (f_move == 1U) {
+                mc_dbg_332_move_force = 0U;
+            }
+            mc_ui_move_open();
+            mc_dbg_323_ui_page = 2U;
+            (void)mc_ui_move_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_move == 2U) {
+            mc_dbg_332_move_force = 0U;
+        }
     }
 
     // اگر صفحه فعال صفحه اصلی باشد (۰)، بررسی mc_dbg_328_menu_force جهت ورود به منو

@@ -1,3 +1,4 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/../core/gfx.h:8:20:constexpr uint16_t mc::mc_rgb565(uint8_t, uint8_t, uint8_t)	1
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:7:6:void mc::mc_ui_fill_circle(uint16_t, uint16_t, uint16_t, uint16_t)	6
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:25:6:void mc::mc_ui_fill_rrect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	13
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:61:6:void mc::mc_ui_card(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	4
@@ -15,3 +16,4 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:276:6:void mc::mc_icon_pause(uint16_t, uint16_t, uint16_t)	1
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:282:6:void mc::mc_icon_stop(uint16_t, uint16_t, uint16_t)	1
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:287:6:void mc::mc_icon_reset(uint16_t, uint16_t, uint16_t)	17
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:321:6:void mc::mc_icon_menu_item(uint16_t, uint16_t, uint8_t, uint16_t, uint16_t)	9
