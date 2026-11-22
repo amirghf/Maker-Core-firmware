@@ -44,6 +44,7 @@
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
+#include "../ui/ui_home.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -455,6 +456,7 @@ void task_splash() {
     const uint32_t result = mc_splash_show();
     mc_dbg_splash_ms = mc_millis() - t0;
     mc_dbg_splash_result = result;
+    mc_ui_notify_splash(result);
 
     if (result == 1U) {
         mc_log(LogLevel::Info, "splash ok");
@@ -536,6 +538,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_eeprom_init();   // بند ۷.۱
     mc::mc_settings_init();   // بند ۷.۲
     mc::mc_cfg_boot_init();   // بند ۷.۴
+    mc::mc_ui_init();   // بند ۸.۶
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -574,6 +577,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_settings_poll, mc::kSettingsPollMs);   // بند ۷.۲: ذخیره‌سازی سخت‌دار
     mc::g_main.add(mc::mc_cfg_boot_poll, mc::kCfgBootPollMs);   // بند ۷.۴: خواندن خودکار تنظیمات هنگام بوت
+    mc::g_main.add(mc::mc_ui_poll, mc::kUiPollMs);   // بند ۸.۶: صفحه اصلی
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
