@@ -33,16 +33,33 @@ volatile uint32_t mc_dbg_303_ui_fake_media      = 0;  // نوشتنی. بیت 0 
 volatile uint32_t mc_dbg_304_ui_fake_fan_pct    = 0;  // نوشتنی. درصد فن 0 تا 100 (فقط وقتی fake روشن است)
 volatile uint32_t mc_dbg_305_ui_fake_axis_en    = 0;  // نوشتنی. بیت 0 تا 3 = X, Y, Z, E (فقط وقتی fake روشن است)
 volatile uint32_t mc_dbg_306_ui_media_shown     = 0;  // خواندنی. بیت 0 = SD موجود، بیت 1 = OTG موجود
+volatile uint32_t mc_dbg_307_ui_fake_axis_dir   = 0;  // نوشتنی. بیت 0 تا 3 = جهت X, Y, Z, E (1 = مثبت، 0 = منفی). فقط وقتی fake روشن است
+volatile uint32_t mc_dbg_308_ui_dir_shown        = 0;  // خواندنی. بیت 0 تا 3 = جهتی که الان برای X, Y, Z, E نشان داده می‌شود (1 = مثبت)
 }
 
 namespace mc {
 namespace {
 
-constexpr uint16_t kTopBarBg    = mc_rgb565(0, 40, 90);
-constexpr uint16_t kCardBg      = mc_rgb565(24, 28, 36);      // پس‌زمینه کارت‌ها و دکمه‌ها
+constexpr uint16_t kScreenBg    = mc_rgb565(8, 10, 16);       // پس‌زمینه اصلی صفحه
+constexpr uint16_t kTopBarBg    = mc_rgb565(16, 44, 104);     // نوار بالا
+constexpr uint16_t kAccentLine  = mc_rgb565(0, 200, 230);     // خط زیر نوار بالا
+constexpr uint16_t kCardBg      = mc_rgb565(22, 27, 38);      // پس‌زمینه کارت‌ها و دکمه‌ها
+constexpr uint16_t kCardBorder  = mc_rgb565(48, 58, 80);      // حاشیه کارت‌ها
+constexpr uint16_t kBarTrack    = mc_rgb565(44, 52, 70);      // شیار نوار پیشرفت
+constexpr uint16_t kBtnBg       = mc_rgb565(10, 30, 70);      // پس‌زمینه دکمه منو
+constexpr uint16_t kBtnBorder   = mc_rgb565(60, 110, 200);    // حاشیه دکمه منو
+constexpr uint16_t kAccNozzle   = mc_rgb565(255, 120, 30);    // رنگ شاخص اکسترودر
+constexpr uint16_t kAccFan      = mc_rgb565(0, 200, 230);     // رنگ شاخص فن
+constexpr uint16_t kAccBed      = mc_rgb565(240, 70, 70);     // رنگ شاخص بستر
+constexpr uint16_t kIconBody    = mc_rgb565(120, 135, 165);   // بدنه آیکون‌ها
+constexpr uint16_t kAxisX       = mc_rgb565(255, 80, 80);     // رنگ محور X
+constexpr uint16_t kAxisY       = mc_rgb565(80, 220, 120);    // رنگ محور Y
+constexpr uint16_t kAxisZ       = mc_rgb565(90, 150, 255);    // رنگ محور Z
+constexpr uint16_t kAxisE       = mc_rgb565(255, 200, 60);    // رنگ محور E
+
 constexpr uint16_t kIconOff     = mc_rgb565(100, 120, 160);   // آیکون SD/OTG وقتی موجود نیست
 constexpr uint16_t kCoolBlue    = mc_rgb565(100, 180, 255);   // حالت COOL
-constexpr uint16_t kCyanPrint   = mc_rgb565(0, 220, 220);     // حالت PRINTING (آینده)
+constexpr uint16_t kCyanPrint   = mc_rgb565(0, 220, 220);     // حالت PRINTING
 constexpr uint16_t kLabelGray   = mc_rgb565(180, 180, 180);
 constexpr uint16_t kDividerGray = mc_rgb565(80, 80, 80);
 constexpr uint16_t kYellowBusy  = mc_rgb565(255, 220, 0);
@@ -56,26 +73,31 @@ struct FieldSpec {
     uint16_t bg_color;
 };
 
-static const FieldSpec kFields[19] = {
-    {  10U,   8U,  0U, 0U, kTopBarBg },  //  0: SD Icon
-    {  46U,   8U,  0U, 0U, kTopBarBg },  //  1: USB Icon
-    {  44U,  66U,  5U, 2U, kCardBg },    //  2: Extruder Status
-    {  14U,  90U,  5U, 2U, kCardBg },    //  3: Extruder Current Temp
-    {  86U,  90U,  3U, 2U, kCardBg },    //  4: Extruder Target Temp
-    { 200U,  66U,  5U, 2U, kCardBg },    //  5: Fan Status
-    { 170U,  90U,  4U, 2U, kCardBg },    //  6: Fan Percent
-    { 356U,  66U,  5U, 2U, kCardBg },    //  7: Bed Status
-    { 326U,  90U,  5U, 2U, kCardBg },    //  8: Bed Current Temp
-    { 398U,  90U,  3U, 2U, kCardBg },    //  9: Bed Target Temp
-    {  40U, 126U,  3U, 2U, kCardBg },    // 10: Axis X Status (special LED)
-    { 160U, 126U,  3U, 2U, kCardBg },    // 11: Axis Y Status (special LED)
-    { 280U, 126U,  3U, 2U, kCardBg },    // 12: Axis Z Status (special LED)
-    { 400U, 126U,  3U, 2U, kCardBg },    // 13: Axis E Status (special LED)
-    {  16U, 152U,  8U, 2U, kCardBg },    // 14: Axis X Position
-    { 136U, 152U,  8U, 2U, kCardBg },    // 15: Axis Y Position
-    { 256U, 152U,  8U, 2U, kCardBg },    // 16: Axis Z Position
-    { 376U, 152U,  8U, 2U, kCardBg },    // 17: Axis E Position
-    { 150U, 190U, 10U, 3U, kColorBlack } // 18: Printer Status
+constexpr uint8_t kFieldCount = 22U;
+
+static const FieldSpec kFields[kFieldCount] = {
+    {  10U,   6U,  0U, 0U, kTopBarBg },  //  0: SD Icon
+    {  46U,   6U,  0U, 0U, kTopBarBg },  //  1: USB Icon
+    {  54U,  68U,  5U, 2U, kCardBg },    //  2: Extruder Status
+    {  16U,  90U,  5U, 2U, kCardBg },    //  3: Extruder Current Temp
+    {  90U,  90U,  3U, 2U, kCardBg },    //  4: Extruder Target Temp
+    {  16U, 110U,  0U, 0U, kCardBg },    //  5: Extruder Progress Bar
+    { 211U,  68U,  5U, 2U, kCardBg },    //  6: Fan Status
+    { 173U,  84U,  4U, 3U, kCardBg },    //  7: Fan Percent
+    { 173U, 110U,  0U, 0U, kCardBg },    //  8: Fan Progress Bar
+    { 368U,  68U,  5U, 2U, kCardBg },    //  9: Bed Status
+    { 330U,  90U,  5U, 2U, kCardBg },    // 10: Bed Current Temp
+    { 404U,  90U,  3U, 2U, kCardBg },    // 11: Bed Target Temp
+    { 330U, 110U,  0U, 0U, kCardBg },    // 12: Bed Progress Bar
+    {  40U, 140U,  3U, 2U, kCardBg },    // 13: Axis X Status + LED + Dir
+    { 158U, 140U,  3U, 2U, kCardBg },    // 14: Axis Y Status + LED + Dir
+    { 276U, 140U,  3U, 2U, kCardBg },    // 15: Axis Z Status + LED + Dir
+    { 394U, 140U,  3U, 2U, kCardBg },    // 16: Axis E Status + LED + Dir
+    {  16U, 166U,  8U, 2U, kCardBg },    // 17: Axis X Position
+    { 134U, 166U,  8U, 2U, kCardBg },    // 18: Axis Y Position
+    { 252U, 166U,  8U, 2U, kCardBg },    // 19: Axis Z Position
+    { 370U, 166U,  8U, 2U, kCardBg },    // 20: Axis E Position
+    { 180U, 204U, 10U, 2U, kCardBg }     // 21: Printer Status
 };
 
 struct FieldCache {
@@ -85,7 +107,7 @@ struct FieldCache {
     bool     dirty;
 };
 
-static FieldCache g_field_cache[19];
+static FieldCache g_field_cache[kFieldCount];
 static uint32_t   g_splash_hold_start_ms = 0U;
 static uint8_t    g_static_frame_step    = 0U;
 static uint8_t    g_current_field_idx    = 0U;
@@ -136,7 +158,7 @@ void center_and_copy(char* dst, uint16_t cap, const char* src, uint8_t target_wi
     dst[pos] = '\0';
 }
 
-// تولید متن و رنگ فیلدهای متنی (۲ تا ۹، ۱۴ تا ۱۸)
+// تولید متن و رنگ فیلدهای متنی
 void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
     char raw[16];
     raw[0] = '\0';
@@ -217,7 +239,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 5: { // وضعیت فن
+        case 6: { // وضعیت فن
             uint32_t pct = 0U;
             if (fake) {
                 pct = (mc_dbg_304_ui_fake_fan_pct > 100U) ? 100U : mc_dbg_304_ui_fake_fan_pct;
@@ -235,7 +257,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 6: { // درصد فن
+        case 7: { // درصد فن
             uint32_t pct = 0U;
             if (fake) {
                 pct = (mc_dbg_304_ui_fake_fan_pct > 100U) ? 100U : mc_dbg_304_ui_fake_fan_pct;
@@ -252,7 +274,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 7: { // وضعیت بستر
+        case 9: { // وضعیت بستر
             int32_t cur_x10 = 0;
             int32_t tgt_x10 = 0;
             bool sensor_ok = false;
@@ -285,7 +307,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 8: { // دمای فعلی بستر
+        case 10: { // دمای فعلی بستر
             if (fake) {
                 if (mc_dbg_299_ui_fake_bed_x10 == -9999) {
                     mc_fmt_text(raw, sizeof(raw), 0U, "---");
@@ -310,7 +332,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 9: { // هدف بستر
+        case 11: { // هدف بستر
             const int32_t tgt_x10 = fake ? mc_dbg_301_ui_fake_bed_tgt_x10 : mc_heater_bed_target_x10();
             if (tgt_x10 <= 0) {
                 mc_fmt_text(raw, sizeof(raw), 0U, "0");
@@ -324,11 +346,11 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 14:
-        case 15:
-        case 16:
-        case 17: { // موقعیت محورها X، Y، Z، E
-            const uint8_t axis_code = idx - 14U;
+        case 17:
+        case 18:
+        case 19:
+        case 20: { // موقعیت محورها X، Y، Z، E
+            const uint8_t axis_code = idx - 17U;
             const float pos = mc_position_get(axis_code);
             mc_fmt_float(raw, sizeof(raw), 0U, pos, 2U);
             out_fg = kColorWhite;
@@ -336,7 +358,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
-        case 18: { // وضعیت پرینتر
+        case 21: { // وضعیت پرینتر
             uint32_t st_code = 0U;
             if (fake && (mc_dbg_302_ui_fake_status != 0U)) {
                 st_code = mc_dbg_302_ui_fake_status;
@@ -379,89 +401,102 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
 void draw_static_step(uint8_t step) {
     switch (step) {
         case 0:
-            mc_display_fill_screen(kColorBlack);
+            mc_display_fill_screen(kScreenBg);
             break;
         case 1:
-            mc_gfx_fill_rect(0U, 0U, 480U, 40U, kTopBarBg);
+            mc_gfx_fill_rect(0U, 0U, 480U, 36U, kTopBarBg);
+            mc_gfx_fill_rect(0U, 36U, 480U, 2U, kAccentLine);
             break;
         case 2:
-            mc_icon_menu(446U, 8U, kColorWhite);
+            mc_ui_card(432U, 4U, 40U, 28U, 6U, kBtnBg, kBtnBorder);
+            mc_icon_menu(440U, 6U, kColorWhite);
             break;
         case 3: {
             char dev_name[25];
             mc_fmt_text(dev_name, sizeof(dev_name), 0U, MC_DEVICE_NAME);
             const uint16_t tw = mc_gfx_text_width(dev_name, 2U);
             const uint16_t nx = (tw < 480U) ? static_cast<uint16_t>((480U - tw) / 2U) : 0U;
-            mc_gfx_text(nx, 12U, dev_name, kColorWhite, kTopBarBg, 2U);
+            mc_gfx_text(nx, 10U, dev_name, kColorWhite, kTopBarBg, 2U);
             break;
         }
-        case 4:
-            mc_gfx_fill_rect(8U, 48U, 152U, 64U, kCardBg);
-            mc_gfx_rect(8U, 48U, 152U, 64U, kDividerGray);
-            mc_icon_nozzle(14U, 52U, kColorWhite);
-            mc_gfx_text(44U, 54U, "NOZZLE", kLabelGray, kCardBg, 1U);
-            mc_gfx_text(74U, 90U, "/", kColorWhite, kCardBg, 2U);
-            mc_gfx_text(122U, 90U, "C", kColorWhite, kCardBg, 2U);
+        case 4: // کارت اکسترودر
+            mc_ui_card(8U, 44U, 150U, 80U, 8U, kCardBg, kCardBorder);
+            mc_gfx_fill_rect(18U, 45U, 130U, 2U, kAccNozzle);
+            mc_icon_nozzle(16U, 52U, kAccNozzle, kIconBody);
+            mc_gfx_text(54U, 54U, "NOZZLE", kLabelGray, kCardBg, 1U);
+            mc_gfx_text(78U, 90U, "/", kColorWhite, kCardBg, 2U);
+            mc_gfx_text(130U, 90U, "C", kColorWhite, kCardBg, 2U);
+            mc_gfx_fill_rect(16U, 110U, 134U, 6U, kBarTrack);
             break;
-        case 5:
-            mc_gfx_fill_rect(164U, 48U, 152U, 64U, kCardBg);
-            mc_gfx_rect(164U, 48U, 152U, 64U, kDividerGray);
-            mc_icon_fan(170U, 52U, kColorWhite, kCardBg);
-            mc_gfx_text(200U, 54U, "FAN", kLabelGray, kCardBg, 1U);
+        case 5: // کارت فن
+            mc_ui_card(165U, 44U, 150U, 80U, 8U, kCardBg, kCardBorder);
+            mc_gfx_fill_rect(175U, 45U, 130U, 2U, kAccFan);
+            mc_icon_fan(173U, 52U, kAccFan, kIconBody, kCardBg);
+            mc_gfx_text(211U, 54U, "FAN", kLabelGray, kCardBg, 1U);
+            mc_gfx_fill_rect(173U, 110U, 134U, 6U, kBarTrack);
             break;
-        case 6:
-            mc_gfx_fill_rect(320U, 48U, 152U, 64U, kCardBg);
-            mc_gfx_rect(320U, 48U, 152U, 64U, kDividerGray);
-            mc_icon_bed(326U, 52U, kColorWhite);
-            mc_gfx_text(356U, 54U, "BED", kLabelGray, kCardBg, 1U);
-            mc_gfx_text(386U, 90U, "/", kColorWhite, kCardBg, 2U);
-            mc_gfx_text(434U, 90U, "C", kColorWhite, kCardBg, 2U);
+        case 6: // کارت بستر
+            mc_ui_card(322U, 44U, 150U, 80U, 8U, kCardBg, kCardBorder);
+            mc_gfx_fill_rect(332U, 45U, 130U, 2U, kAccBed);
+            mc_icon_bed(330U, 52U, kAccBed, kIconBody);
+            mc_gfx_text(368U, 54U, "BED", kLabelGray, kCardBg, 1U);
+            mc_gfx_text(392U, 90U, "/", kColorWhite, kCardBg, 2U);
+            mc_gfx_text(444U, 90U, "C", kColorWhite, kCardBg, 2U);
+            mc_gfx_fill_rect(330U, 110U, 134U, 6U, kBarTrack);
             break;
-        case 7:
-            mc_gfx_fill_rect(8U, 120U, 112U, 56U, kCardBg);
-            mc_gfx_rect(8U, 120U, 112U, 56U, kDividerGray);
-            mc_gfx_text(16U, 126U, "X", kLabelGray, kCardBg, 2U);
+        case 7: // سلول محور X
+            mc_ui_card(8U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_gfx_text(16U, 138U, "X", kAxisX, kCardBg, 3U);
             break;
-        case 8:
-            mc_gfx_fill_rect(128U, 120U, 112U, 56U, kCardBg);
-            mc_gfx_rect(128U, 120U, 112U, 56U, kDividerGray);
-            mc_gfx_text(136U, 126U, "Y", kLabelGray, kCardBg, 2U);
+        case 8: // سلول محور Y
+            mc_ui_card(126U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_gfx_text(134U, 138U, "Y", kAxisY, kCardBg, 3U);
             break;
-        case 9:
-            mc_gfx_fill_rect(248U, 120U, 112U, 56U, kCardBg);
-            mc_gfx_rect(248U, 120U, 112U, 56U, kDividerGray);
-            mc_gfx_text(256U, 126U, "Z", kLabelGray, kCardBg, 2U);
+        case 9: // سلول محور Z
+            mc_ui_card(244U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_gfx_text(252U, 138U, "Z", kAxisZ, kCardBg, 3U);
             break;
-        case 10:
-            mc_gfx_fill_rect(368U, 120U, 112U, 56U, kCardBg);
-            mc_gfx_rect(368U, 120U, 112U, 56U, kDividerGray);
-            mc_gfx_text(376U, 126U, "E", kLabelGray, kCardBg, 2U);
+        case 10: // سلول محور E
+            mc_ui_card(362U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_gfx_text(370U, 138U, "E", kAxisE, kCardBg, 3U);
             break;
-        case 11:
-            mc_gfx_rect(140U, 184U, 200U, 36U, kDividerGray);
+        case 11: // قاب وضعیت پرینتر
+            mc_ui_card(130U, 196U, 220U, 32U, 10U, kCardBg, kCardBorder);
             break;
-        case 12:
-            mc_gfx_fill_rect(8U, 228U, 104U, 64U, kCardBg);
-            mc_gfx_rect(8U, 228U, 104U, 64U, kDividerGray);
-            mc_icon_play(44U, 244U, kColorGreen);
+        case 12: { // دکمه START
+            mc_ui_card(8U, 236U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_icon_play(47U, 242U, kColorGreen);
+            const uint16_t tw = mc_gfx_text_width("START", 1U);
+            const uint16_t tx = static_cast<uint16_t>(8U + (110U - tw) / 2U);
+            mc_gfx_text(tx, 280U, "START", kLabelGray, kCardBg, 1U);
             break;
-        case 13:
-            mc_gfx_fill_rect(128U, 228U, 104U, 64U, kCardBg);
-            mc_gfx_rect(128U, 228U, 104U, 64U, kDividerGray);
-            mc_icon_pause(164U, 244U, kYellowBusy);
+        }
+        case 13: { // دکمه PAUSE
+            mc_ui_card(126U, 236U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_icon_pause(165U, 242U, kYellowBusy);
+            const uint16_t tw = mc_gfx_text_width("PAUSE", 1U);
+            const uint16_t tx = static_cast<uint16_t>(126U + (110U - tw) / 2U);
+            mc_gfx_text(tx, 280U, "PAUSE", kLabelGray, kCardBg, 1U);
             break;
-        case 14:
-            mc_gfx_fill_rect(248U, 228U, 104U, 64U, kCardBg);
-            mc_gfx_rect(248U, 228U, 104U, 64U, kDividerGray);
-            mc_icon_stop(284U, 244U, kColorRed);
+        }
+        case 14: { // دکمه STOP
+            mc_ui_card(244U, 236U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_icon_stop(283U, 242U, kColorRed);
+            const uint16_t tw = mc_gfx_text_width("STOP", 1U);
+            const uint16_t tx = static_cast<uint16_t>(244U + (110U - tw) / 2U);
+            mc_gfx_text(tx, 280U, "STOP", kLabelGray, kCardBg, 1U);
             break;
-        case 15:
-            mc_gfx_fill_rect(368U, 228U, 104U, 64U, kCardBg);
-            mc_gfx_rect(368U, 228U, 104U, 64U, kDividerGray);
-            mc_icon_reset(404U, 244U, kOrangeTgt);
+        }
+        case 15: { // دکمه RESET
+            mc_ui_card(362U, 236U, 110U, 56U, 8U, kCardBg, kCardBorder);
+            mc_icon_reset(401U, 242U, kOrangeTgt);
+            const uint16_t tw = mc_gfx_text_width("RESET", 1U);
+            const uint16_t tx = static_cast<uint16_t>(362U + (110U - tw) / 2U);
+            mc_gfx_text(tx, 280U, "RESET", kLabelGray, kCardBg, 1U);
             break;
+        }
         case 16:
-            mc_gfx_text(8U, 304U, MC_FIRMWARE_NAME " " MC_VERSION_STRING, kDividerGray, kColorBlack, 1U);
+            mc_gfx_text(8U, 304U, MC_FIRMWARE_NAME " " MC_VERSION_STRING, kDividerGray, kScreenBg, 1U);
             break;
         default:
             break;
@@ -503,16 +538,126 @@ void update_one_field() {
             cache.dirty = false;
             mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
         }
-    } else if (idx >= 10U && idx <= 13U) { // وضعیت و LED محورهای X، Y، Z، E
+    } else if (idx == 5U) { // نوار پیشرفت اکسترودر
+        const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+        int32_t cur_x10 = 0;
+        int32_t tgt_x10 = 0;
+        bool sensor_ok = false;
+        if (fake) {
+            cur_x10 = mc_dbg_298_ui_fake_noz_x10;
+            tgt_x10 = mc_dbg_300_ui_fake_noz_tgt_x10;
+            sensor_ok = (cur_x10 != -9999);
+        } else {
+            sensor_ok = mc_temp_get_x10(AdcChannel::TempExtruder, &cur_x10);
+            tgt_x10 = mc_heater_ex_target_x10();
+        }
+
+        uint16_t fill_px = 0U;
+        uint16_t fill_color = kAccNozzle;
+
+        if (sensor_ok && (tgt_x10 > 0) && (cur_x10 > 0)) {
+            int32_t px = (cur_x10 * 134) / tgt_x10;
+            if (px < 0) { px = 0; }
+            if (px > 134) { px = 134; }
+            fill_px = static_cast<uint16_t>(px);
+
+            if (cur_x10 < tgt_x10 - MC_UI_TEMP_NEAR_X10) {
+                fill_color = kAccNozzle;
+            } else if (cur_x10 > tgt_x10 + MC_UI_TEMP_NEAR_X10) {
+                fill_color = kCoolBlue;
+            } else {
+                fill_color = kColorGreen;
+            }
+        }
+
+        const uint8_t state = static_cast<uint8_t>(fill_px);
+        if (cache.dirty || (cache.state != state) || (cache.fg_color != fill_color)) {
+            mc_ui_progress(spec.x, spec.y, 134U, 6U, fill_px, fill_color, kBarTrack);
+            cache.state = state;
+            cache.fg_color = fill_color;
+            cache.dirty = false;
+            mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
+        }
+    } else if (idx == 8U) { // نوار پیشرفت فن
+        const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+        uint32_t pct = 0U;
+        if (fake) {
+            pct = (mc_dbg_304_ui_fake_fan_pct > 100U) ? 100U : mc_dbg_304_ui_fake_fan_pct;
+        } else {
+            pct = static_cast<uint32_t>((mc_fan_get() * 100U + 127U) / 255U);
+        }
+
+        uint16_t fill_px = static_cast<uint16_t>((pct * 134U) / 100U);
+        if (fill_px > 134U) { fill_px = 134U; }
+
+        const uint8_t state = static_cast<uint8_t>(fill_px);
+        if (cache.dirty || (cache.state != state)) {
+            mc_ui_progress(spec.x, spec.y, 134U, 6U, fill_px, kAccFan, kBarTrack);
+            cache.state = state;
+            cache.fg_color = kAccFan;
+            cache.dirty = false;
+            mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
+        }
+    } else if (idx == 12U) { // نوار پیشرفت بستر
+        const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+        int32_t cur_x10 = 0;
+        int32_t tgt_x10 = 0;
+        bool sensor_ok = false;
+        if (fake) {
+            cur_x10 = mc_dbg_299_ui_fake_bed_x10;
+            tgt_x10 = mc_dbg_301_ui_fake_bed_tgt_x10;
+            sensor_ok = (cur_x10 != -9999);
+        } else {
+            sensor_ok = mc_temp_get_x10(AdcChannel::TempBed, &cur_x10);
+            tgt_x10 = mc_heater_bed_target_x10();
+        }
+
+        uint16_t fill_px = 0U;
+        uint16_t fill_color = kAccBed;
+
+        if (sensor_ok && (tgt_x10 > 0) && (cur_x10 > 0)) {
+            int32_t px = (cur_x10 * 134) / tgt_x10;
+            if (px < 0) { px = 0; }
+            if (px > 134) { px = 134; }
+            fill_px = static_cast<uint16_t>(px);
+
+            if (cur_x10 < tgt_x10 - MC_UI_TEMP_NEAR_X10) {
+                fill_color = kAccBed;
+            } else if (cur_x10 > tgt_x10 + MC_UI_TEMP_NEAR_X10) {
+                fill_color = kCoolBlue;
+            } else {
+                fill_color = kColorGreen;
+            }
+        }
+
+        const uint8_t state = static_cast<uint8_t>(fill_px);
+        if (cache.dirty || (cache.state != state) || (cache.fg_color != fill_color)) {
+            mc_ui_progress(spec.x, spec.y, 134U, 6U, fill_px, fill_color, kBarTrack);
+            cache.state = state;
+            cache.fg_color = fill_color;
+            cache.dirty = false;
+            mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
+        }
+    } else if (idx >= 13U && idx <= 16U) { // وضعیت، LED و جهت محورهای X، Y، Z، E
         char raw[16];
         char new_text[16];
         uint16_t new_fg = kColorWhite;
 
-        const uint8_t axis_idx = idx - 10U;
+        const uint8_t axis_idx = idx - 13U;
         const StepAxis axis = static_cast<StepAxis>(axis_idx);
         const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+
         const bool enabled = fake ? ((mc_dbg_305_ui_fake_axis_en & (1U << axis_idx)) != 0U)
                                   : mc_stepper_is_enabled(axis);
+        const bool dir_pos = fake ? ((mc_dbg_307_ui_fake_axis_dir & (1U << axis_idx)) != 0U)
+                                  : mc_stepper_get_dir(axis);
+
+        // بروزرسانی متغیر دیباگ mc_dbg_308_ui_dir_shown
+        if (dir_pos) {
+            mc_dbg_308_ui_dir_shown |= (1U << axis_idx);
+        } else {
+            mc_dbg_308_ui_dir_shown &= ~(1U << axis_idx);
+        }
 
         if (enabled) {
             mc_fmt_text(raw, sizeof(raw), 0U, "ON");
@@ -523,13 +668,17 @@ void update_one_field() {
         }
         pad_and_copy(new_text, sizeof(new_text), raw, spec.width);
 
-        const uint8_t state = enabled ? 1U : 0U;
+        const uint8_t state = (enabled ? 1U : 0U) | (dir_pos ? 2U : 0U);
+        const uint16_t cell_x0 = static_cast<uint16_t>(8U + axis_idx * 118U);
         const uint16_t led_color = enabled ? kColorGreen : kDividerGray;
-        const uint16_t led_cx = static_cast<uint16_t>(spec.x + 64U);
+        const uint16_t dir_color = !enabled ? kDividerGray : (dir_pos ? kColorGreen : kOrangeTgt);
 
         if (cache.dirty || (cache.fg_color != new_fg) || (cache.state != state) || (strcmp(cache.text, new_text) != 0)) {
             mc_gfx_text(spec.x, spec.y, new_text, new_fg, spec.bg_color, spec.scale);
-            mc_ui_fill_circle(led_cx, 134U, 6U, led_color);
+            mc_gfx_fill_rect(cell_x0 + 74U, 142U, 12U, 12U, kCardBg);
+            mc_icon_dir(cell_x0 + 74U, 142U, dir_pos, dir_color);
+            mc_ui_fill_circle(cell_x0 + 98U, 148U, 5U, led_color);
+
             for (uint16_t i = 0U; i < sizeof(cache.text); ++i) {
                 cache.text[i] = new_text[i];
                 if (new_text[i] == '\0') { break; }
@@ -556,7 +705,7 @@ void update_one_field() {
         }
     }
 
-    g_current_field_idx = static_cast<uint8_t>((g_current_field_idx + 1U) % 19U);
+    g_current_field_idx = static_cast<uint8_t>((g_current_field_idx + 1U) % kFieldCount);
 }
 
 }  // namespace
@@ -576,8 +725,10 @@ void mc_ui_init() {
     mc_dbg_304_ui_fake_fan_pct = 0U;
     mc_dbg_305_ui_fake_axis_en = 0U;
     mc_dbg_306_ui_media_shown = 0U;
+    mc_dbg_307_ui_fake_axis_dir = 0U;
+    mc_dbg_308_ui_dir_shown = 0U;
 
-    for (uint8_t i = 0U; i < 19U; ++i) {
+    for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
         g_field_cache[i].fg_color = 0xFFFFU;
         g_field_cache[i].state = 0xFFU;
@@ -613,6 +764,8 @@ void mc_ui_poll() {
     (void)mc_dbg_304_ui_fake_fan_pct;
     (void)mc_dbg_305_ui_fake_axis_en;
     (void)mc_dbg_306_ui_media_shown;
+    (void)mc_dbg_307_ui_fake_axis_dir;
+    (void)mc_dbg_308_ui_dir_shown;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -637,7 +790,7 @@ void mc_ui_poll() {
                 draw_static_step(g_static_frame_step);
                 g_static_frame_step++;
                 if (g_static_frame_step >= 17U) {
-                    for (uint8_t i = 0U; i < 19U; ++i) {
+                    for (uint8_t i = 0U; i < kFieldCount; ++i) {
                         g_field_cache[i].dirty = true;
                         g_field_cache[i].text[0] = '\0';
                         g_field_cache[i].fg_color = 0xFFFFU;
