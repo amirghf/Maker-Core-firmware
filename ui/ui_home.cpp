@@ -6,6 +6,8 @@
 #include "ui_menu.h"
 #include "ui_move.h"
 #include "ui_extruder.h"
+#include "ui_bed.h"
+#include "ui_sensors.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -47,7 +49,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = صفحه حرکت، 3 = صفحه اکسترودر، 4 = صفحه داغ، 5 = صفحه سنسورها
 }
 
 namespace mc {
@@ -917,6 +919,15 @@ void mc_ui_poll() {
     (void)mc_dbg_337_ex_force;
     (void)mc_dbg_338_ex_feed_shown;
     (void)mc_dbg_339_ex_fake_rule;
+    (void)mc_dbg_340_bed_sel_shown;
+    (void)mc_dbg_341_bed_enter_cnt;
+    (void)mc_dbg_342_bed_enter_idx;
+    (void)mc_dbg_343_bed_force;
+    (void)mc_dbg_344_sen_sel_shown;
+    (void)mc_dbg_345_sen_enter_cnt;
+    (void)mc_dbg_346_sen_enter_idx;
+    (void)mc_dbg_347_sen_force;
+    (void)mc_dbg_348_sen_fake;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -946,6 +957,12 @@ void mc_ui_poll() {
         } else if (m_res == MenuResult::OpenExtruder) {
             mc_dbg_323_ui_page = 3U;
             mc_ui_extruder_open();
+        } else if (m_res == MenuResult::OpenBed) {
+            mc_dbg_323_ui_page = 4U;
+            mc_ui_bed_open();
+        } else if (m_res == MenuResult::OpenSensors) {
+            mc_dbg_323_ui_page = 5U;
+            mc_ui_sensors_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
@@ -976,6 +993,38 @@ void mc_ui_poll() {
         if (ex_res == ExtruderResult::Back) {
             mc_dbg_323_ui_page = 1U;
             mc_ui_menu_open_at(1U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه داغ باشد (۴)
+    if (mc_dbg_323_ui_page == 4U) {
+        const BedResult bed_res = mc_ui_bed_poll();
+        if (bed_res == BedResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(2U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه سنسورها باشد (۵)
+    if (mc_dbg_323_ui_page == 5U) {
+        const SensorsResult sen_res = mc_ui_sensors_poll();
+        if (sen_res == SensorsResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(3U);
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
         }
@@ -1023,6 +1072,46 @@ void mc_ui_poll() {
             return;
         } else if (f_ex == 2U) {
             mc_dbg_337_ex_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_343_bed_force جهت ورود مستقیم به صفحه داغ
+    if (mc_dbg_343_bed_force != 0U) {
+        const uint32_t f_bed = mc_dbg_343_bed_force;
+        if ((f_bed == 1U) || ((f_bed >= 3U) && (f_bed <= 6U))) {
+            if (f_bed == 1U) {
+                mc_dbg_343_bed_force = 0U;
+            }
+            mc_ui_bed_open();
+            mc_dbg_323_ui_page = 4U;
+            (void)mc_ui_bed_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_bed == 2U) {
+            mc_dbg_343_bed_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_347_sen_force جهت ورود مستقیم به صفحه سنسورها
+    if (mc_dbg_347_sen_force != 0U) {
+        const uint32_t f_sen = mc_dbg_347_sen_force;
+        if ((f_sen == 1U) || ((f_sen >= 3U) && (f_sen <= 7U))) {
+            if (f_sen == 1U) {
+                mc_dbg_347_sen_force = 0U;
+            }
+            mc_ui_sensors_open();
+            mc_dbg_323_ui_page = 5U;
+            (void)mc_ui_sensors_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_sen == 2U) {
+            mc_dbg_347_sen_force = 0U;
         }
     }
 

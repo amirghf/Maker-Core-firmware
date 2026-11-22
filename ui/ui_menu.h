@@ -23,7 +23,9 @@ enum class MenuResult : uint8_t {
     Stay = 0,
     Back = 1,
     OpenMove = 2,
-    OpenExtruder = 3
+    OpenExtruder = 3,
+    OpenBed = 4,
+    OpenSensors = 5
 };
 
 // آمادگی منو برای نقاشی از اول (انتخاب = ۰، اولین ردیف = ۰، شروع نقاشی مرحله‌ای).

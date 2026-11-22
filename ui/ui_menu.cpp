@@ -255,6 +255,18 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::OpenExtruder;
+        } else if (g_menu_sel == 2U) { // HOT BED (بند ۸.۱۰)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 2U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenBed;
+        } else if (g_menu_sel == 3U) { // SENSORS (بند ۸.۱۲)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 3U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenSensors;
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;
