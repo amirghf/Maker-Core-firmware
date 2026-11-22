@@ -149,7 +149,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     mc_gpio_debug_poll_c();
-    mc_buzzer_test_poll_c();   // تست موقت بیزر با کلیدهای روی برد
     mc_time_debug_poll_c();    // به‌روزرسانی متغیرهای دیباگ زمان
     mc_serial_poll_c();        // پیام شروع و echo ارتباط USB
     mc_adc_debug_poll_c();     // به‌روزرسانی متغیرهای دیباگ ADC
