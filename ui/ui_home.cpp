@@ -16,6 +16,7 @@
 #include "../hal/hal_stepper.h"
 #include "../hal/hal_display.h"
 #include "../hal/hal_time.h"
+#include "../core/encoder.h"
 
 // متغیرهای دیباگ (CubeIDE Live Expressions)
 extern "C" {
@@ -38,6 +39,10 @@ volatile uint32_t mc_dbg_308_ui_dir_shown        = 0;  // خواندنی. بیت
 volatile uint32_t mc_dbg_311_ui_fake_src         = 0;  // نوشتنی. 0 = واقعی، 1 = USB، 2 = USB OTG، 3 = SD CARD. فقط وقتی fake روشن است
 volatile uint32_t mc_dbg_312_ui_src_shown        = 0;  // خواندنی. کد منبعی که الان نشان داده می‌شود (1 تا 3)
 volatile uint32_t mc_dbg_318_ui_axis_white_shown = 0;  // خواندنی. بیت 0 تا 3 = سلول X, Y, Z, E الان سفید (فعال) نشان داده می‌شود
+volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اندیس گزینه‌ای که الان هایلایت دارد (0 = START، 1 = PAUSE، 2 = STOP، 3 = RESET، 4 = منو)
+volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
+volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
+volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
 }
 
 namespace mc {
@@ -81,6 +86,39 @@ constexpr uint16_t kLabelGray           = mc_rgb565(180, 180, 180);
 constexpr uint16_t kDividerGray         = mc_rgb565(80, 80, 80);
 constexpr uint16_t kYellowBusy          = mc_rgb565(255, 220, 0);
 constexpr uint16_t kOrangeTgt           = mc_rgb565(255, 140, 0);
+
+struct OptionRect {
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint16_t bg_color;
+};
+
+static const OptionRect kOptionRects[5] = {
+    {   8U, 236U, 110U, 56U, kScreenBg },  // 0: START
+    { 126U, 236U, 110U, 56U, kScreenBg },  // 1: PAUSE
+    { 244U, 236U, 110U, 56U, kScreenBg },  // 2: STOP
+    { 362U, 236U, 110U, 56U, kScreenBg },  // 3: RESET
+    { 432U,   4U,  40U, 28U, kTopBarBg }   // 4: MENU
+};
+
+static void draw_option_highlight(uint8_t opt_idx, uint16_t color) {
+    if (opt_idx >= 5U) { return; }
+    const OptionRect& opt = kOptionRects[opt_idx];
+    const uint16_t fx = static_cast<uint16_t>(opt.x - 2U);
+    const uint16_t fy = static_cast<uint16_t>(opt.y - 2U);
+    const uint16_t fw = static_cast<uint16_t>(opt.w + 4U);
+
+    // بالای قاب (۲ پیکسل)
+    mc_gfx_fill_rect(fx, fy, fw, 2U, color);
+    // پایین قاب (۲ پیکسل)
+    mc_gfx_fill_rect(fx, static_cast<uint16_t>(opt.y + opt.h), fw, 2U, color);
+    // چپ قاب (۲ پیکسل)
+    mc_gfx_fill_rect(fx, opt.y, 2U, opt.h, color);
+    // راست قاب (۲ پیکسل)
+    mc_gfx_fill_rect(static_cast<uint16_t>(opt.x + opt.w), opt.y, 2U, opt.h, color);
+}
 
 struct FieldSpec {
     uint16_t x;
@@ -799,6 +837,10 @@ void mc_ui_init() {
     mc_dbg_311_ui_fake_src = 0U;
     mc_dbg_312_ui_src_shown = 0U;
     mc_dbg_318_ui_axis_white_shown = 0U;
+    mc_dbg_319_ui_sel_shown = 0U;
+    mc_dbg_320_ui_enter_cnt = 0U;
+    mc_dbg_321_ui_enter_idx = 255U;
+    mc_dbg_322_ui_sel_force = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -841,6 +883,10 @@ void mc_ui_poll() {
     (void)mc_dbg_311_ui_fake_src;
     (void)mc_dbg_312_ui_src_shown;
     (void)mc_dbg_318_ui_axis_white_shown;
+    (void)mc_dbg_319_ui_sel_shown;
+    (void)mc_dbg_320_ui_enter_cnt;
+    (void)mc_dbg_321_ui_enter_idx;
+    (void)mc_dbg_322_ui_sel_force;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -873,13 +919,62 @@ void mc_ui_poll() {
                     }
                     g_current_field_idx = 0U;
                     mc_dbg_294_ui_state = 4U;   // کار عادی
+
+                    // بند ۸.۶: هنگام ورود به کار عادی/بازنقاشی کامل، کلیک‌ها و اینترهای قدیمی دور ریخته می‌شوند و هایلایت گزینه فعلی کشیده می‌شود
+                    (void)mc_encoder_take_clicks();
+                    (void)mc_encoder_take_press();
+                    if (mc_dbg_319_ui_sel_shown >= 5U) {
+                        mc_dbg_319_ui_sel_shown = 0U;
+                    }
+                    draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown), kColorWhite);
                 }
             }
             break;
         }
 
-        case 4: { // کار عادی (به‌روزرسانی یک فیلد در هر دور)
+        case 4: { // کار عادی (پردازش انکودر + به‌روزرسانی یک فیلد در هر دور)
+            // ۱. بررسی انتخاب اجباری با متغیر دیباگ mc_dbg_322_ui_sel_force (۱ تا ۵)
+            if ((mc_dbg_322_ui_sel_force >= 1U) && (mc_dbg_322_ui_sel_force <= 5U)) {
+                const uint32_t target_idx = mc_dbg_322_ui_sel_force - 1U;
+                mc_dbg_322_ui_sel_force = 0U;
+                if (target_idx != mc_dbg_319_ui_sel_shown) {
+                    draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown),
+                                          kOptionRects[mc_dbg_319_ui_sel_shown].bg_color);
+                    mc_dbg_319_ui_sel_shown = target_idx;
+                    draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown), kColorWhite);
+                }
+            }
+
+            // ۲. خواندن کلیک‌های چرخش انکودر و تغییر گزینه‌ی هایلایت‌شده
+            const int32_t clicks = mc_encoder_take_clicks();
+            if (clicks != 0) {
+                int32_t new_idx = static_cast<int32_t>(mc_dbg_319_ui_sel_shown) + clicks;
+                while (new_idx < 0) {
+                    new_idx += 5;
+                }
+                while (new_idx >= 5) {
+                    new_idx %= 5;
+                }
+                const uint32_t new_sel = static_cast<uint32_t>(new_idx);
+                if (new_sel != mc_dbg_319_ui_sel_shown) {
+                    draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown),
+                                          kOptionRects[mc_dbg_319_ui_sel_shown].bg_color);
+                    mc_dbg_319_ui_sel_shown = new_sel;
+                    draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown), kColorWhite);
+                }
+            }
+
+            // ۳. خواندن فشردن دکمه انکودر (اینتر)
+            if (mc_encoder_take_press()) {
+                mc_dbg_320_ui_enter_cnt = mc_dbg_320_ui_enter_cnt + 1U;
+                mc_dbg_321_ui_enter_idx = mc_dbg_319_ui_sel_shown;
+                // عملکرد هر گزینه در بند ۸.۱۵ وصل می‌شود
+            }
+
+            // ۴. به‌روزرسانی فیلدهای متغیر
             update_one_field();
+            break;
+        }
             break;
         }
 

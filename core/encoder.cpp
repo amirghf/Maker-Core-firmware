@@ -93,21 +93,11 @@ void mc_encoder_poll() {
                 const int32_t dir = (MC_ENC_REVERSE != 0) ? -1 : 1;
                 g_pending_clicks += dir;
                 mc_dbg_313_enc_pos += dir;
-
-                if (mc_dbg_317_enc_beep_en != 0U) {
-                    mc_buzzer_click(MC_ENC_TURN_BEEP_MS);
-                    mc_dbg_316_enc_beep_cnt = mc_dbg_316_enc_beep_cnt + 1U;
-                }
             } else if (g_step_acc <= -steps_per_click) {
                 g_step_acc = static_cast<int8_t>(g_step_acc + steps_per_click);
                 const int32_t dir = (MC_ENC_REVERSE != 0) ? 1 : -1;
                 g_pending_clicks += dir;
                 mc_dbg_313_enc_pos += dir;
-
-                if (mc_dbg_317_enc_beep_en != 0U) {
-                    mc_buzzer_click(MC_ENC_TURN_BEEP_MS);
-                    mc_dbg_316_enc_beep_cnt = mc_dbg_316_enc_beep_cnt + 1U;
-                }
             }
         }
     }

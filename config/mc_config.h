@@ -170,7 +170,6 @@
 #define MC_ENC_STEPS_PER_CLICK   4       // تعداد گام کوادراتور برای هر کلیک مکانیکی
 #define MC_ENC_REVERSE           0       // جهت چرخش (0 = عادی، 1 = برعکس)
 #define MC_ENC_BTN_DEBOUNCE_MS   20      // مدت ضدلرزش دکمه انکودر (میلی‌ثانیه)
-#define MC_ENC_TURN_BEEP_MS      8       // طول بوق هر کلیک چرخش (میلی‌ثانیه)
 #define MC_ENC_PRESS_BEEP_MS     40      // طول بوق فشردن دکمه (میلی‌ثانیه)
 
 
