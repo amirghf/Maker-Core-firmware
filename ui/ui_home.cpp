@@ -5,6 +5,7 @@
 #include "ui_icons.h"
 #include "ui_menu.h"
 #include "ui_move.h"
+#include "ui_extruder.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -46,7 +47,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)
 }
 
 namespace mc {
@@ -910,6 +911,12 @@ void mc_ui_poll() {
     (void)mc_dbg_331_move_enter_idx;
     (void)mc_dbg_332_move_force;
     (void)mc_dbg_333_move_step_shown;
+    (void)mc_dbg_334_ex_sel_shown;
+    (void)mc_dbg_335_ex_enter_cnt;
+    (void)mc_dbg_336_ex_enter_idx;
+    (void)mc_dbg_337_ex_force;
+    (void)mc_dbg_338_ex_feed_shown;
+    (void)mc_dbg_339_ex_fake_rule;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -936,6 +943,9 @@ void mc_ui_poll() {
         } else if (m_res == MenuResult::OpenMove) {
             mc_dbg_323_ui_page = 2U;
             mc_ui_move_open();
+        } else if (m_res == MenuResult::OpenExtruder) {
+            mc_dbg_323_ui_page = 3U;
+            mc_ui_extruder_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
@@ -949,7 +959,23 @@ void mc_ui_poll() {
         const MoveResult mv_res = mc_ui_move_poll();
         if (mv_res == MoveResult::Back) {
             mc_dbg_323_ui_page = 1U;
-            mc_ui_menu_open();
+            mc_ui_menu_open_at(0U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه اکسترودر باشد (۳)
+    if (mc_dbg_323_ui_page == 3U) {
+        const ExtruderResult ex_res = mc_ui_extruder_poll();
+        if (ex_res == ExtruderResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(1U);
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
         }
@@ -977,6 +1003,26 @@ void mc_ui_poll() {
             return;
         } else if (f_move == 2U) {
             mc_dbg_332_move_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_337_ex_force جهت ورود مستقیم به صفحه اکسترودر
+    if (mc_dbg_337_ex_force != 0U) {
+        const uint32_t f_ex = mc_dbg_337_ex_force;
+        if ((f_ex == 1U) || ((f_ex >= 3U) && (f_ex <= 10U))) {
+            if (f_ex == 1U) {
+                mc_dbg_337_ex_force = 0U;
+            }
+            mc_ui_extruder_open();
+            mc_dbg_323_ui_page = 3U;
+            (void)mc_ui_extruder_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_ex == 2U) {
+            mc_dbg_337_ex_force = 0U;
         }
     }
 

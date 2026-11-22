@@ -133,16 +133,23 @@ static void apply_selection_change(uint8_t target_sel) {
 
 }  // namespace
 
-void mc_ui_menu_open() {
-    g_menu_sel   = 0U;
+void mc_ui_menu_open_at(uint8_t item_idx) {
+    g_menu_sel = (item_idx < 8U) ? item_idx : 0U;
     g_menu_first = 0U;
-    g_menu_step  = 0U;   // شروع نقاشی ورود
+    if (g_menu_sel > 4U) {
+        g_menu_first = static_cast<uint8_t>(g_menu_sel - 4U);
+    }
+    g_menu_step = 0U;   // شروع نقاشی ورود
 
-    mc_dbg_324_menu_sel_shown   = 0U;
-    mc_dbg_325_menu_first_shown = 0U;
+    mc_dbg_324_menu_sel_shown   = g_menu_sel;
+    mc_dbg_325_menu_first_shown = g_menu_first;
 
     (void)mc_encoder_take_clicks();
     (void)mc_encoder_take_press();
+}
+
+void mc_ui_menu_open() {
+    mc_ui_menu_open_at(0U);
 }
 
 MenuResult mc_ui_menu_poll() {
@@ -242,6 +249,12 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::OpenMove;
+        } else if (g_menu_sel == 1U) { // EXTRUDER (بند ۸.۹)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 1U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenExtruder;
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;

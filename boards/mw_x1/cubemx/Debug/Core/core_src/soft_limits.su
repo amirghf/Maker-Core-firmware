@@ -1,0 +1,12 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:34:9:int32_t mc::{anonymous}::to_mm10(float)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:39:6:void mc::{anonymous}::refresh_debug()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:48:6:void mc::mc_softlimit_init()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:68:6:void mc::mc_softlimit_poll()	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:127:6:bool mc::mc_softlimit_enabled_get()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:129:6:void mc::mc_softlimit_enabled_set(bool)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:134:7:float mc::mc_softlimit_min_get(uint8_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:139:7:float mc::mc_softlimit_max_get(uint8_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:144:6:bool mc::mc_softlimit_set(uint8_t, float, float)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:156:6:bool mc::mc_softlimit_allows(uint8_t, float)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:163:6:bool mc::mc_softlimit_allows_all(const float*)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/soft_limits.cpp:170:6:void mc::mc_softlimit_note_refused()	4	static

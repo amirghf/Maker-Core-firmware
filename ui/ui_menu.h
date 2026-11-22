@@ -22,11 +22,15 @@ namespace mc {
 enum class MenuResult : uint8_t {
     Stay = 0,
     Back = 1,
-    OpenMove = 2
+    OpenMove = 2,
+    OpenExtruder = 3
 };
 
 // آمادگی منو برای نقاشی از اول (انتخاب = ۰، اولین ردیف = ۰، شروع نقاشی مرحله‌ای).
 void mc_ui_menu_open();
+
+// آمادگی منو با انتخاب آیتم مشخص (بند ۸.۹).
+void mc_ui_menu_open_at(uint8_t item_idx);
 
 // وظیفه زمان‌بند منو: در هر دور یک مرحله کوچک نقاشی انجام داده یا ورودی انکودر را می‌خواند.
 MenuResult mc_ui_menu_poll();

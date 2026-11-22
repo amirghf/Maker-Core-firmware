@@ -172,6 +172,14 @@
 #define MC_ENC_BTN_DEBOUNCE_MS   20      // مدت ضدلرزش دکمه انکودر (میلی‌ثانیه)
 #define MC_ENC_PRESS_BEEP_MS     40      // طول بوق فشردن دکمه (میلی‌ثانیه)
 
+// ===================== ۱۵. صفحه اکسترودر (بند ۸.۹) =====================
+#define MC_UI_EX_HEAT_TEMP_C           200   // دمای هدف دکمه HEAT در صفحه اکسترودر (درجه سانتی‌گراد)؛ برای نمایش متن دکمه و فعال‌شدن رنگ نارنجی
+#define MC_UI_EX_FEED_STEP_1_MM        1     // گام اول FEED (میلی‌متر)
+#define MC_UI_EX_FEED_STEP_2_MM        5     // گام دوم FEED (میلی‌متر)
+#define MC_UI_EX_FEED_STEP_3_MM        10    // گام سوم FEED (میلی‌متر)
+#define MC_UI_EX_FEED_STEP_DEFAULT_IDX 1     // اندیس چیپ فعال هنگام باز شدن صفحه (۰ تا ۲)
+
+
 
 
 
