@@ -4,6 +4,15 @@
 #include <stdint.h>
 #include "../config/mc_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern volatile uint32_t mc_dbg_323_ui_page;  // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)
+
+#ifdef __cplusplus
+}
+
 namespace mc {
 
 constexpr uint32_t kUiPollMs = MC_UI_POLL_MS;
@@ -19,3 +28,4 @@ void mc_ui_poll();
 void mc_ui_notify_splash(uint32_t result);
 
 }  // namespace mc
+#endif

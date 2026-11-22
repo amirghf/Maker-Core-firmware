@@ -1038,6 +1038,5 @@ void mc_ui_poll() {
         mc_dbg_296_ui_max_tick_us = elapsed_us;
     }
 }
-}
 
 }  // namespace mc

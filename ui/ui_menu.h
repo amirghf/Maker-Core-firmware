@@ -3,6 +3,20 @@
 // فقط از هدرهای core و hal استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// متغیرهای دیباگ منو (بند ۸.۷)
+extern volatile uint32_t mc_dbg_324_menu_sel_shown;   // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
+extern volatile uint32_t mc_dbg_325_menu_first_shown; // خواندنی: اندیس اولین ردیف قابل مشاهده در منو (۰ تا ۳)
+extern volatile uint32_t mc_dbg_326_menu_enter_cnt;   // خواندنی: تعداد اینترهای منو روی آیتم‌های غیر BACK
+extern volatile uint32_t mc_dbg_327_menu_enter_idx;   // خواندنی: اندیس آیتم آخرین اینتر (۲۵۵ = هنوز نشده)
+extern volatile uint32_t mc_dbg_328_menu_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۰ = انتخاب آیتم
+
+#ifdef __cplusplus
+}
+
 namespace mc {
 
 enum class MenuResult : uint8_t {
@@ -17,3 +31,4 @@ void mc_ui_menu_open();
 MenuResult mc_ui_menu_poll();
 
 }  // namespace mc
+#endif
