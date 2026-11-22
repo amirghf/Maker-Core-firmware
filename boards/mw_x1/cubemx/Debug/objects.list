@@ -18,6 +18,7 @@
 "./Core/core_src/core_selftest.o"
 "./Core/core_src/crc32.o"
 "./Core/core_src/eeprom_at24.o"
+"./Core/core_src/encoder.o"
 "./Core/core_src/endstop.o"
 "./Core/core_src/endstop_guard.o"
 "./Core/core_src/error.o"
