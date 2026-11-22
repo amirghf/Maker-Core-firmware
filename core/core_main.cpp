@@ -540,7 +540,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_settings_init();   // بند ۷.۲
     mc::mc_cfg_boot_init();   // بند ۷.۴
     mc::mc_encoder_init();   // بند ۸.۸
-    mc::mc_ui_init();   // بند ۸.۶
+    mc::mc_ui_init();   // بند ۸.۲
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
     mc::g_main.add(mc::task_watchdog_feed, 100U);
@@ -580,7 +580,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_settings_poll, mc::kSettingsPollMs);   // بند ۷.۲: ذخیره‌سازی سخت‌دار
     mc::g_main.add(mc::mc_cfg_boot_poll, mc::kCfgBootPollMs);   // بند ۷.۴: خواندن خودکار تنظیمات هنگام بوت
-    mc::g_main.add(mc::mc_ui_poll, mc::kUiPollMs);   // بند ۸.۶: صفحه اصلی
+    mc::g_main.add(mc::mc_ui_poll, mc::kUiPollMs);   // بند ۸.۲: صفحه اصلی
     mc::g_main.add(mc::mc_line_poll, 0U);
     mc::g_main.add(mc::task_cmd_intake, 0U);
     mc::g_main.add(mc::mc_dispatch_poll, 0U);
