@@ -44,6 +44,7 @@
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
+#include "encoder.h"
 #include "../ui/ui_home.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
@@ -538,6 +539,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_eeprom_init();   // بند ۷.۱
     mc::mc_settings_init();   // بند ۷.۲
     mc::mc_cfg_boot_init();   // بند ۷.۴
+    mc::mc_encoder_init();   // بند ۸.۸
     mc::mc_ui_init();   // بند ۸.۶
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
@@ -551,6 +553,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_touch_test, 20U);
     mc::g_main.add(mc::task_flash_test, 100U);
     mc::g_main.add(mc::task_splash, 100U);
+    mc::g_main.add(mc::mc_encoder_poll, MC_ENC_POLL_MS);   // بند ۸.۸: انکودر و بوق
     mc::g_main.add(mc::mc_adc_sampler_poll, mc::kAdcPeriodMs);   // بند ۴.۱: نمونه‌گیری ADC هر ۱۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_temp_poll, mc::kTempPeriodMs);   // بند ۴.۲: تبدیل ADC به دما هر ۱۰۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_temp_limits_poll, 100U);   // بند ۴.۶: حفاظت حداقل و حداکثر دما

@@ -14,7 +14,7 @@ enum class PinId : uint8_t {
     HeaterEx, HeaterBed, FanFilament,
     Buzzer, LcdBlk, LcdCs, LcdRs, LcdRes,
     TouchCs, SdCs, FlashCs, WifiCs,
-    KeyStart, KeyStop, EncBtn,
+    KeyStart, KeyStop, EncBtn, EncA, EncB,
     LimitXMin, LimitYMin, LimitZMin,
     FilamentSensor, SdDet, TouchIrq,
     Count  // همیشه آخر؛ تعداد پین‌ها

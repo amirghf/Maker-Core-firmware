@@ -44,7 +44,34 @@ bool key_pressed(PinId key) {
 
 }  // namespace
 
+static uint32_t g_click_off_ms = 0U;
+static bool     g_click_active = false;
+
+void mc_buzzer_click(uint32_t ms) {
+    if (ms == 0U) { return; }
+    const uint32_t target_off = HAL_GetTick() + ms;
+    if (!g_click_active) {
+        buzzer_set(true);
+        g_click_active = true;
+        g_click_off_ms = target_off;
+    } else {
+        if (target_off > g_click_off_ms) {
+            g_click_off_ms = target_off;
+        }
+    }
+}
+
+void mc_buzzer_click_poll() {
+    if (g_click_active) {
+        if (HAL_GetTick() >= g_click_off_ms) {
+            buzzer_set(false);
+            g_click_active = false;
+        }
+    }
+}
+
 void mc_buzzer_off() {
+    g_click_active = false;
     buzzer_set(false);
 }
 

@@ -35,43 +35,52 @@ volatile uint32_t mc_dbg_305_ui_fake_axis_en    = 0;  // نوشتنی. بیت 0 
 volatile uint32_t mc_dbg_306_ui_media_shown     = 0;  // خواندنی. بیت 0 = SD موجود، بیت 1 = OTG موجود
 volatile uint32_t mc_dbg_307_ui_fake_axis_dir   = 0;  // نوشتنی. بیت 0 تا 3 = جهت X, Y, Z, E (1 = مثبت، 0 = منفی). فقط وقتی fake روشن است
 volatile uint32_t mc_dbg_308_ui_dir_shown        = 0;  // خواندنی. بیت 0 تا 3 = جهتی که الان برای X, Y, Z, E نشان داده می‌شود (1 = مثبت)
-volatile uint32_t mc_dbg_309_ui_fake_dir_known   = 0;  // نوشتنی. بیت 0 تا 3 = X, Y, Z, E (1 = جهت معلوم، 0 = خط تیره). فقط وقتی fake روشن است
-volatile uint32_t mc_dbg_310_ui_dir_known_shown  = 0;  // خواندنی. بیت 0 تا 3 = فلش رنگی برای X, Y, Z, E نشان داده می‌شود
-volatile uint32_t mc_dbg_311_ui_fake_src         = 0;  // نوشتنی. 0 = واقعی، 1 = USB، 2 = OTG، 3 = SD. فقط وقتی fake روشن است
+volatile uint32_t mc_dbg_311_ui_fake_src         = 0;  // نوشتنی. 0 = واقعی، 1 = USB، 2 = USB OTG، 3 = SD CARD. فقط وقتی fake روشن است
 volatile uint32_t mc_dbg_312_ui_src_shown        = 0;  // خواندنی. کد منبعی که الان نشان داده می‌شود (1 تا 3)
+volatile uint32_t mc_dbg_318_ui_axis_white_shown = 0;  // خواندنی. بیت 0 تا 3 = سلول X, Y, Z, E الان سفید (فعال) نشان داده می‌شود
 }
 
 namespace mc {
 namespace {
 
-constexpr uint16_t kScreenBg    = mc_rgb565(8, 10, 16);       // پس‌زمینه اصلی صفحه
-constexpr uint16_t kTopBarBg    = mc_rgb565(16, 44, 104);     // نوار بالا
-constexpr uint16_t kAccentLine  = mc_rgb565(0, 200, 230);     // خط زیر نوار بالا
-constexpr uint16_t kCardBg      = mc_rgb565(22, 27, 38);      // پس‌زمینه کارت‌ها و دکمه‌ها
-constexpr uint16_t kCardBorder  = mc_rgb565(48, 58, 80);      // حاشیه کارت‌ها
-constexpr uint16_t kBarTrack    = mc_rgb565(44, 52, 70);      // شیار نوار پیشرفت
-constexpr uint16_t kBtnBg       = mc_rgb565(10, 30, 70);      // پس‌زمینه دکمه منو
-constexpr uint16_t kBtnBorder   = mc_rgb565(60, 110, 200);    // حاشیه دکمه منو
-constexpr uint16_t kAccNozzle   = mc_rgb565(255, 120, 30);    // رنگ شاخص اکسترودر
-constexpr uint16_t kAccFan      = mc_rgb565(0, 200, 230);     // رنگ شاخص فن
-constexpr uint16_t kAccBed      = mc_rgb565(240, 70, 70);     // رنگ شاخص بستر
-constexpr uint16_t kIconBody    = mc_rgb565(120, 135, 165);   // بدنه آیکون‌ها
-constexpr uint16_t kFanBody     = mc_rgb565(46, 58, 82);      // بدنه قاب آیکون فن
-constexpr uint16_t kFanDisk     = mc_rgb565(10, 18, 28);      // دیسک داخلی آیکون فن
-constexpr uint16_t kDirPosDim   = mc_rgb565(30, 110, 50);     // جهت مثبت (موتور غیرفعال)
-constexpr uint16_t kDirNegDim   = mc_rgb565(130, 75, 0);      // جهت منفی (موتور غیرفعال)
-constexpr uint16_t kAxisX       = mc_rgb565(255, 80, 80);     // رنگ محور X
-constexpr uint16_t kAxisY       = mc_rgb565(80, 220, 120);    // رنگ محور Y
-constexpr uint16_t kAxisZ       = mc_rgb565(90, 150, 255);    // رنگ محور Z
-constexpr uint16_t kAxisE       = mc_rgb565(255, 200, 60);    // رنگ محور E
+constexpr uint16_t kScreenBg            = mc_rgb565(8, 10, 16);       // پس‌زمینه اصلی صفحه
+constexpr uint16_t kTopBarBg            = mc_rgb565(16, 44, 104);     // نوار بالا
+constexpr uint16_t kAccentLine          = mc_rgb565(0, 200, 230);     // خط زیر نوار بالا
+constexpr uint16_t kCardBg              = mc_rgb565(22, 27, 38);      // پس‌زمینه کارت‌ها و دکمه‌ها
+constexpr uint16_t kCardBorder          = mc_rgb565(48, 58, 80);      // حاشیه کارت‌ها
+constexpr uint16_t kBarTrack            = mc_rgb565(44, 52, 70);      // شیار نوار پیشرفت
+constexpr uint16_t kBtnBg               = mc_rgb565(10, 30, 70);      // پس‌زمینه دکمه منو
+constexpr uint16_t kBtnBorder           = mc_rgb565(60, 110, 200);    // حاشیه دکمه منو
+constexpr uint16_t kAccNozzle           = mc_rgb565(255, 120, 30);    // رنگ شاخص اکسترودر
+constexpr uint16_t kAccFan              = mc_rgb565(0, 200, 230);     // رنگ شاخص فن
+constexpr uint16_t kAccBed              = mc_rgb565(240, 70, 70);     // رنگ شاخص بستر
+constexpr uint16_t kIconBody            = mc_rgb565(120, 135, 165);   // بدنه آیکون‌ها
+constexpr uint16_t kFanBody             = mc_rgb565(46, 58, 82);      // بدنه قاب آیکون فن
+constexpr uint16_t kFanDisk             = mc_rgb565(10, 18, 28);      // دیسک داخلی آیکون فن
+constexpr uint16_t kAxisX               = mc_rgb565(255, 80, 80);     // رنگ محور X
+constexpr uint16_t kAxisY               = mc_rgb565(80, 220, 120);    // رنگ محور Y
+constexpr uint16_t kAxisZ               = mc_rgb565(90, 150, 255);    // رنگ محور Z
+constexpr uint16_t kAxisE               = mc_rgb565(255, 200, 60);    // رنگ محور E
 
-constexpr uint16_t kIconOff     = mc_rgb565(100, 120, 160);   // آیکون SD/OTG/خط تیره وقتی غیرفعال است
-constexpr uint16_t kCoolBlue    = mc_rgb565(100, 180, 255);   // حالت COOL
-constexpr uint16_t kCyanPrint   = mc_rgb565(0, 220, 220);     // حالت PRINTING
-constexpr uint16_t kLabelGray   = mc_rgb565(180, 180, 180);
-constexpr uint16_t kDividerGray = mc_rgb565(80, 80, 80);
-constexpr uint16_t kYellowBusy  = mc_rgb565(255, 220, 0);
-constexpr uint16_t kOrangeTgt   = mc_rgb565(255, 140, 0);
+constexpr uint16_t kActiveBorder        = mc_rgb565(200, 205, 215);   // حاشیه سلول فعال
+constexpr uint16_t kAxisXDark           = mc_rgb565(200, 30, 30);     // حرف X تیره روی پس‌زمینه سفید
+constexpr uint16_t kAxisYDark           = mc_rgb565(20, 150, 70);     // حرف Y تیره روی پس‌زمینه سفید
+constexpr uint16_t kAxisZDark           = mc_rgb565(30, 90, 210);     // حرف Z تیره روی پس‌زمینه سفید
+constexpr uint16_t kAxisEDark           = mc_rgb565(190, 130, 0);     // حرف E تیره روی پس‌زمینه سفید
+constexpr uint16_t kActiveStatus        = mc_rgb565(0, 120, 50);      // متن ON تیره روی پس‌زمینه سفید
+constexpr uint16_t kActivePosFg         = mc_rgb565(20, 24, 34);      // مقدار موقعیت تیره روی پس‌زمینه سفید
+constexpr uint16_t kDirDimInact         = mc_rgb565(60, 70, 90);      // فلش کم‌رنگ روی پس‌زمینه تاریک
+constexpr uint16_t kDirDimActive        = mc_rgb565(190, 196, 208);   // فلش کم‌رنگ روی پس‌زمینه سفید
+constexpr uint16_t kDirPosActive        = mc_rgb565(0, 170, 60);      // فلش پررنگ جهت مثبت
+constexpr uint16_t kDirNegActive        = mc_rgb565(240, 120, 0);     // فلش پررنگ جهت منفی
+
+constexpr uint16_t kIconOff             = mc_rgb565(100, 120, 160);   // آیکون SD/OTG وقتی غیرفعال است
+constexpr uint16_t kCoolBlue            = mc_rgb565(100, 180, 255);   // حالت COOL
+constexpr uint16_t kCyanPrint           = mc_rgb565(0, 220, 220);     // حالت PRINTING
+constexpr uint16_t kLabelGray           = mc_rgb565(180, 180, 180);
+constexpr uint16_t kDividerGray         = mc_rgb565(80, 80, 80);
+constexpr uint16_t kYellowBusy          = mc_rgb565(255, 220, 0);
+constexpr uint16_t kOrangeTgt           = mc_rgb565(255, 140, 0);
 
 struct FieldSpec {
     uint16_t x;
@@ -97,16 +106,16 @@ static const FieldSpec kFields[kFieldCount] = {
     { 330U,  90U,  5U, 2U, kCardBg },    // 10: Bed Current Temp
     { 404U,  90U,  3U, 2U, kCardBg },    // 11: Bed Target Temp
     { 330U, 110U,  0U, 0U, kCardBg },    // 12: Bed Progress Bar
-    {  40U, 140U,  3U, 2U, kCardBg },    // 13: Axis X Status + LED + Dir
-    { 158U, 140U,  3U, 2U, kCardBg },    // 14: Axis Y Status + LED + Dir
-    { 276U, 140U,  3U, 2U, kCardBg },    // 15: Axis Z Status + LED + Dir
-    { 394U, 140U,  3U, 2U, kCardBg },    // 16: Axis E Status + LED + Dir
+    {  40U, 140U,  3U, 2U, kCardBg },    // 13: Axis X Cell
+    { 158U, 140U,  3U, 2U, kCardBg },    // 14: Axis Y Cell
+    { 276U, 140U,  3U, 2U, kCardBg },    // 15: Axis Z Cell
+    { 394U, 140U,  3U, 2U, kCardBg },    // 16: Axis E Cell
     {  16U, 166U,  8U, 2U, kCardBg },    // 17: Axis X Position
     { 134U, 166U,  8U, 2U, kCardBg },    // 18: Axis Y Position
     { 252U, 166U,  8U, 2U, kCardBg },    // 19: Axis Z Position
     { 370U, 166U,  8U, 2U, kCardBg },    // 20: Axis E Position
-    { 180U, 204U, 10U, 2U, kCardBg },    // 21: Printer Status
-    { 408U, 204U,  3U, 2U, kCardBg }     // 22: Input Source Text
+    { 126U, 204U, 10U, 2U, kCardBg },    // 21: Printer Status Text
+    { 366U, 204U,  7U, 2U, kCardBg }     // 22: Input Source Text
 };
 
 struct FieldCache {
@@ -120,10 +129,6 @@ static FieldCache g_field_cache[kFieldCount];
 static uint32_t   g_splash_hold_start_ms = 0U;
 static uint8_t    g_static_frame_step    = 0U;
 static uint8_t    g_current_field_idx    = 0U;
-
-static bool  g_dir_known[4]  = { false, false, false, false };
-static float g_prev_pos[4]   = { 0.0f, 0.0f, 0.0f, 0.0f };
-static bool  g_prev_valid[4] = { false, false, false, false };
 
 // تشخیص واقعی SD در بند ۹.۱ وصل می‌شود
 static bool media_sd_present() {
@@ -140,20 +145,13 @@ static uint32_t input_source_real() {
     return 1U; // 1 = USB
 }
 
-// ثبت اولین حرکت واقعی جهت نمایش فلش جهت
-static void track_direction() {
-    for (uint8_t i = 0U; i < 4U; ++i) {
-        const float pos = mc_position_get(i);
-        if (g_prev_valid[i] && mc_motion_busy()) {
-            const float diff = pos - g_prev_pos[i];
-            const float abs_diff = (diff < 0.0f) ? -diff : diff;
-            if (abs_diff > 0.0005f) {
-                g_dir_known[i] = true;
-            }
-        }
-        g_prev_pos[i] = pos;
-        g_prev_valid[i] = true;
+// بررسی فعال بودن یک محور (با پشتیبانی از حالت fake)
+static bool is_axis_enabled(uint8_t axis_idx) {
+    const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+    if (fake) {
+        return (mc_dbg_305_ui_fake_axis_en & (1U << axis_idx)) != 0U;
     }
+    return mc_stepper_is_enabled(static_cast<StepAxis>(axis_idx));
 }
 
 // پر کردن متن تا عرض ثابت با فاصله (space)
@@ -184,28 +182,6 @@ void right_and_copy(char* dst, uint16_t cap, const char* src, uint8_t target_wid
     }
     for (uint16_t i = 0U; (i < len) && (pos + 1U < cap); ++i) {
         dst[pos++] = src[i];
-    }
-    dst[pos] = '\0';
-}
-
-// وسط‌چین کردن متن در عرض target_width با فاصله (space)
-void center_and_copy(char* dst, uint16_t cap, const char* src, uint8_t target_width) {
-    uint16_t len = 0U;
-    while ((src[len] != '\0') && (len < target_width)) {
-        len++;
-    }
-    const uint8_t total_pad = (target_width > len) ? static_cast<uint8_t>(target_width - len) : 0U;
-    const uint8_t left_pad = static_cast<uint8_t>((total_pad + 1U) / 2U);
-
-    uint16_t pos = 0U;
-    for (uint8_t i = 0U; (i < left_pad) && (pos + 1U < cap); ++i) {
-        dst[pos++] = ' ';
-    }
-    for (uint16_t i = 0U; (i < len) && (pos + 1U < cap); ++i) {
-        dst[pos++] = src[i];
-    }
-    while ((pos < target_width) && (pos + 1U < cap)) {
-        dst[pos++] = ' ';
     }
     dst[pos] = '\0';
 }
@@ -404,8 +380,10 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
         case 20: { // موقعیت محورها X، Y، Z، E
             const uint8_t axis_code = idx - 17U;
             const float pos = mc_position_get(axis_code);
+            const bool enabled = is_axis_enabled(axis_code);
+
             mc_fmt_float(raw, sizeof(raw), 0U, pos, 2U);
-            out_fg = kColorWhite;
+            out_fg = enabled ? kAxisPosDark : kColorWhite;
             pad_and_copy(out_buf, cap, raw, spec.width);
             break;
         }
@@ -440,11 +418,11 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
                 mc_fmt_text(raw, sizeof(raw), 0U, "READY");
                 out_fg = kColorGreen;
             }
-            center_and_copy(out_buf, cap, raw, spec.width);
+            pad_and_copy(out_buf, cap, raw, spec.width);
             break;
         }
 
-        case 22: { // منبع ورودی (USB / OTG / SD)
+        case 22: { // منبع ورودی (USB / USB OTG / SD CARD)
             uint32_t src_code = 1U;
             if (fake && (mc_dbg_311_ui_fake_src != 0U)) {
                 src_code = mc_dbg_311_ui_fake_src;
@@ -453,10 +431,10 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             }
 
             if (src_code == 2U) {
-                mc_fmt_text(raw, sizeof(raw), 0U, "OTG");
+                mc_fmt_text(raw, sizeof(raw), 0U, "USB OTG");
                 out_fg = kYellowBusy;
             } else if (src_code == 3U) {
-                mc_fmt_text(raw, sizeof(raw), 0U, "SD");
+                mc_fmt_text(raw, sizeof(raw), 0U, "SD CARD");
                 out_fg = kColorGreen;
             } else {
                 src_code = 1U;
@@ -536,10 +514,10 @@ void draw_static_step(uint8_t step) {
             mc_ui_card(362U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
             mc_gfx_text(370U, 138U, "E", kAxisE, kCardBg, 3U);
             break;
-        case 11: // قاب وضعیت پرینتر و کادر منبع ورودی
-            mc_ui_card(130U, 196U, 220U, 32U, 10U, kCardBg, kCardBorder);
-            mc_ui_card(358U, 196U, 114U, 32U, 10U, kCardBg, kCardBorder);
-            mc_gfx_text(366U, 204U, "SRC", kLabelGray, kCardBg, 2U);
+        case 11: // نوار ادغام‌شده وضعیت دستگاه و منبع ورودی
+            mc_ui_card(8U, 196U, 464U, 32U, 10U, kCardBg, kCardBorder);
+            mc_gfx_text(30U, 204U, "STATUS:", kLabelGray, kCardBg, 2U);
+            mc_gfx_text(270U, 204U, "SOURCE:", kLabelGray, kCardBg, 2U);
             break;
         case 12: { // دکمه START
             mc_ui_card(8U, 236U, 110U, 56U, 8U, kCardBg, kCardBorder);
@@ -716,76 +694,76 @@ void update_one_field() {
             cache.dirty = false;
             mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
         }
-    } else if (idx >= 13U && idx <= 16U) { // وضعیت، LED و جهت محورهای X، Y، Z، E
-        char raw[16];
-        char new_text[16];
-        uint16_t new_fg = kColorWhite;
-
+    } else if (idx >= 13U && idx <= 16U) { // سلول محورهای X، Y، Z، E (کارت، برچسب، ON/OFF، فلش جفت‌مثلث)
         const uint8_t axis_idx = idx - 13U;
         const StepAxis axis = static_cast<StepAxis>(axis_idx);
         const bool fake = (mc_dbg_297_ui_fake_on != 0U);
 
-        const bool enabled = fake ? ((mc_dbg_305_ui_fake_axis_en & (1U << axis_idx)) != 0U)
-                                  : mc_stepper_is_enabled(axis);
+        const bool enabled  = is_axis_enabled(axis_idx);
         const bool positive = fake ? ((mc_dbg_307_ui_fake_axis_dir & (1U << axis_idx)) != 0U)
-                                   : mc_stepper_get_dir(axis);
-        const bool known = fake ? ((mc_dbg_309_ui_fake_dir_known & (1U << axis_idx)) != 0U)
-                                : g_dir_known[axis_idx];
+                                   : (mc_stepper_get_dir(axis) == 1);
 
-        // بروزرسانی متغیرهای دیباگ
+        // به‌روزرسانی متغیرهای دیباگ 308 و 318
         if (positive) {
             mc_dbg_308_ui_dir_shown |= (1U << axis_idx);
         } else {
             mc_dbg_308_ui_dir_shown &= ~(1U << axis_idx);
         }
 
-        if (known) {
-            mc_dbg_310_ui_dir_known_shown |= (1U << axis_idx);
-        } else {
-            mc_dbg_310_ui_dir_known_shown &= ~(1U << axis_idx);
-        }
-
         if (enabled) {
-            mc_fmt_text(raw, sizeof(raw), 0U, "ON");
-            new_fg = kColorGreen;
+            mc_dbg_318_ui_axis_white_shown |= (1U << axis_idx);
         } else {
-            mc_fmt_text(raw, sizeof(raw), 0U, "OFF");
-            new_fg = kLabelGray;
+            mc_dbg_318_ui_axis_white_shown &= ~(1U << axis_idx);
         }
-        pad_and_copy(new_text, sizeof(new_text), raw, spec.width);
 
-        const uint8_t state = (enabled ? 1U : 0U) | (positive ? 2U : 0U) | (known ? 4U : 0U);
-        const uint16_t cell_x0 = static_cast<uint16_t>(8U + axis_idx * 118U);
-        const uint16_t led_color = enabled ? kColorGreen : kDividerGray;
-        const uint16_t dir_color = enabled ? (positive ? kColorGreen : kOrangeTgt)
-                                            : (positive ? kDirPosDim : kDirNegDim);
+        const uint8_t state = (enabled ? 1U : 0U) | (positive ? 2U : 0U);
+        if (cache.dirty || (cache.state != state)) {
+            const uint16_t cell_x0 = static_cast<uint16_t>(8U + axis_idx * 118U);
+            const uint16_t card_bg  = enabled ? kColorWhite : kCardBg;
+            const uint16_t card_brd = enabled ? kActiveBorder : kCardBorder;
 
-        if (cache.dirty || (cache.fg_color != new_fg) || (cache.state != state) || (strcmp(cache.text, new_text) != 0)) {
-            mc_gfx_text(spec.x, spec.y, new_text, new_fg, spec.bg_color, spec.scale);
-            mc_gfx_fill_rect(cell_x0 + 74U, 142U, 12U, 12U, kCardBg);
-            if (known) {
-                mc_icon_dir(cell_x0 + 74U, 142U, positive, dir_color);
-            } else {
-                mc_gfx_fill_rect(cell_x0 + 76U, 147U, 8U, 2U, kIconOff);
-            }
-            mc_ui_fill_circle(cell_x0 + 98U, 148U, 5U, led_color);
+            static const uint16_t kInactLetters[4] = { kAxisX, kAxisY, kAxisZ, kAxisE };
+            static const uint16_t kActLetters[4]   = { kAxisXDark, kAxisYDark, kAxisZDark, kAxisEDark };
+            static const char* const kLetterStr[4] = { "X", "Y", "Z", "E" };
 
-            for (uint16_t i = 0U; i < sizeof(cache.text); ++i) {
-                cache.text[i] = new_text[i];
-                if (new_text[i] == '\0') { break; }
-            }
-            cache.fg_color = new_fg;
+            const uint16_t letter_fg = enabled ? kActLetters[axis_idx] : kInactLetters[axis_idx];
+            const char* const st_str  = enabled ? "ON" : "OFF";
+            const uint16_t st_fg      = enabled ? kActiveStatus : kLabelGray;
+
+            // ۱. کشیدن مجدد کارت، حرف محور و وضعیت ON/OFF
+            mc_ui_card(cell_x0, 132U, 110U, 56U, 8U, card_bg, card_brd);
+            mc_gfx_text(static_cast<uint16_t>(cell_x0 + 8U), 138U, kLetterStr[axis_idx], letter_fg, card_bg, 3U);
+            mc_gfx_text(static_cast<uint16_t>(cell_x0 + 40U), 140U, st_str, st_fg, card_bg, 2U);
+
+            // ۲. پاک‌کردن جعبه فلش و کشیدن فلش جفت‌مثلث بدون دم
+            mc_gfx_fill_rect(static_cast<uint16_t>(cell_x0 + 82U), 137U, 18U, 26U, card_bg);
+            const uint8_t act_code = enabled ? (positive ? 1U : 2U) : 0U;
+            const uint16_t dim_col = enabled ? kDirDimActive : kDirDimInact;
+            const uint16_t act_col = positive ? kDirPosActive : kDirNegActive;
+            mc_icon_dir_pair(static_cast<uint16_t>(cell_x0 + 84U), 139U, act_code, act_col, dim_col);
+
             cache.state = state;
             cache.dirty = false;
             mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
+
+            // ۳. dirty کردن فیلد موقعیت همین محور تا با پس‌زمینه جدید کشیده شود
+            g_field_cache[17U + axis_idx].dirty = true;
         }
     } else { // سایر فیلدهای متنی
         char new_text[16];
         uint16_t new_fg = kColorWhite;
         format_field(idx, new_text, sizeof(new_text), new_fg);
 
+        uint16_t bg_col = spec.bg_color;
+        if (idx >= 17U && idx <= 20U) {
+            const uint8_t axis_idx = idx - 17U;
+            if (is_axis_enabled(axis_idx)) {
+                bg_col = kColorWhite;
+            }
+        }
+
         if (cache.dirty || (cache.fg_color != new_fg) || (strcmp(cache.text, new_text) != 0)) {
-            mc_gfx_text(spec.x, spec.y, new_text, new_fg, spec.bg_color, spec.scale);
+            mc_gfx_text(spec.x, spec.y, new_text, new_fg, bg_col, spec.scale);
             for (uint16_t i = 0U; i < sizeof(cache.text); ++i) {
                 cache.text[i] = new_text[i];
                 if (new_text[i] == '\0') { break; }
@@ -818,16 +796,9 @@ void mc_ui_init() {
     mc_dbg_306_ui_media_shown = 0U;
     mc_dbg_307_ui_fake_axis_dir = 0U;
     mc_dbg_308_ui_dir_shown = 0U;
-    mc_dbg_309_ui_fake_dir_known = 0U;
-    mc_dbg_310_ui_dir_known_shown = 0U;
     mc_dbg_311_ui_fake_src = 0U;
     mc_dbg_312_ui_src_shown = 0U;
-
-    for (uint8_t i = 0U; i < 4U; ++i) {
-        g_dir_known[i]  = false;
-        g_prev_pos[i]   = 0.0f;
-        g_prev_valid[i] = false;
-    }
+    mc_dbg_318_ui_axis_white_shown = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -867,10 +838,9 @@ void mc_ui_poll() {
     (void)mc_dbg_306_ui_media_shown;
     (void)mc_dbg_307_ui_fake_axis_dir;
     (void)mc_dbg_308_ui_dir_shown;
-    (void)mc_dbg_309_ui_fake_dir_known;
-    (void)mc_dbg_310_ui_dir_known_shown;
     (void)mc_dbg_311_ui_fake_src;
     (void)mc_dbg_312_ui_src_shown;
+    (void)mc_dbg_318_ui_axis_white_shown;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -909,7 +879,6 @@ void mc_ui_poll() {
         }
 
         case 4: { // کار عادی (به‌روزرسانی یک فیلد در هر دور)
-            track_direction();
             update_one_field();
             break;
         }

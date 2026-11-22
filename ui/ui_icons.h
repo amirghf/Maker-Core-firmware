@@ -24,6 +24,9 @@ void mc_ui_progress(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t fil
 // آیکون جهت حرکت موتور (جعبه ۱۲ در ۱۲). positive = true (مثلث رو به بالا)، positive = false (مثلث رو به پایین).
 void mc_icon_dir(uint16_t x, uint16_t y, bool positive, uint16_t color);
 
+// آیکون جفت‌مثلث جهت موتور بدون دم (جعبه ۱۴ در ۲۲). active: 0 = هر دو کم‌رنگ، 1 = مثلث بالا (مثبت)، 2 = مثلث پایین (منفی) (بند ۸.۷).
+void mc_icon_dir_pair(uint16_t x, uint16_t y, uint8_t active, uint16_t active_color, uint16_t dim_color);
+
 // آیکون‌های کوچک (۲۴ در ۲۴). پارامتر bg رنگ پس‌زمینه است و برای بریدگی‌ها استفاده می‌شود.
 void mc_icon_sd(uint16_t x, uint16_t y, uint16_t color, uint16_t bg);
 void mc_icon_usb(uint16_t x, uint16_t y, uint16_t color, uint16_t bg);

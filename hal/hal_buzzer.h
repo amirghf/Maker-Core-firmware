@@ -20,6 +20,11 @@ void mc_buzzer_beep(uint32_t ms);
 // یک کد صوتی کامل را پخش می‌کند (مسدودکننده) و در آخر بیزر را خاموش می‌گذارد.
 void mc_buzzer_play(Sound sound);
 
+// بیزر را روشن می‌کند و زمان خاموشی غیرمسدودکننده را می‌گذارد.
+void mc_buzzer_click(uint32_t ms);
+// وظیفه غیرمسدودکننده: اگر زمان بوق تمام شده بود بیزر را خاموش می‌کند.
+void mc_buzzer_click_poll();
+
 }  // namespace mc
 
 extern "C" {

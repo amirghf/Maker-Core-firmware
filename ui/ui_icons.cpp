@@ -151,6 +151,23 @@ void mc_icon_dir(uint16_t x, uint16_t y, bool positive, uint16_t color) {
     }
 }
 
+// آیکون جفت‌مثلث جهت موتور بدون دم (جعبه ۱۴ در ۲۲، بند ۸.۷)
+void mc_icon_dir_pair(uint16_t x, uint16_t y, uint8_t active, uint16_t active_color, uint16_t dim_color) {
+    const uint16_t top_color    = (active == 1U) ? active_color : dim_color;
+    const uint16_t bottom_color = (active == 2U) ? active_color : dim_color;
+
+    // مثلث بالا (جهت مثبت): نقاط (x, y+9)، (x+14, y+9)، (x+7, y)
+    mc_ui_fill_triangle(static_cast<int16_t>(x), static_cast<int16_t>(y + 9U),
+                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 9U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y), top_color);
+
+    // مثلث پایین (جهت منفی): نقاط (x, y+12)، (x+14, y+12)، (x+7, y+21)
+    mc_ui_fill_triangle(static_cast<int16_t>(x), static_cast<int16_t>(y + 12U),
+                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 12U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 21U), bottom_color);
+}
+
+
 // کارت SD: بدنه با گوشه بریده بالا-راست و سه شیار تماس
 void mc_icon_sd(uint16_t x, uint16_t y, uint16_t color, uint16_t bg) {
     mc_gfx_fill_rect(x + 4U, y + 2U, 16U, 20U, color);

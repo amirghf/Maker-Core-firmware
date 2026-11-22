@@ -9,8 +9,8 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:175:6:void mc::mc_icon_menu(uint16_t, uint16_t, uint16_t)	24	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:182:6:void mc::mc_icon_nozzle(uint16_t, uint16_t, uint16_t, uint16_t)	48	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:199:6:void mc::mc_icon_fan(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	48	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:223:6:void mc::mc_icon_bed(uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:239:6:void mc::mc_icon_play(uint16_t, uint16_t, uint16_t)	32	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:251:6:void mc::mc_icon_pause(uint16_t, uint16_t, uint16_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:257:6:void mc::mc_icon_stop(uint16_t, uint16_t, uint16_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:262:6:void mc::mc_icon_reset(uint16_t, uint16_t, uint16_t)	56	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:231:6:void mc::mc_icon_bed(uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:247:6:void mc::mc_icon_play(uint16_t, uint16_t, uint16_t)	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:259:6:void mc::mc_icon_pause(uint16_t, uint16_t, uint16_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:265:6:void mc::mc_icon_stop(uint16_t, uint16_t, uint16_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_icons.cpp:270:6:void mc::mc_icon_reset(uint16_t, uint16_t, uint16_t)	56	static
