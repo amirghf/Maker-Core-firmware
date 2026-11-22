@@ -141,3 +141,15 @@
 #define MC_EEPROM_TEST_LEN          64      // اندازه ناحیه تست به بایت
 #define MC_EEPROM_TEST_MIS_OFFSET   20      // فاصله شروع نوشتن «نامرتب» از ابتدای ناحیه تست (برای رد شدن از مرز صفحه)
 #define MC_EEPROM_TEST_MIS_LEN      40      // طول نوشتن «نامرتب» (بایت)
+
+// ===================== ۱۱. ذخیره‌سازی سخت‌دار تنظیمات (بند ۷.۲) =====================
+#define MC_SETTINGS_SLOT_A_ADDR          0       // آدرس شروع اسلات A در EEPROM (بایت)
+#define MC_SETTINGS_SLOT_B_ADDR          256     // آدرس شروع اسلات B در EEPROM (بایت؛ باید بعد از پایان اسلات A باشد)
+#define MC_SETTINGS_SLOT_BYTES           256     // اندازه هر اسلات به بایت (سرآیند + داده؛ ناحیه تست 4032 تا 4095 نباید با اسلات‌ها هم‌پوشانی داشته باشد)
+#define MC_SETTINGS_HEADER_BYTES         16      // اندازه سرآیند هر اسلات به بایت (ثابت فرمت؛ عوض نشود)
+#define MC_SETTINGS_MAGIC                0x4D43534EUL  // عدد شناسایی اسلات (حروف MCSN)
+#define MC_SETTINGS_FORMAT_VERSION       1       // نسخه فرمت ذخیره‌سازی (اگر ساختار عوض شد زیاد شود)
+#define MC_SETTINGS_TEST_PAYLOAD_LEN     48      // طول داده آزمایشی برای فرمان‌های تست (بایت)
+#define MC_SETTINGS_POLL_PERIOD_MS       5       // دوره وظیفه settings_store (میلی‌ثانیه)
+#define MC_SETTINGS_STEP_TIMEOUT_MS      500     // حداکثر زمان هر مرحله (خواندن یا نوشتن یک اسلات) به میلی‌ثانیه
+
