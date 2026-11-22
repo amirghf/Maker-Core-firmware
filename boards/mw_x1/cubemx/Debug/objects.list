@@ -42,6 +42,7 @@
 "./Core/core_src/planner.o"
 "./Core/core_src/probe.o"
 "./Core/core_src/scheduler.o"
+"./Core/core_src/settings_boot.o"
 "./Core/core_src/settings_data.o"
 "./Core/core_src/settings_store.o"
 "./Core/core_src/soft_limits.o"
