@@ -1,4 +1,4 @@
-// لیست منو و پیمایش با انکودر (بند ۸.۷).
+// لیست منو و پیمایش با انکودر (بند ۸.۷ - بازطراحی ظاهر و اسکرول یک‌جا).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder استفاده می‌کند.
 #include "ui_menu.h"
 #include "ui_colors.h"
@@ -9,11 +9,11 @@
 #include "../hal/hal_display.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_324_menu_sel_shown  = 0;  // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
+volatile uint32_t mc_dbg_324_menu_sel_shown   = 0;  // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
 volatile uint32_t mc_dbg_325_menu_first_shown = 0;  // خواندنی: اندیس اولین ردیف قابل مشاهده (۰ تا ۳)
-volatile uint32_t mc_dbg_326_menu_enter_cnt  = 0;  // خواندنی: تعداد اینترهای منو روی آیتم‌های غیر BACK
-volatile uint32_t mc_dbg_327_menu_enter_idx  = 255;  // خواندنی: اندیس آیتم آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_328_menu_force      = 0;  // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۰ = انتخاب آیتم
+volatile uint32_t mc_dbg_326_menu_enter_cnt   = 0;  // خواندنی: تعداد اینترهای منو روی آیتم‌های غیر BACK
+volatile uint32_t mc_dbg_327_menu_enter_idx   = 255; // خواندنی: اندیس آیتم آخرین اینتر (۲۵۵ = هنوز نشده)
+volatile uint32_t mc_dbg_328_menu_force       = 0;  // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۰ = انتخاب آیتم
 }
 
 namespace mc {
@@ -24,11 +24,14 @@ struct MenuItemSpec {
     uint16_t    accent_color;
 };
 
-// لیست ۸ آیتم منو با ترتیب و اندیس دقیق
+// پس‌زمینه تیره ردیف انتخاب‌شده (بند ۸.۷)
+constexpr uint16_t kSelBg = mc_rgb565(24, 38, 64);
+
+// لیست ۸ آیتم منو با ترتیب و اندیس دقیق (بند ۸.۷: آیتم اندیس ۲ برابر HOT BED است)
 static const MenuItemSpec kMenuItems[8] = {
     { "MOVE",     mc_rgb565(80, 220, 120) },    // 0: MOVE
     { "EXTRUDER", kAccNozzle },                // 1: EXTRUDER
-    { "HEAT",     kAccBed },                   // 2: HEAT
+    { "HOT BED",  kAccBed },                   // 2: HOT BED (بند ۸.۷)
     { "SENSORS",  mc_rgb565(170, 120, 255) },  // 3: SENSORS
     { "SD CARD",  mc_rgb565(0, 200, 100) },    // 4: SD CARD
     { "USB OTG",  kYellowBusy },               // 5: USB OTG
@@ -38,66 +41,63 @@ static const MenuItemSpec kMenuItems[8] = {
 
 static uint8_t g_menu_sel   = 0U;   // اندیس آیتم انتخاب‌شده (۰ تا ۷)
 static uint8_t g_menu_first = 0U;   // اندیس اولین ردیف دیده‌شده (۰ تا ۳)
-static uint8_t g_menu_step  = 0U;   // گام نقاشی (۰ تا ۸ ورود، ۱۰ تا ۱۶ بازنقاشی، ۲۵۵ کار عادی)
+static uint8_t g_menu_step  = 0U;   // گام نقاشی ورود به منو (۰ تا ۸، ۲۵۵ = کار عادی)
 
-// رسم نوار بالا: شماره انتخاب‌شده با فرم 1/8 تا 8/8
-static void draw_top_num() {
-    char buf[8];
-    uint16_t pos = 0U;
-    pos = mc_fmt_uint(buf, sizeof(buf), pos, static_cast<uint32_t>(g_menu_sel + 1U));
-    pos = mc_fmt_text(buf, sizeof(buf), pos, "/8");
-
-    // پاک کردن پس‌زمینه ۵ کاراکتری (۳۰ در ۸ پیکسل) جهت جلوگیری از باقی‌ماندن متون قبلی
-    mc_gfx_fill_rect(424U, 14U, 30U, 8U, kTopBarBg);
-    mc_gfx_text(424U, 14U, buf, kLabelGray, kTopBarBg, 1U);
-}
-
-// رسم قاب هایلایت بیرون ردیف row_idx (۰ تا ۴)
-static void draw_row_highlight(uint8_t row_idx, uint16_t color) {
-    const uint16_t ry = static_cast<uint16_t>(46U + static_cast<uint16_t>(row_idx) * 50U);
-    mc_gfx_fill_rect(6U, static_cast<uint16_t>(ry - 2U), 452U, 2U, color);     // بالا
-    mc_gfx_fill_rect(6U, static_cast<uint16_t>(ry + 44U), 452U, 2U, color);    // پایین
-    mc_gfx_fill_rect(6U, ry, 2U, 44U, color);                                   // چپ
-    mc_gfx_fill_rect(456U, ry, 2U, 44U, color);                                 // راست
-}
-
-// رسم کارت و محتوای یک ردیف منو (row_idx = ۰ تا ۴)
+// رسم یک ردیف منو (row_idx = ۰ تا ۴)
 static void draw_menu_row(uint8_t row_idx) {
-    const uint8_t item_idx = g_menu_first + row_idx;
+    const uint8_t item_idx = static_cast<uint8_t>(g_menu_first + row_idx);
     if (item_idx >= 8U) { return; }
 
     const uint16_t ry = static_cast<uint16_t>(46U + static_cast<uint16_t>(row_idx) * 50U);
     const MenuItemSpec& spec = kMenuItems[item_idx];
+    const bool is_sel = (item_idx == g_menu_sel);
 
-    // پاک کردن ناحیه کارت و هایلایت قبلی با kScreenBg
-    mc_gfx_fill_rect(6U, static_cast<uint16_t>(ry - 2U), 452U, 48U, kScreenBg);
+    // ۱. پس‌زمینه ردیف
+    const uint16_t bg = is_sel ? kSelBg : kScreenBg;
+    mc_gfx_fill_rect(8U, ry, 448U, 44U, bg);
 
-    // کارت ردیف
-    mc_ui_card(8U, ry, 448U, 44U, 8U, kCardBg, kCardBorder);
+    // ۲. نوار عمودی باریک ۴ پیکسلی سمت چپ برای ردیف انتخاب‌شده
+    if (is_sel) {
+        mc_gfx_fill_rect(8U, ry, 4U, 44U, kAccentLine);
+    }
 
-    // نوار باریک رنگی شاخص
-    mc_gfx_fill_rect(8U, static_cast<uint16_t>(ry + 6U), 4U, 32U, spec.accent_color);
+    // ۳. پاک‌سازی ناحیه خط جداکننده و رسم خط نازک زیر ردیف
+    mc_gfx_fill_rect(8U, static_cast<uint16_t>(ry + 44U), 448U, 6U, kScreenBg);
+    mc_gfx_hline(14U, static_cast<uint16_t>(ry + 47U), 436U, kDividerGray);
 
-    // آیکون ۳۲ در ۳۲
-    mc_icon_menu_item(20U, static_cast<uint16_t>(ry + 6U), item_idx, spec.accent_color, kCardBg);
+    // ۴. آیکون ۳۲ در ۳۲
+    const uint16_t icon_color = is_sel ? spec.accent_color : kIconBody;
+    mc_icon_menu_item(20U, static_cast<uint16_t>(ry + 6U), item_idx, icon_color, bg);
 
-    // نام آیتم با scale 2 سفید
-    mc_gfx_text(64U, static_cast<uint16_t>(ry + 15U), spec.label, kColorWhite, kCardBg, 2U);
+    // ۵. نام آیتم با scale 2
+    const uint16_t text_color = is_sel ? kColorWhite : kLabelGray;
+    mc_gfx_text(64U, static_cast<uint16_t>(ry + 15U), spec.label, text_color, bg, 2U);
 
-    // برای همه آیتم‌ها به‌جز BACK: مثلث رو به راست
+    // ۶. فلش نازک سمت راست با ضخامت ۲ پیکسل برای همه آیتم‌ها به جز BACK (اندیس ۷)
     if (item_idx != 7U) {
-        mc_ui_fill_triangle(432, static_cast<int16_t>(ry + 16U),
-                            440, static_cast<int16_t>(ry + 22U),
-                            432, static_cast<int16_t>(ry + 28U), kLabelGray);
+        const uint16_t arrow_color = is_sel ? kAccentLine : kDividerGray;
+        for (uint16_t i = 0U; i <= 5U; ++i) {
+            const uint16_t px = static_cast<uint16_t>(436U + i);
+            const uint16_t y_upper = static_cast<uint16_t>(ry + 16U + i);
+            const uint16_t y_lower = static_cast<uint16_t>(ry + 28U - i);
+
+            mc_gfx_pixel(px, y_upper, arrow_color);
+            mc_gfx_pixel(static_cast<uint16_t>(px + 1U), y_upper, arrow_color);
+
+            mc_gfx_pixel(px, y_lower, arrow_color);
+            mc_gfx_pixel(static_cast<uint16_t>(px + 1U), y_lower, arrow_color);
+        }
     }
 }
 
-// رسم نوار اسکرول و دستگیره
+// رسم نوار اسکرول باریک (۳ پیکسل در x=470)
 static void draw_scrollbar() {
-    mc_gfx_fill_rect(464U, 46U, 6U, 244U, kBarTrack);
+    mc_gfx_fill_rect(464U, 46U, 13U, 244U, kScreenBg);  // پاک‌سازی نوار قدیمی
+    mc_gfx_fill_rect(470U, 46U, 3U, 244U, kBarTrack);
+
     constexpr uint16_t thumb_h = (244U * 5U) / 8U;  // 152
     const uint16_t thumb_y = static_cast<uint16_t>(46U + (static_cast<uint16_t>(g_menu_first) * (244U - thumb_h)) / 3U);
-    mc_gfx_fill_rect(464U, thumb_y, 6U, thumb_h, kAccentLine);
+    mc_gfx_fill_rect(470U, thumb_y, 3U, thumb_h, kAccentLine);
 }
 
 // اعمال تغییر انتخاب و به‌روزرسانی پنجره
@@ -113,19 +113,21 @@ static void apply_selection_change(uint8_t target_sel) {
         g_menu_first = g_menu_sel - 4U;
     }
 
-    mc_dbg_324_menu_sel_shown  = g_menu_sel;
+    mc_dbg_324_menu_sel_shown   = g_menu_sel;
     mc_dbg_325_menu_first_shown = g_menu_first;
 
     if (g_menu_first == old_first) {
-        // فقط انتخاب در همان پنجره جابه‌جا شده است
+        // تغییر فقط در همان پنجره: بازنقاشی فوری ۲ ردیف قبلی و جدید
         const uint8_t old_k = old_sel - old_first;
         const uint8_t new_k = g_menu_sel - g_menu_first;
-        draw_row_highlight(old_k, kScreenBg);
-        draw_row_highlight(new_k, kColorWhite);
-        draw_top_num();
+        draw_menu_row(old_k);
+        draw_menu_row(new_k);
     } else {
-        // پنجره تغییر کرده؛ شروع بازنقاشی مرحله‌ای ردیف‌ها
-        g_menu_step = 10U;
+        // تغییر پنجره: بازنقاشی فوری تمام ۵ ردیف و نوار اسکرول
+        for (uint8_t k = 0U; k < 5U; ++k) {
+            draw_menu_row(k);
+        }
+        draw_scrollbar();
     }
 }
 
@@ -134,9 +136,9 @@ static void apply_selection_change(uint8_t target_sel) {
 void mc_ui_menu_open() {
     g_menu_sel   = 0U;
     g_menu_first = 0U;
-    g_menu_step  = 0U;   // شروع نقاشی مرحله‌ای
+    g_menu_step  = 0U;   // شروع نقاشی ورود
 
-    mc_dbg_324_menu_sel_shown  = 0U;
+    mc_dbg_324_menu_sel_shown   = 0U;
     mc_dbg_325_menu_first_shown = 0U;
 
     (void)mc_encoder_take_clicks();
@@ -168,7 +170,7 @@ MenuResult mc_ui_menu_poll() {
         }
     }
 
-    // ۲. مراحل نقاشی اولیه‌ی ورود به منو یا بازنقاشی ردیف‌ها
+    // ۲. مراحل نقاشی اولیه‌ی ورود به منو (گام‌های ۰ تا ۸)
     if (g_menu_step < 255U) {
         switch (g_menu_step) {
             case 0: // پس‌زمینه اصلی
@@ -176,13 +178,12 @@ MenuResult mc_ui_menu_poll() {
                 g_menu_step = 1U;
                 return MenuResult::Stay;
 
-            case 1: { // نوار بالا + عنوان + شماره
+            case 1: { // نوار بالا + عنوان MENU
                 mc_gfx_fill_rect(0U, 0U, 480U, 36U, kTopBarBg);
                 mc_gfx_fill_rect(0U, 36U, 480U, 2U, kAccentLine);
                 const uint16_t tw = mc_gfx_text_width("MENU", 2U);
                 const uint16_t tx = static_cast<uint16_t>((480U - tw) / 2U);
                 mc_gfx_text(tx, 10U, "MENU", kColorWhite, kTopBarBg, 2U);
-                draw_top_num();
                 g_menu_step = 2U;
                 return MenuResult::Stay;
             }
@@ -192,7 +193,7 @@ MenuResult mc_ui_menu_poll() {
             case 4:
             case 5:
             case 6: { // نقاشی ردیف k (۰ تا ۴)
-                const uint8_t k = g_menu_step - 2U;
+                const uint8_t k = static_cast<uint8_t>(g_menu_step - 2U);
                 draw_menu_row(k);
                 g_menu_step++;
                 return MenuResult::Stay;
@@ -203,32 +204,8 @@ MenuResult mc_ui_menu_poll() {
                 g_menu_step = 8U;
                 return MenuResult::Stay;
 
-            case 8: // هایلایت
-                draw_row_highlight(g_menu_sel - g_menu_first, kColorWhite);
-                g_menu_step = 255U; // اتمام نقاشی اولیه
-                return MenuResult::Stay;
-
-            // --- مراحل بازنقاشی هنگام تغییر first ---
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14: { // بازنقاشی یک ردیف
-                const uint8_t k = g_menu_step - 10U;
-                draw_menu_row(k);
-                g_menu_step++;
-                return MenuResult::Stay;
-            }
-
-            case 15: // بازنقاشی نوار اسکرول و شماره بالا
-                draw_scrollbar();
-                draw_top_num();
-                g_menu_step = 16U;
-                return MenuResult::Stay;
-
-            case 16: // بازنقاشی هایلایت
-                draw_row_highlight(g_menu_sel - g_menu_first, kColorWhite);
-                g_menu_step = 255U; // اتمام بازنقاشی
+            case 8: // اتمام نقاشی اولیه
+                g_menu_step = 255U;
                 return MenuResult::Stay;
 
             default:
@@ -262,7 +239,7 @@ MenuResult mc_ui_menu_poll() {
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;
-            // عملکرد هر آیتم در بندهای ۸.۸ تا ۸.۱۵ وصل می‌شود
+            // عملکرد هر آیتم در بندهای بعدی وصل می‌شود
         }
     }
 
