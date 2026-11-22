@@ -9,6 +9,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include ui/subdir.mk
 -include gcode/subdir.mk
 -include board_src/subdir.mk
 -include USB_HOST/Target/subdir.mk

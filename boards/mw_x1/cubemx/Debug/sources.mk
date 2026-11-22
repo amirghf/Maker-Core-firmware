@@ -56,4 +56,5 @@ USB_HOST/App \
 USB_HOST/Target \
 board_src \
 gcode \
+ui \
 

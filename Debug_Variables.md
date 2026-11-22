@@ -86,7 +86,18 @@
 | `mc_dbg_299_ui_fake_bed_x10` | `int32_t` | نوشتنی | دمای فعلی بستر ×10. -9999 = سنسور خراب. |
 | `mc_dbg_300_ui_fake_noz_tgt_x10` | `int32_t` | نوشتنی | هدف اکسترودر ×10. |
 | `mc_dbg_301_ui_fake_bed_tgt_x10` | `int32_t` | نوشتنی | هدف بستر ×10. |
-| `mc_dbg_302_ui_fake_status` | `uint32_t` | نوشتنی | 0 = واقعی، 1 = READY، 2 = BUSY، 3 = KILLED. |
+| `mc_dbg_302_ui_fake_status` | `uint32_t` | نوشتنی | 0 = واقعی، 1 = READY، 2 = BUSY، 3 = KILLED، 4 = PRINTING، 5 = PAUSED (فقط ظاهر، با fake). |
+
+---
+
+## 🔷 بند ۸.۷: موارد مورد نیاز کاربر در نمایشگر (`ui/ui_home.cpp`)
+
+| نام کامل | نوع | دسترسی | توضیح |
+| :--- | :--- | :--- | :--- |
+| `mc_dbg_303_ui_fake_media` | `uint32_t` | نوشتنی | فقط وقتی fake روشن است. بیت 0 = SD موجود، بیت 1 = OTG موجود. |
+| `mc_dbg_304_ui_fake_fan_pct` | `uint32_t` | نوشتنی | فقط وقتی fake روشن است. درصد فن از 0 تا 100. |
+| `mc_dbg_305_ui_fake_axis_en` | `uint32_t` | نوشتنی | فقط وقتی fake روشن است. بیت 0 تا 3 = فعال بودن X، Y، Z، E. |
+| `mc_dbg_306_ui_media_shown` | `uint32_t` | خواندنی | بیت 0 = آیکون SD الان «موجود» نشان داده می‌شود، بیت 1 = آیکون OTG. |
 
 
 
