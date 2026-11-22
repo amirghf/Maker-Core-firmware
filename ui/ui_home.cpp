@@ -1,7 +1,9 @@
 // صفحه اصلی رابط کاربری (بند ۸.۲).
 // هیچ هدر ST اینجا include نمی‌شود.
 #include "ui_home.h"
+#include "ui_colors.h"
 #include "ui_icons.h"
+#include "ui_menu.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -43,6 +45,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)
 }
 
 namespace mc {
@@ -589,9 +592,6 @@ void draw_static_step(uint8_t step) {
             mc_gfx_text(tx, 280U, "RESET", kLabelGray, kCardBg, 1U);
             break;
         }
-        case 16:
-            mc_gfx_text(8U, 304U, MC_FIRMWARE_NAME " " MC_VERSION_STRING, kDividerGray, kScreenBg, 1U);
-            break;
         default:
             break;
     }
@@ -841,6 +841,12 @@ void mc_ui_init() {
     mc_dbg_320_ui_enter_cnt = 0U;
     mc_dbg_321_ui_enter_idx = 255U;
     mc_dbg_322_ui_sel_force = 0U;
+    mc_dbg_323_ui_page = 0U;
+    mc_dbg_324_menu_sel_shown = 0U;
+    mc_dbg_325_menu_first_shown = 0U;
+    mc_dbg_326_menu_enter_cnt = 0U;
+    mc_dbg_327_menu_enter_idx = 255U;
+    mc_dbg_328_menu_force = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -887,13 +893,57 @@ void mc_ui_poll() {
     (void)mc_dbg_320_ui_enter_cnt;
     (void)mc_dbg_321_ui_enter_idx;
     (void)mc_dbg_322_ui_sel_force;
+    (void)mc_dbg_323_ui_page;
+    (void)mc_dbg_324_menu_sel_shown;
+    (void)mc_dbg_325_menu_first_shown;
+    (void)mc_dbg_326_menu_enter_cnt;
+    (void)mc_dbg_327_menu_enter_idx;
+    (void)mc_dbg_328_menu_force;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
         mc_dbg_293_ui_request = 0U;
+        mc_dbg_323_ui_page = 0U;   // بازگشت به صفحه اصلی
         if (mc_dbg_294_ui_state != 5U) {
             g_static_frame_step = 0U;
             mc_dbg_294_ui_state = 3U;   // نقاشی مستقیم قاب ثابت
+        }
+    }
+
+    // اگر صفحه فعال منو باشد (۱)
+    if (mc_dbg_323_ui_page == 1U) {
+        const MenuResult m_res = mc_ui_menu_poll();
+        if (m_res == MenuResult::Back) {
+            mc_dbg_323_ui_page = 0U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            if (mc_dbg_294_ui_state != 5U) {
+                g_static_frame_step = 0U;
+                mc_dbg_294_ui_state = 3U;     // بازنقاشی کامل صفحه اصلی
+                mc_dbg_319_ui_sel_shown = 4U; // هایلایت روی گزینه منو (اندیس ۴)
+            }
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه اصلی باشد (۰)، بررسی mc_dbg_328_menu_force جهت ورود به منو
+    if (mc_dbg_328_menu_force != 0U) {
+        const uint32_t f_val = mc_dbg_328_menu_force;
+        if ((f_val == 1U) || ((f_val >= 3U) && (f_val <= 10U))) {
+            mc_ui_menu_open();
+            mc_dbg_323_ui_page = 1U;
+            (void)mc_ui_menu_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_val == 2U) {
+            mc_dbg_328_menu_force = 0U;
         }
     }
 
@@ -907,10 +957,10 @@ void mc_ui_poll() {
         }
 
         case 3: { // نقاشی مرحله به مرحله قاب ثابت
-            if (g_static_frame_step < 17U) {
+            if (g_static_frame_step < 16U) {
                 draw_static_step(g_static_frame_step);
                 g_static_frame_step++;
-                if (g_static_frame_step >= 17U) {
+                if (g_static_frame_step >= 16U) {
                     for (uint8_t i = 0U; i < kFieldCount; ++i) {
                         g_field_cache[i].dirty = true;
                         g_field_cache[i].text[0] = '\0';
@@ -968,7 +1018,10 @@ void mc_ui_poll() {
             if (mc_encoder_take_press()) {
                 mc_dbg_320_ui_enter_cnt = mc_dbg_320_ui_enter_cnt + 1U;
                 mc_dbg_321_ui_enter_idx = mc_dbg_319_ui_sel_shown;
-                // عملکرد هر گزینه در بند ۸.۱۵ وصل می‌شود
+                if (mc_dbg_319_ui_sel_shown == 4U) { // اینتر روی گزینه منو
+                    mc_ui_menu_open();
+                    mc_dbg_323_ui_page = 1U;
+                }
             }
 
             // ۴. به‌روزرسانی فیلدهای متغیر
@@ -984,6 +1037,7 @@ void mc_ui_poll() {
     if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
         mc_dbg_296_ui_max_tick_us = elapsed_us;
     }
+}
 }
 
 }  // namespace mc

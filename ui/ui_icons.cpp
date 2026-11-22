@@ -318,4 +318,63 @@ void mc_icon_reset(uint16_t x, uint16_t y, uint16_t color) {
     }
 }
 
+void mc_icon_menu_item(uint16_t x, uint16_t y, uint8_t id, uint16_t color, uint16_t bg) {
+    switch (id) {
+        case 0: // MOVE: چهار مثلث به چهار جهت دور یک نقطه در جعبه ۳۲ در ۳۲
+            mc_ui_fill_circle(x + 16U, y + 16U, 2U, color);
+            mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 3U),
+                                static_cast<int16_t>(x + 10U), static_cast<int16_t>(y + 11U),
+                                static_cast<int16_t>(x + 22U), static_cast<int16_t>(y + 11U), color);
+            mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 29U),
+                                static_cast<int16_t>(x + 10U), static_cast<int16_t>(y + 21U),
+                                static_cast<int16_t>(x + 22U), static_cast<int16_t>(y + 21U), color);
+            mc_ui_fill_triangle(static_cast<int16_t>(x + 3U), static_cast<int16_t>(y + 16U),
+                                static_cast<int16_t>(x + 11U), static_cast<int16_t>(y + 10U),
+                                static_cast<int16_t>(x + 11U), static_cast<int16_t>(y + 22U), color);
+            mc_ui_fill_triangle(static_cast<int16_t>(x + 29U), static_cast<int16_t>(y + 16U),
+                                static_cast<int16_t>(x + 21U), static_cast<int16_t>(y + 10U),
+                                static_cast<int16_t>(x + 21U), static_cast<int16_t>(y + 22U), color);
+            break;
+
+        case 1: // EXTRUDER
+            mc_icon_nozzle(x, y, color, mc_rgb565(120, 135, 165));
+            break;
+
+        case 2: // HEAT
+            mc_icon_bed(x, y, color, mc_rgb565(120, 135, 165));
+            break;
+
+        case 3: // SENSORS: دایره پر در پایین و میله عمودی شبیه دماسنج
+            mc_ui_fill_circle(x + 16U, y + 23U, 5U, color);
+            mc_gfx_fill_rect(x + 14U, y + 5U, 5U, 15U, color);
+            mc_gfx_hline(x + 21U, y + 8U, 4U, color);
+            mc_gfx_hline(x + 21U, y + 13U, 4U, color);
+            mc_gfx_hline(x + 21U, y + 18U, 4U, color);
+            break;
+
+        case 4: // SD CARD: آیکون ۲۴ در ۲۴ با جابه‌جایی +۴ در جعبه ۳۲
+            mc_icon_sd(x + 4U, y + 4U, color, bg);
+            break;
+
+        case 5: // USB OTG: آیکون ۲۴ در ۲۴ با جابه‌جایی +۴
+            mc_icon_usb(x + 4U, y + 4U, color, bg);
+            break;
+
+        case 6: // ABOUT: دایره توپر و حرف i داخلش
+            mc_ui_fill_circle(x + 16U, y + 16U, 13U, color);
+            mc_gfx_fill_rect(x + 14U, y + 7U, 4U, 4U, bg);
+            mc_gfx_fill_rect(x + 14U, y + 14U, 4U, 11U, bg);
+            break;
+
+        case 7: // BACK: مثلث رو به چپ
+            mc_ui_fill_triangle(static_cast<int16_t>(x + 8U), static_cast<int16_t>(y + 16U),
+                                static_cast<int16_t>(x + 24U), static_cast<int16_t>(y + 6U),
+                                static_cast<int16_t>(x + 24U), static_cast<int16_t>(y + 26U), color);
+            break;
+
+        default:
+            break;
+    }
+}
+
 }  // namespace mc
