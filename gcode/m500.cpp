@@ -2,6 +2,7 @@
 #include "gcode_handlers.h"
 #include "settings_store.h"
 #include "settings_data.h"
+#include "settings_boot.h"
 #include "host_reply.h"
 #include "hal_time.h"
 
@@ -24,7 +25,10 @@ void reset_state() {
 GcodeStatus mc_gcode_m500(const GcodeCommand& cmd, bool first_call) {
     (void)cmd;
 
+    if (mc_cfg_boot_busy()) { return GcodeStatus::Busy; }
+
     if (first_call) {
+
         g_t_start = mc_millis();
         g_len = mc_cfg_collect(g_buf, static_cast<uint16_t>(sizeof(g_buf)));
         if (g_len == 0U) {

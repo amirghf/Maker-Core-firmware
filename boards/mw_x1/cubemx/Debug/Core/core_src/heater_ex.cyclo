@@ -8,3 +8,4 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/heater_ex.cpp:123:6:bool mc::mc_heater_ex_test_mode()	1
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/heater_ex.cpp:127:9:int32_t mc::mc_heater_ex_set_target_x10(int32_t)	3
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/heater_ex.cpp:135:6:void mc::mc_heater_ex_set_gains_x100(uint32_t, uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/heater_ex.cpp:141:6:void mc::mc_heater_ex_get_gains_x100(uint32_t&, uint32_t&, uint32_t&)	1

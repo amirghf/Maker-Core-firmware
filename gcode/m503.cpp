@@ -1,6 +1,7 @@
 // M503: گزارش تنظیمات فعلی از RAM (بند ۷.۳).
 #include "gcode_handlers.h"
 #include "settings_data.h"
+#include "settings_boot.h"
 #include "motion_modes.h"
 #include "motion_limits.h"
 #include "planner.h"
@@ -17,7 +18,10 @@ GcodeStatus mc_gcode_m503(const GcodeCommand& cmd, bool first_call) {
     (void)cmd;
     (void)first_call;
 
+    if (mc_cfg_boot_busy()) { return GcodeStatus::Busy; }
+
     char buf[96];
+
     uint16_t n = 0U;
     const uint16_t cap = static_cast<uint16_t>(sizeof(buf));
 
