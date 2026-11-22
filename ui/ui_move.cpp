@@ -1,6 +1,7 @@
 // صفحه حرکت رابط کاربری (بند ۸.۸).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder و machine_state استفاده می‌کند.
 #include "ui_move.h"
+#include "ui_home.h"
 #include "ui_colors.h"
 #include "../core/gfx.h"
 #include "../core/text_format.h"

@@ -170,3 +170,4 @@
 "./ui/ui_home.o"
 "./ui/ui_icons.o"
 "./ui/ui_menu.o"
+"./ui/ui_move.o"
