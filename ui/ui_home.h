@@ -1,5 +1,5 @@
 #pragma once
-// صفحه اصلی رابط کاربری (بند ۸.۶).
+// صفحه اصلی رابط کاربری (بند ۸.۲).
 // فقط از هدرهای core و hal استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 #include "../config/mc_config.h"
