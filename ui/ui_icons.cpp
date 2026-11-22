@@ -195,28 +195,36 @@ void mc_icon_nozzle(uint16_t x, uint16_t y, uint16_t accent, uint16_t body) {
     mc_ui_fill_circle(x + 16U, y + 30U, 1U, accent);
 }
 
-// فن (۳۲ در ۳۲ دورنگ)
+// فن (۳۲ در ۳۲ دورنگ، طرح جدید)
 void mc_icon_fan(uint16_t x, uint16_t y, uint16_t accent, uint16_t body, uint16_t bg) {
-    // قاب
-    mc_ui_fill_rrect(x, y, 32U, 32U, 5U, body);
-    // دایره داخلی
-    mc_ui_fill_circle(x + 16U, y + 16U, 13U, bg);
-    // چهار پره
+    // ۱. قاب
+    mc_ui_fill_rrect(x, y, 32U, 32U, 6U, body);
+    // ۲. چهار پیچ گوشه‌ها
+    mc_gfx_fill_rect(x + 3U, y + 3U, 2U, 2U, bg);
+    mc_gfx_fill_rect(x + 27U, y + 3U, 2U, 2U, bg);
+    mc_gfx_fill_rect(x + 3U, y + 27U, 2U, 2U, bg);
+    mc_gfx_fill_rect(x + 27U, y + 27U, 2U, 2U, bg);
+    // ۳. حلقه رنگی
+    mc_ui_fill_circle(x + 16U, y + 16U, 14U, accent);
+    mc_ui_fill_circle(x + 16U, y + 16U, 13U, body);
+    // ۴. دیسک داخلی
+    mc_ui_fill_circle(x + 16U, y + 16U, 12U, bg);
+    // ۵. چهار پره
     mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 16U),
-                        static_cast<int16_t>(x + 15U), static_cast<int16_t>(y + 3U),
-                        static_cast<int16_t>(x + 27U), static_cast<int16_t>(y + 8U), accent);
+                        static_cast<int16_t>(x + 15U), static_cast<int16_t>(y + 5U),
+                        static_cast<int16_t>(x + 25U), static_cast<int16_t>(y + 9U), accent);
     mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 16U),
-                        static_cast<int16_t>(x + 29U), static_cast<int16_t>(y + 15U),
-                        static_cast<int16_t>(x + 24U), static_cast<int16_t>(y + 27U), accent);
+                        static_cast<int16_t>(x + 27U), static_cast<int16_t>(y + 15U),
+                        static_cast<int16_t>(x + 23U), static_cast<int16_t>(y + 25U), accent);
     mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 16U),
-                        static_cast<int16_t>(x + 17U), static_cast<int16_t>(y + 29U),
-                        static_cast<int16_t>(x + 5U), static_cast<int16_t>(y + 24U), accent);
+                        static_cast<int16_t>(x + 17U), static_cast<int16_t>(y + 27U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 23U), accent);
     mc_ui_fill_triangle(static_cast<int16_t>(x + 16U), static_cast<int16_t>(y + 16U),
-                        static_cast<int16_t>(x + 3U), static_cast<int16_t>(y + 17U),
-                        static_cast<int16_t>(x + 8U), static_cast<int16_t>(y + 5U), accent);
-    // هاب
-    mc_ui_fill_circle(x + 16U, y + 16U, 3U, body);
-    mc_ui_fill_circle(x + 16U, y + 16U, 1U, bg);
+                        static_cast<int16_t>(x + 5U), static_cast<int16_t>(y + 17U),
+                        static_cast<int16_t>(x + 9U), static_cast<int16_t>(y + 7U), accent);
+    // ۶. هاب
+    mc_ui_fill_circle(x + 16U, y + 16U, 4U, 0xFFFFU);
+    mc_ui_fill_circle(x + 16U, y + 16U, 1U, body);
 }
 
 // بستر داغ (۳۲ در ۳۲ دورنگ)
