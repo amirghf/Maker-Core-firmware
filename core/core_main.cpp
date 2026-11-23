@@ -45,7 +45,10 @@
 #include "settings_store.h"
 #include "settings_boot.h"
 #include "encoder.h"
+#include "touch_input.h"
+#include "touch_cal_store.h"
 #include "../ui/ui_home.h"
+
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -62,15 +65,8 @@ volatile uint32_t mc_dbg_tft_step          = 0;  // مرحله جاری تست �
 volatile uint32_t mc_dbg_gfx_test_request  = 0;  // برای تست: نوشتن عدد ۱ در این متغیر، تست گرافیک را اجرا می‌کند
 volatile uint32_t mc_dbg_gfx_fill_ms       = 0;  // زمان پر کردن کل صفحه (میلی‌ثانیه)
 volatile uint32_t mc_dbg_gfx_text_ms       = 0;  // زمان نوشتن تمام تست‌های متن (میلی‌ثانیه)
-volatile uint32_t mc_dbg_touch_cal_request = 0;  // برای تست: نوشتن عدد ۱ در این متغیر، کالیبراسیون لمس را شروع می‌کند
-volatile uint32_t mc_dbg_touch_state       = 0;  // مرحله تست (۰ بیکار، ۱ تا ۳ انتظار برای نقطه‌ها، ۴ انتظار رها شدن، ۵ نقاشی)
-volatile uint32_t mc_dbg_touch_pressed     = 0;  // ۱ = الان صفحه لمس شده
-volatile uint32_t mc_dbg_touch_raw_x       = 0;  // آخرین مختصات خام X
-volatile uint32_t mc_dbg_touch_raw_y       = 0;  // آخرین مختصات خام Y
-volatile uint32_t mc_dbg_touch_x           = 0;  // آخرین مختصات پیکسل X (بعد از کالیبراسیون)
-volatile uint32_t mc_dbg_touch_y           = 0;  // آخرین مختصات پیکسل Y (بعد از کالیبراسیون)
-volatile int      mc_dbg_touch_cal_ok      = -1; // -1 = هنوز انجام نشده، 1 = موفق، 0 = ناموفق
 volatile uint32_t mc_dbg_flash_test_request = 0;  // برای تست: نوشتن عدد ۱ در این متغیر، تست فلش را اجرا می‌کند
+
 volatile uint32_t mc_dbg_flash_test         = 0;  // نتیجه تست: ۰ = اجرا نشده، ۱ = پاس، بقیه کد خطا
 volatile uint32_t mc_dbg_flash_read_ms      = 0;  // زمان خواندن ۶۴ کیلوبایت (میلی‌ثانیه)
 volatile uint32_t mc_dbg_flash_erase_ms     = 0;  // زمان پاک‌کردن یک سکتور (میلی‌ثانیه)
@@ -239,138 +235,8 @@ void task_gfx_test() {
     mc_log_value(LogLevel::Info, "gfx text_ms", mc_dbg_gfx_text_ms);
 }
 
-// سه نقطه هدف کالیبراسیون روی صفحه (پیکسل)
-constexpr uint16_t kCalX[3] = { 40U, 440U, 240U };
-constexpr uint16_t kCalY[3] = { 40U, 160U, 280U };
-
-// یک علامت + به اندازه ۲۱ در ۲۱ پیکسل
-void draw_cross(uint16_t cx, uint16_t cy, uint16_t color) {
-    mc_gfx_hline(static_cast<uint16_t>(cx - 10U), cy, 21U, color);
-    mc_gfx_vline(cx, static_cast<uint16_t>(cy - 10U), 21U, color);
 }
 
-// صفحه هدف شماره i (۰ تا ۲) را نشان می‌دهد
-void show_target(uint8_t i) {
-    static const char* const kTitle[3] = { "Point 1 of 3", "Point 2 of 3", "Point 3 of 3" };
-    mc_display_fill_screen(kColorBlack);
-    mc_gfx_text(12U, 12U, "Touch the red cross", kColorWhite, kColorBlack, 2U);
-    mc_gfx_text(12U, 40U, kTitle[i], kColorWhite, kColorBlack, 2U);
-    draw_cross(kCalX[i], kCalY[i], kColorRed);
-}
-
-void task_touch_test() {
-    // مرحله‌ها: ۰ بیکار، ۱ تا ۳ انتظار فشردن نقطه ۱ تا ۳، ۴ انتظار رها شدن انگشت، ۵ نقاشی
-    static uint8_t  state         = 0U;
-    static uint8_t  point         = 0U;
-    static bool     inited        = false;
-    static uint16_t raw_x[3]      = { 0U, 0U, 0U };
-    static uint16_t raw_y[3]      = { 0U, 0U, 0U };
-    static uint8_t  release_count = 0U;
-    static uint32_t paint_start   = 0U;
-
-    // خواندن لمس (فقط بعد از راه‌اندازی)
-    uint16_t rx = 0U;
-    uint16_t ry = 0U;
-    bool pressed = false;
-    if (inited) {
-        pressed = mc_touch_read_raw(&rx, &ry);
-        mc_dbg_touch_pressed = pressed ? 1U : 0U;
-        if (pressed) {
-            mc_dbg_touch_raw_x = rx;
-            mc_dbg_touch_raw_y = ry;
-        }
-    }
-
-    if (state == 0U) {
-        if (mc_dbg_touch_cal_request == 0U) { return; }
-        mc_dbg_touch_cal_request = 0U;
-        (void)mc_touch_init();
-        inited = true;
-        if (!mc_display_init()) {
-            mc_log(LogLevel::Error, "display init failed");
-            return;
-        }
-        mc_display_fill_screen(kColorBlack);
-        mc_display_backlight(true);
-        mc_dbg_touch_cal_ok = -1;
-        point = 0U;
-        show_target(point);
-        state = 1U;
-        mc_dbg_touch_state = state;
-        return;
-    }
-
-    if ((state >= 1U) && (state <= 3U)) {
-        if (!pressed) { return; }
-        raw_x[point] = rx;
-        raw_y[point] = ry;
-        draw_cross(kCalX[point], kCalY[point], kColorGreen);   // نقطه گرفته شد
-        release_count = 0U;
-        state = 4U;
-        mc_dbg_touch_state = state;
-        return;
-    }
-
-    if (state == 4U) {
-        if (pressed) {
-            release_count = 0U;
-            return;
-        }
-        release_count = static_cast<uint8_t>(release_count + 1U);
-        if (release_count < 5U) { return; }   // پنج بار پشت‌سرهم رها (حدود ۱۰۰ میلی‌ثانیه)
-
-        point = static_cast<uint8_t>(point + 1U);
-        if (point < 3U) {
-            show_target(point);
-            state = static_cast<uint8_t>(point + 1U);
-            mc_dbg_touch_state = state;
-            return;
-        }
-
-        // هر سه نقطه گرفته شد؛ ضرایب را حساب کن
-        const bool ok = mc_touch_calibrate_3pt(raw_x, raw_y, kCalX, kCalY);
-        mc_dbg_touch_cal_ok = ok ? 1 : 0;
-        if (!ok) {
-            mc_log(LogLevel::Error, "touch calibration failed");
-            mc_gfx_text(12U, 100U, "Calibration failed", kColorRed, kColorBlack, 2U);
-            state = 0U;
-            mc_dbg_touch_state = state;
-            return;
-        }
-
-        // صفحه نقاشی: پنج علامت + برای سنجیدن دقت و یک پیام
-        mc_display_fill_screen(kColorBlack);
-        draw_cross(20U, 20U, kColorWhite);
-        draw_cross(460U, 20U, kColorWhite);
-        draw_cross(20U, 300U, kColorWhite);
-        draw_cross(460U, 300U, kColorWhite);
-        draw_cross(240U, 160U, kColorWhite);
-        mc_gfx_text(110U, 80U, "Paint test (30 s)", kColorGreen, kColorBlack, 2U);
-        paint_start = mc_millis();
-        state = 5U;
-        mc_dbg_touch_state = state;
-        return;
-    }
-
-    if (state == 5U) {
-        if (mc_time_elapsed_ms(paint_start, 30000U)) {
-            mc_gfx_text(110U, 110U, "Done", kColorGreen, kColorBlack, 2U);
-            state = 0U;
-            mc_dbg_touch_state = state;
-            return;
-        }
-        if (!pressed) { return; }
-        uint16_t sx = 0U;
-        uint16_t sy = 0U;
-        if (mc_touch_apply(rx, ry, &sx, &sy)) {
-            mc_dbg_touch_x = sx;
-            mc_dbg_touch_y = sy;
-            const uint16_t dx = (sx >= 2U) ? static_cast<uint16_t>(sx - 2U) : 0U;
-            const uint16_t dy = (sy >= 2U) ? static_cast<uint16_t>(sy - 2U) : 0U;
-            mc_display_fill_rect(dx, dy, 5U, 5U, kColorWhite);   // نقطه ۵ در ۵ سفید
-        }
-    }
-}
 
 // منطقه تست: آخرین سکتور ۴ کیلوبایتی فلش ۸ مگابایتی. هیچ جای دیگر فلش نوشته یا پاک نمی‌شود.
 constexpr uint32_t kFlashTestAddr = 0x7FF000U;
@@ -540,6 +406,9 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_settings_init();   // بند ۷.۲
     mc::mc_cfg_boot_init();   // بند ۷.۴
     mc::mc_encoder_init();   // بند ۸.۸
+    mc::g_enc_pressed_at_boot = mc::mc_encoder_is_pressed();   // بند ۸.۱۷: بررسی فشردن انکودر هنگام روشن شدن
+    mc::mc_touchin_init();   // بند ۸.۱۷: سرویس ورودی لمس
+    mc::mc_tcal_store_init();   // بند ۸.۱۷: ذخیره‌سازی کالیبراسیون لمس
     mc::mc_ui_init();   // بند ۸.۲
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
@@ -550,9 +419,11 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_heartbeat, 60000U);
     mc::g_main.add(mc::task_tft_test, 100U);
     mc::g_main.add(mc::task_gfx_test, 100U);
-    mc::g_main.add(mc::task_touch_test, 20U);
+    mc::g_main.add(mc::mc_touchin_poll, MC_TOUCH_POLL_MS);   // بند ۸.۱۷: ورودی لمس
+    mc::g_main.add(mc::mc_tcal_store_poll, MC_TOUCH_CAL_STORE_POLL_MS);   // بند ۸.۱۷: ذخیره لمس
     mc::g_main.add(mc::task_flash_test, 100U);
     mc::g_main.add(mc::task_splash, 100U);
+
     mc::g_main.add(mc::mc_encoder_poll, MC_ENC_POLL_MS);   // بند ۸.۸: انکودر و بوق
     mc::g_main.add(mc::mc_adc_sampler_poll, mc::kAdcPeriodMs);   // بند ۴.۱: نمونه‌گیری ADC هر ۱۰ میلی‌ثانیه
     mc::g_main.add(mc::mc_temp_poll, mc::kTempPeriodMs);   // بند ۴.۲: تبدیل ADC به دما هر ۱۰۰ میلی‌ثانیه

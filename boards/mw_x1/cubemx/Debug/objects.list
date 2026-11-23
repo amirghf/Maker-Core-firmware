@@ -167,6 +167,7 @@
 "./gcode/m851.o"
 "./gcode/m92.o"
 "./gcode/m9999.o"
+"./ui/ui_about.o"
 "./ui/ui_bed.o"
 "./ui/ui_extruder.o"
 "./ui/ui_home.o"

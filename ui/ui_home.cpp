@@ -11,6 +11,7 @@
 #include "ui_sd.h"
 #include "ui_otg.h"
 #include "ui_about.h"
+#include "ui_tcal.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -21,11 +22,15 @@
 #include "../core/output_pwm.h"
 #include "../core/error.h"
 #include "../core/log.h"
+#include "../core/touch_input.h"
+#include "../core/touch_cal_store.h"
+#include "../core/settings_boot.h"
 #include "../config/mc_version.h"
 #include "../hal/hal_stepper.h"
 #include "../hal/hal_display.h"
 #include "../hal/hal_time.h"
 #include "../core/encoder.h"
+
 
 // متغیرهای دیباگ (CubeIDE Live Expressions)
 extern "C" {
@@ -52,11 +57,16 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)، 4 = صفحه داغ (بند ۸.۱۰)، 5 = صفحه سنسورها (بند ۸.۱۲)، 6 = صفحه SD CARD (بند ۸.۱۴)، 7 = صفحه USB OTG (بند ۸.۱۵)
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL
 volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
+volatile uint32_t mc_dbg_362_touch_cal_force   = 0;  // نوشتنی: ۰ بی‌اثر، ۱ شروع، ۲ لغو، ۳ پاک‌کردن (بند ۸.۱۷)
+volatile uint32_t mc_dbg_370_touch_cal_src     = 0;  // خواندنی: ۰ کالیبره نیست، ۱ از EEPROM، ۲ تازه کالیبره (بند ۸.۱۷)
+volatile uint32_t mc_dbg_371_touch_save_result = 0;  // خواندنی: ۰ هنوز، ۱ موفق، ۲ ناموفق (بند ۸.۱۷)
 }
 
 namespace mc {
+bool g_enc_pressed_at_boot = false;
+
 namespace {
 
 constexpr uint16_t kScreenBg            = mc_rgb565(8, 10, 16);       // پس‌زمینه اصلی صفحه
@@ -1012,6 +1022,57 @@ void mc_ui_poll() {
     (void)mc_dbg_359_ui_fake_print_pct;
     (void)mc_dbg_360_about_sel_shown;
     (void)mc_dbg_361_about_force;
+    (void)mc_dbg_362_touch_cal_force;
+    (void)mc_dbg_370_touch_cal_src;
+    (void)mc_dbg_371_touch_save_result;
+
+    // بررسی تغییر اجباری وضعیت کالیبراسیون با متغیر دیباگ 362 (بند ۸.۱۷)
+    if (mc_dbg_362_touch_cal_force != 0U) {
+        const uint32_t f_cal = mc_dbg_362_touch_cal_force;
+        mc_dbg_362_touch_cal_force = 0U;
+        if (f_cal == 1U) {
+            if (mc_dbg_294_ui_state != 5U) {
+                mc_dbg_323_ui_page = 9U;
+                mc_ui_tcal_open();
+            }
+        } else if (f_cal == 2U) {
+            if (mc_dbg_323_ui_page == 9U) {
+                mc_dbg_323_ui_page = 0U;
+                mc_dbg_293_ui_request = 1U;
+            }
+        } else if (f_cal == 3U) {
+            (void)mc_tcal_store_clear_start();
+        }
+    }
+
+    // بارگذاری خودکار کالیبراسیون لمس هنگام بوت بعد از پایان خواندن تنظیمات
+    static bool g_boot_touch_loaded = false;
+    static bool g_boot_touch_started = false;
+    if ((!g_boot_touch_loaded) && (!mc_cfg_boot_busy()) && (mc_dbg_294_ui_state == 4U)) {
+        if (!g_boot_touch_started) {
+            if (mc_tcal_store_load_start()) {
+                g_boot_touch_started = true;
+            }
+        } else {
+            mc_tcal_store_poll();
+            const uint8_t st = mc_tcal_store_state();
+            if (st != 1U) {   // کار بارگذاری تمام شد
+                g_boot_touch_loaded = true;
+                const uint8_t res = mc_tcal_store_result();
+                if (res == 1U) {
+                    mc_dbg_370_touch_cal_src = 1U;   // از EEPROM بارگذاری شد
+                    if (g_enc_pressed_at_boot) {
+                        mc_dbg_323_ui_page = 9U;
+                        mc_ui_tcal_open();
+                    }
+                } else {
+                    mc_dbg_370_touch_cal_src = 0U;   // کالیبره نیست
+                    mc_dbg_323_ui_page = 9U;
+                    mc_ui_tcal_open();
+                }
+            }
+        }
+    }
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -1022,6 +1083,7 @@ void mc_ui_poll() {
             mc_dbg_294_ui_state = 3U;   // نقاشی مستقیم قاب ثابت
         }
     }
+
 
     // اگر صفحه فعال منو باشد (۱)
     if (mc_dbg_323_ui_page == 1U) {
@@ -1175,6 +1237,23 @@ void mc_ui_poll() {
         }
         return;
     }
+
+    // اگر صفحه فعال صفحه TOUCH CAL باشد (۹) (بند ۸.۱۷)
+    if (mc_dbg_323_ui_page == 9U) {
+        const TcalResult tc_res = mc_ui_tcal_poll();
+        if (tc_res != TcalResult::Stay) {
+            mc_dbg_323_ui_page = 0U;
+            mc_dbg_293_ui_request = 1U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
 
     // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_332_move_force جهت ورود مستقیم به صفحه حرکت
     if (mc_dbg_332_move_force != 0U) {

@@ -3,9 +3,9 @@
 #include "touch.h"
 #include "hal_display.h"
 
-// متغیر دیباگ؛ ضرایب A تا F در CubeIDE با Live Expressions دیده می‌شوند.
+// متغیر دیباگ؛ ضرایب A تا F در CubeIDE با Live Expressions دیده می‌شوند (بند ۸.۱۷).
 extern "C" {
-volatile float mc_dbg_touch_coef[6] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+volatile float mc_dbg_375_touch_coef[6] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 }
 
 namespace mc {
@@ -56,7 +56,7 @@ bool mc_touch_calibrate_3pt(const uint16_t raw_x[3], const uint16_t raw_y[3],
         g_coef[i + 3] = cy[i];
     }
     for (int i = 0; i < 6; ++i) {
-        mc_dbg_touch_coef[i] = g_coef[i];
+        mc_dbg_375_touch_coef[i] = g_coef[i];
     }
     g_calibrated = true;
     return true;
@@ -83,4 +83,31 @@ bool mc_touch_apply(uint16_t raw_x, uint16_t raw_y, uint16_t* scr_x, uint16_t* s
     return true;
 }
 
+bool mc_touch_get_coef(float out[6]) {
+    if ((!g_calibrated) || (out == nullptr)) { return false; }
+    for (int i = 0; i < 6; ++i) {
+        out[i] = g_coef[i];
+    }
+    return true;
+}
+
+bool mc_touch_set_coef(const float in[6]) {
+    if (in == nullptr) { return false; }
+    // بررسی معقول بودن ضرایب: عدم وجود NaN، عدم مقادیر بی‌نهایت و صفر نبودن هم‌زمان ضرایب اصلی
+    for (int i = 0; i < 6; ++i) {
+        if (in[i] != in[i]) { return false; } // NaN check
+        if ((in[i] < -10000.0f) || (in[i] > 10000.0f)) { return false; }
+    }
+    if ((in[0] == 0.0f) && (in[1] == 0.0f) && (in[3] == 0.0f) && (in[4] == 0.0f)) {
+        return false;
+    }
+    for (int i = 0; i < 6; ++i) {
+        g_coef[i] = in[i];
+        mc_dbg_375_touch_coef[i] = in[i];
+    }
+    g_calibrated = true;
+    return true;
+}
+
 }  // namespace mc
+

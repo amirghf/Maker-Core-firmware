@@ -5,9 +5,9 @@
 #include "pins.h"   // stm32f4xx_hal.h را هم می‌آورد
 #include "spi.h"    // hspi1 که CubeMX ساخته
 
-// متغیر دیباگ؛ در CubeIDE با Live Expressions دیده می‌شود.
+// متغیر دیباگ؛ در CubeIDE با Live Expressions دیده می‌شود (بند ۸.۱۷).
 extern "C" {
-volatile uint32_t mc_dbg_touch_spi_fail = 0;   // تعداد ارسال‌های SPI لمس که خطا دادند
+volatile uint32_t mc_dbg_374_touch_spi_fail = 0;   // تعداد ارسال‌های SPI لمس که خطا دادند
 }
 
 namespace mc {
@@ -33,9 +33,10 @@ bool read_channel(uint8_t cmd, uint16_t* out) {
     const uint8_t tx[3] = { cmd, 0U, 0U };
     uint8_t rx[3] = { 0U, 0U, 0U };
     if (HAL_SPI_TransmitReceive(&hspi1, const_cast<uint8_t*>(tx), rx, 3U, kSpiTimeoutMs) != HAL_OK) {
-        mc_dbg_touch_spi_fail = mc_dbg_touch_spi_fail + 1U;
+        mc_dbg_374_touch_spi_fail = mc_dbg_374_touch_spi_fail + 1U;
         return false;
     }
+
     const uint16_t raw = static_cast<uint16_t>((static_cast<uint16_t>(rx[1]) << 8) | rx[2]);
     *out = static_cast<uint16_t>((raw >> 3) & 0x0FFFU);
     return true;

@@ -1,0 +1,10 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:29:16:int16_t mc::{anonymous}::isqrt(int32_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:39:13:void mc::{anonymous}::draw_disc(int16_t, int16_t, int16_t, uint16_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:50:13:void mc::{anonymous}::draw_thick_line(int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t)	9
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:77:13:void mc::{anonymous}::draw_top_bar()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:86:13:void mc::{anonymous}::draw_info_card()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:130:13:void mc::{anonymous}::draw_icon_part1()	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:180:13:void mc::{anonymous}::draw_icon_part2()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:206:13:void mc::{anonymous}::draw_back_button()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:225:6:void mc::mc_ui_about_open()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_about.cpp:235:13:mc::AboutResult mc::mc_ui_about_poll()	12
