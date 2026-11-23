@@ -27,7 +27,8 @@ enum class MenuResult : uint8_t {
     OpenBed = 4,
     OpenSensors = 5,
     OpenSd = 6,
-    OpenOtg = 7
+    OpenOtg = 7,
+    OpenAbout = 8
 };
 
 // آمادگی منو برای نقاشی از اول (انتخاب = ۰، اولین ردیف = ۰، شروع نقاشی مرحله‌ای).

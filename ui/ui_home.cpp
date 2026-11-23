@@ -10,6 +10,7 @@
 #include "ui_sensors.h"
 #include "ui_sd.h"
 #include "ui_otg.h"
+#include "ui_about.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -924,6 +925,8 @@ void mc_ui_init() {
     mc_dbg_357_otg_force = 0U;
     mc_dbg_358_otg_fake = 0U;
     mc_dbg_359_ui_fake_print_pct = 0U;
+    mc_dbg_360_about_sel_shown = 0U;
+    mc_dbg_361_about_force = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -1007,6 +1010,8 @@ void mc_ui_poll() {
     (void)mc_dbg_357_otg_force;
     (void)mc_dbg_358_otg_fake;
     (void)mc_dbg_359_ui_fake_print_pct;
+    (void)mc_dbg_360_about_sel_shown;
+    (void)mc_dbg_361_about_force;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -1048,6 +1053,9 @@ void mc_ui_poll() {
         } else if (m_res == MenuResult::OpenOtg) {
             mc_dbg_323_ui_page = 7U;
             mc_ui_otg_open();
+        } else if (m_res == MenuResult::OpenAbout) {
+            mc_dbg_323_ui_page = 8U;
+            mc_ui_about_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
@@ -1142,6 +1150,22 @@ void mc_ui_poll() {
         if (otg_res == OtgResult::Back) {
             mc_dbg_323_ui_page = 1U;
             mc_ui_menu_open_at(5U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه ABOUT باشد (۸)
+    if (mc_dbg_323_ui_page == 8U) {
+        const AboutResult ab_res = mc_ui_about_poll();
+        if (ab_res == AboutResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(6U);
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
         }
@@ -1269,6 +1293,24 @@ void mc_ui_poll() {
             return;
         } else if (f_otg == 2U) {
             mc_dbg_357_otg_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_361_about_force جهت ورود مستقیم به صفحه ABOUT
+    if (mc_dbg_361_about_force != 0U) {
+        const uint32_t f_about = mc_dbg_361_about_force;
+        if (f_about == 1U) {
+            mc_dbg_361_about_force = 0U;
+            mc_ui_about_open();
+            mc_dbg_323_ui_page = 8U;
+            (void)mc_ui_about_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_about == 2U) {
+            mc_dbg_361_about_force = 0U;
         }
     }
 
