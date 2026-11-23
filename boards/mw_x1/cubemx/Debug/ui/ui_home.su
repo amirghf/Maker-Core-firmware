@@ -1,14 +1,14 @@
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:113:13:void mc::{anonymous}::draw_option_highlight(uint8_t, uint16_t)	40	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:179:13:bool mc::{anonymous}::media_sd_present()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:184:13:bool mc::{anonymous}::media_otg_present()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:189:17:uint32_t mc::{anonymous}::input_source_real()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:194:13:bool mc::{anonymous}::is_axis_enabled(uint8_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:203:6:void mc::{anonymous}::pad_and_copy(char*, uint16_t, const char*, uint8_t)	32	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:217:6:void mc::{anonymous}::right_and_copy(char*, uint16_t, const char*, uint8_t)	40	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:235:6:void mc::{anonymous}::format_field(uint8_t, char*, uint16_t, uint16_t&)	144	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:500:6:void mc::{anonymous}::draw_static_step(uint8_t)	80	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:606:6:void mc::{anonymous}::update_one_field()	168	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:824:6:void mc::mc_ui_init()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:881:6:void mc::mc_ui_notify_splash(uint32_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:891:6:void mc::mc_ui_poll()	120	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:115:13:void mc::{anonymous}::draw_option_highlight(uint8_t, uint16_t)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:181:13:bool mc::{anonymous}::media_sd_present()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:186:13:bool mc::{anonymous}::media_otg_present()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:191:17:uint32_t mc::{anonymous}::input_source_real()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:196:13:bool mc::{anonymous}::is_axis_enabled(uint8_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:205:6:void mc::{anonymous}::pad_and_copy(char*, uint16_t, const char*, uint8_t)	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:219:6:void mc::{anonymous}::right_and_copy(char*, uint16_t, const char*, uint8_t)	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:237:6:void mc::{anonymous}::format_field(uint8_t, char*, uint16_t, uint16_t&)	144	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:502:6:void mc::{anonymous}::draw_static_step(uint8_t)	80	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:608:6:void mc::{anonymous}::update_one_field()	168	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:826:6:void mc::mc_ui_init()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:893:6:void mc::mc_ui_notify_splash(uint32_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:903:6:void mc::mc_ui_poll()	152	static

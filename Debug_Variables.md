@@ -87,6 +87,7 @@
 | `mc_dbg_300_ui_fake_noz_tgt_x10` | `int32_t` | نوشتنی | هدف اکسترودر ×10. |
 | `mc_dbg_301_ui_fake_bed_tgt_x10` | `int32_t` | نوشتنی | هدف بستر ×10. |
 | `mc_dbg_302_ui_fake_status` | `uint32_t` | نوشتنی | 0 = واقعی، 1 = READY، 2 = BUSY، 3 = KILLED، 4 = PRINTING، 5 = PAUSED (فقط ظاهر، با fake). |
+| `mc_dbg_359_ui_fake_print_pct` | `uint32_t` | نوشتنی | درصد ساختگی چاپ 0 تا 100 (بیشتر از 100 همان 100 حساب می‌شود). فقط وقتی mc_dbg_297_ui_fake_on برابر 1 است اثر دارد. |
 
 ---
 

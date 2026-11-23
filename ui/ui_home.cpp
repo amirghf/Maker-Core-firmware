@@ -52,6 +52,7 @@ volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعد
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
 volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)، 4 = صفحه داغ (بند ۸.۱۰)، 5 = صفحه سنسورها (بند ۸.۱۲)، 6 = صفحه SD CARD (بند ۸.۱۴)، 7 = صفحه USB OTG (بند ۸.۱۵)
+volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
 }
 
 namespace mc {
@@ -137,7 +138,7 @@ struct FieldSpec {
     uint16_t bg_color;
 };
 
-constexpr uint8_t kFieldCount = 23U;
+constexpr uint8_t kFieldCount = 25U;
 
 static const FieldSpec kFields[kFieldCount] = {
     {  10U,   6U,  0U, 0U, kTopBarBg },  //  0: SD Icon
@@ -162,7 +163,9 @@ static const FieldSpec kFields[kFieldCount] = {
     { 252U, 166U,  8U, 2U, kCardBg },    // 19: Axis Z Position
     { 370U, 166U,  8U, 2U, kCardBg },    // 20: Axis E Position
     { 126U, 204U, 10U, 2U, kCardBg },    // 21: Printer Status Text
-    { 366U, 204U,  7U, 2U, kCardBg }     // 22: Input Source Text
+    { 366U, 204U,  7U, 2U, kCardBg },    // 22: Input Source Text
+    {   8U, 302U,  0U, 0U, kScreenBg },  // 23: Print Progress Bar
+    { 416U, 299U,  4U, 2U, kScreenBg }   // 24: Print Progress Percent
 };
 
 struct FieldCache {
@@ -190,6 +193,11 @@ static bool media_otg_present() {
 // فعلاً فرمان‌ها فقط از کابل USB (CDC) می‌آیند. تشخیص واقعی SD در بند ۹.۳ و OTG در بند ۹.۴ وصل می‌شود
 static uint32_t input_source_real() {
     return 1U; // 1 = USB
+}
+
+// در بند ۱۱.۶ به درصد چاپ (M73) وصل می‌شود
+static uint32_t print_pct_real() {
+    return 0U;
 }
 
 // بررسی فعال بودن یک محور (با پشتیبانی از حالت fake)
@@ -493,6 +501,23 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
             break;
         }
 
+        case 24: { // درصد پیشرفت چاپ (راست‌چین)
+            uint32_t pct = 0U;
+            if (fake) {
+                pct = (mc_dbg_359_ui_fake_print_pct > 100U) ? 100U : mc_dbg_359_ui_fake_print_pct;
+            } else {
+                pct = print_pct_real();
+            }
+            const uint16_t pos = mc_fmt_uint(raw, sizeof(raw), 0U, pct);
+            if (pos < sizeof(raw) - 1U) {
+                raw[pos] = '%';
+                raw[pos + 1U] = '\0';
+            }
+            out_fg = kColorWhite;
+            right_and_copy(out_buf, cap, raw, spec.width);
+            break;
+        }
+
         default:
             break;
     }
@@ -738,6 +763,27 @@ void update_one_field() {
             cache.dirty = false;
             mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
         }
+    } else if (idx == 23U) { // نوار پیشرفت پایین صفحه اصلی
+        const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+        uint32_t pct = 0U;
+        if (fake) {
+            pct = (mc_dbg_359_ui_fake_print_pct > 100U) ? 100U : mc_dbg_359_ui_fake_print_pct;
+        } else {
+            pct = print_pct_real();
+        }
+
+        const uint16_t fill_px = static_cast<uint16_t>(pct * 4U);
+
+        // ⚠️ نکته مهم: در FieldCache فیلد state از نوع uint8_t است و fill_px تا 400 در آن جا نمی‌شود.
+        // برای نوار 23 مقدار state را برابر خود pct (0 تا 100) بگذار، نه fill_px.
+        const uint8_t state = static_cast<uint8_t>(pct);
+        if (cache.dirty || (cache.state != state)) {
+            mc_ui_progress(spec.x, spec.y, 400U, 10U, fill_px, kCyanPrint, kBarTrack);
+            cache.state = state;
+            cache.fg_color = kCyanPrint;
+            cache.dirty = false;
+            mc_dbg_295_ui_draw_cnt = mc_dbg_295_ui_draw_cnt + 1U;
+        }
     } else if (idx >= 13U && idx <= 16U) { // سلول محورهای X، Y، Z، E (کارت، برچسب، ON/OFF، فلش جفت‌مثلث)
         const uint8_t axis_idx = idx - 13U;
         const StepAxis axis = static_cast<StepAxis>(axis_idx);
@@ -877,6 +923,7 @@ void mc_ui_init() {
     mc_dbg_356_otg_enter_idx = 255U;
     mc_dbg_357_otg_force = 0U;
     mc_dbg_358_otg_fake = 0U;
+    mc_dbg_359_ui_fake_print_pct = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -959,6 +1006,7 @@ void mc_ui_poll() {
     (void)mc_dbg_356_otg_enter_idx;
     (void)mc_dbg_357_otg_force;
     (void)mc_dbg_358_otg_fake;
+    (void)mc_dbg_359_ui_fake_print_pct;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {

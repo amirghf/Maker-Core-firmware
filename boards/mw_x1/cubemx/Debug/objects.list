@@ -173,4 +173,6 @@
 "./ui/ui_icons.o"
 "./ui/ui_menu.o"
 "./ui/ui_move.o"
+"./ui/ui_otg.o"
+"./ui/ui_sd.o"
 "./ui/ui_sensors.o"
