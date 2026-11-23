@@ -1,5 +1,0 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/endstop_guard.cpp:28:6:void mc::{anonymous}::publish()	8	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/endstop_guard.cpp:39:6:void mc::mc_eguard_init()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/endstop_guard.cpp:46:6:void mc::mc_eguard_snapshot()	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/endstop_guard.cpp:55:6:void mc::mc_eguard_resync()	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/endstop_guard.cpp:64:6:void mc::mc_eguard_poll()	24	static

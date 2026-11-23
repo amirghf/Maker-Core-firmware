@@ -11,6 +11,8 @@
 #include "../hal/hal_display.h"
 #include "../hal/hal_time.h"
 #include <stdlib.h>
+#include <string.h>
+
 
 extern "C" {
 volatile uint32_t mc_dbg_362_touch_cal_force   = 0;

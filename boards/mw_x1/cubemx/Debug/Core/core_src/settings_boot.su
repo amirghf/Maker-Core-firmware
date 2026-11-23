@@ -1,5 +1,0 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/settings_boot.cpp:27:6:void mc::{anonymous}::update_debug(BootState, uint32_t, uint32_t, uint32_t, uint32_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/settings_boot.cpp:38:6:void mc::mc_cfg_boot_init()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/settings_boot.cpp:42:6:void mc::mc_cfg_boot_poll()	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/settings_boot.cpp:104:6:bool mc::mc_cfg_boot_busy()	4	static

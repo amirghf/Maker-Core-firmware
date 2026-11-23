@@ -1,9 +1,0 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:24:6:bool mc::{anonymous}::read_temp(int32_t*)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:34:6:void mc::mc_extruder_init()	8	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:43:6:void mc::mc_extruder_poll()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:52:6:bool mc::mc_extruder_allowed()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:59:9:int32_t mc::mc_extruder_min_temp_x10_get()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:61:6:bool mc::mc_extruder_min_temp_x10_set(int32_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:67:6:bool mc::mc_extruder_cold_ok_get()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:68:6:void mc::mc_extruder_cold_ok_set(bool)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/extruder.cpp:70:6:void mc::mc_extruder_note_refused()	4	static
