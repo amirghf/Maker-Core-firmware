@@ -7,19 +7,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00031578  08000188  08000188  00001188  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00001e9c  08031700  08031700  00032700  2**2
+  2 .rodata       00001ea8  08031700  08031700  00032700  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0803359c  0803359c  000352d8  2**0
+  3 .ARM.extab    00000000  080335a8  080335a8  000352d8  2**0
                   CONTENTS, READONLY
-  4 .ARM          00000008  0803359c  0803359c  0003459c  2**2
+  4 .ARM          00000008  080335a8  080335a8  000345a8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  080335a4  080335a4  000352d8  2**0
+  5 .preinit_array 00000000  080335b0  080335b0  000352d8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  080335a4  080335a4  000345a4  2**2
+  6 .init_array   00000004  080335b0  080335b0  000345b0  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  080335a8  080335a8  000345a8  2**2
+  7 .fini_array   00000004  080335b4  080335b4  000345b4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         000002d8  20000000  080335ac  00035000  2**2
+  8 .data         000002d8  20000000  080335b8  00035000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
   9 .ccmram       00000000  10000000  10000000  000352d8  2**0
                   CONTENTS
@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  00038ef7  00000000  00000000  000ba943  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00074634  00000000  00000000  000f383a  2**0
+ 18 .debug_line   00074632  00000000  00000000  000f383a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000fb85f  00000000  00000000  00167e6e  2**0
+ 19 .debug_str    000fb85f  00000000  00000000  00167e6c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  002636cd  2**0
+ 20 .comment      00000043  00000000  00000000  002636cb  2**0
                   CONTENTS, READONLY
  21 .debug_frame  0000e1a8  00000000  00000000  00263710  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -4237,7 +4237,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8001fcc:	200002d8 	.word	0x200002d8
   ldr r2, =_sidata
- 8001fd0:	080335ac 	.word	0x080335ac
+ 8001fd0:	080335b8 	.word	0x080335b8
   ldr r2, =_sbss
  8001fd4:	200002d8 	.word	0x200002d8
   ldr r4, =_ebss
@@ -6638,7 +6638,7 @@ bool mc_bltouch_start(BltouchCmd cmd) {
  8003012:	bd80      	pop	{r7, pc}
  8003014:	200006d4 	.word	0x200006d4
  8003018:	200006e4 	.word	0x200006e4
- 800301c:	08032b14 	.word	0x08032b14
+ 800301c:	08032b20 	.word	0x08032b20
  8003020:	200006d5 	.word	0x200006d5
  8003024:	200006d8 	.word	0x200006d8
  8003028:	200006dc 	.word	0x200006dc
@@ -6745,7 +6745,7 @@ void mc_bltouch_poll() {
  80030dc:	200006d4 	.word	0x200006d4
  80030e0:	200006d8 	.word	0x200006d8
  80030e4:	200006d5 	.word	0x200006d5
- 80030e8:	08032b14 	.word	0x08032b14
+ 80030e8:	08032b20 	.word	0x08032b20
  80030ec:	200006dc 	.word	0x200006dc
 
 080030f0 <_ZN2mc15mc_bltouch_busyEv>:
@@ -6842,7 +6842,7 @@ bool mc_bltouch_cmd_from_angle(uint32_t angle, BltouchCmd& out) {
  8003174:	46bd      	mov	sp, r7
  8003176:	f85d 7b04 	ldr.w	r7, [sp], #4
  800317a:	4770      	bx	lr
- 800317c:	08032b14 	.word	0x08032b14
+ 800317c:	08032b20 	.word	0x08032b20
 
 08003180 <_ZN2mc23mc_bltouch_note_refusedEv>:
 
@@ -7608,7 +7608,7 @@ void task_tft_test() {
  80036bc:	08031798 	.word	0x08031798
  80036c0:	2000111c 	.word	0x2000111c
  80036c4:	20000e7c 	.word	0x20000e7c
- 80036c8:	08032b54 	.word	0x08032b54
+ 80036c8:	08032b60 	.word	0x08032b60
 
 080036cc <_ZN2mc12_GLOBAL__N_113task_gfx_testEv>:
 
@@ -7939,9 +7939,9 @@ void show_target(uint8_t i) {
  8003960:	46bd      	mov	sp, r7
  8003962:	bd80      	pop	{r7, pc}
  8003964:	080318bc 	.word	0x080318bc
- 8003968:	08032b70 	.word	0x08032b70
- 800396c:	08032b60 	.word	0x08032b60
- 8003970:	08032b68 	.word	0x08032b68
+ 8003968:	08032b7c 	.word	0x08032b7c
+ 800396c:	08032b6c 	.word	0x08032b6c
+ 8003970:	08032b74 	.word	0x08032b74
 
 08003974 <_ZN2mc12_GLOBAL__N_115task_touch_testEv>:
 
@@ -8356,8 +8356,8 @@ void task_touch_test() {
  8003c58:	20000e90 	.word	0x20000e90
  8003c5c:	20001124 	.word	0x20001124
  8003c60:	2000112c 	.word	0x2000112c
- 8003c64:	08032b60 	.word	0x08032b60
- 8003c68:	08032b68 	.word	0x08032b68
+ 8003c64:	08032b6c 	.word	0x08032b6c
+ 8003c68:	08032b74 	.word	0x08032b74
  8003c6c:	20001132 	.word	0x20001132
  8003c70:	080318d0 	.word	0x080318d0
  8003c74:	080318ec 	.word	0x080318ec
@@ -11893,7 +11893,7 @@ void mc_encoder_poll() {
  8005586:	bd80      	pop	{r7, pc}
  8005588:	2000000c 	.word	0x2000000c
  800558c:	200024b4 	.word	0x200024b4
- 8005590:	08032b7c 	.word	0x08032b7c
+ 8005590:	08032b88 	.word	0x08032b88
  8005594:	200024b5 	.word	0x200024b5
  8005598:	200024b8 	.word	0x200024b8
  800559c:	200024a4 	.word	0x200024a4
@@ -12149,7 +12149,7 @@ void mc_endstop_init() {
  8005746:	46bd      	mov	sp, r7
  8005748:	bd80      	pop	{r7, pc}
  800574a:	bf00      	nop
- 800574c:	08032b8c 	.word	0x08032b8c
+ 800574c:	08032b98 	.word	0x08032b98
  8005750:	2000250c 	.word	0x2000250c
  8005754:	200024ec 	.word	0x200024ec
  8005758:	200024f0 	.word	0x200024f0
@@ -12439,7 +12439,7 @@ void mc_endstop_poll() {
  8005958:	20002514 	.word	0x20002514
  800595c:	20002518 	.word	0x20002518
  8005960:	2000251c 	.word	0x2000251c
- 8005964:	08032b8c 	.word	0x08032b8c
+ 8005964:	08032b98 	.word	0x08032b98
  8005968:	2000250c 	.word	0x2000250c
  800596c:	200024f0 	.word	0x200024f0
  8005970:	200024ec 	.word	0x200024ec
@@ -13663,7 +13663,7 @@ bool parse_number(const char*& p, float& out) {
  8006224:	46bd      	mov	sp, r7
  8006226:	bd80      	pop	{r7, pc}
  8006228:	05f5e0ff 	.word	0x05f5e0ff
- 800622c:	08032b90 	.word	0x08032b90
+ 800622c:	08032b9c 	.word	0x08032b9c
 
 08006230 <_ZN2mc12_GLOBAL__N_110find_paramERKNS_12GcodeCommandEc>:
 
@@ -14721,7 +14721,7 @@ void mc_gfx_char(uint16_t x, uint16_t y, char c, uint16_t fg, uint16_t bg, uint8
  8006966:	46bd      	mov	sp, r7
  8006968:	bd90      	pop	{r4, r7, pc}
  800696a:	bf00      	nop
- 800696c:	08032bb8 	.word	0x08032bb8
+ 800696c:	08032bc4 	.word	0x08032bc4
  8006970:	2000257c 	.word	0x2000257c
 
 08006974 <_ZN2mc11mc_gfx_textEttPKctth>:
@@ -16697,11 +16697,11 @@ GcodeStatus begin_next_axis() {
  8007828:	20002c0c 	.word	0x20002c0c
  800782c:	20002c4c 	.word	0x20002c4c
  8007830:	08031a3c 	.word	0x08031a3c
- 8007834:	08032db8 	.word	0x08032db8
- 8007838:	08032dac 	.word	0x08032dac
- 800783c:	08032d94 	.word	0x08032d94
+ 8007834:	08032dc4 	.word	0x08032dc4
+ 8007838:	08032db8 	.word	0x08032db8
+ 800783c:	08032da0 	.word	0x08032da0
  8007840:	20002c10 	.word	0x20002c10
- 8007844:	08032da0 	.word	0x08032da0
+ 8007844:	08032dac 	.word	0x08032dac
  8007848:	42c80000 	.word	0x42c80000
  800784c:	3c23d70a 	.word	0x3c23d70a
  8007850:	42c80000 	.word	0x42c80000
@@ -17084,8 +17084,8 @@ GcodeStatus step_move() {
  8007b40:	08031ac4 	.word	0x08031ac4
  8007b44:	08031afc 	.word	0x08031afc
  8007b48:	20002c14 	.word	0x20002c14
- 8007b4c:	08032db8 	.word	0x08032db8
- 8007b50:	08032dac 	.word	0x08032dac
+ 8007b4c:	08032dc4 	.word	0x08032dc4
+ 8007b50:	08032db8 	.word	0x08032db8
  8007b54:	20002c18 	.word	0x20002c18
  8007b58:	00000000 	.word	0x00000000
  8007b5c:	20002c4c 	.word	0x20002c4c
@@ -17233,11 +17233,11 @@ GcodeStatus step_move() {
  8007c8a:	bf00      	nop
  8007c8c:	20002c28 	.word	0x20002c28
  8007c90:	08031b6c 	.word	0x08031b6c
- 8007c94:	08032d94 	.word	0x08032d94
+ 8007c94:	08032da0 	.word	0x08032da0
  8007c98:	20002c10 	.word	0x20002c10
- 8007c9c:	08032da0 	.word	0x08032da0
- 8007ca0:	08032db8 	.word	0x08032db8
- 8007ca4:	08032dac 	.word	0x08032dac
+ 8007c9c:	08032dac 	.word	0x08032dac
+ 8007ca0:	08032dc4 	.word	0x08032dc4
+ 8007ca4:	08032db8 	.word	0x08032db8
 
 08007ca8 <_ZN2mc14mc_homing_initEv>:
 
@@ -20938,7 +20938,7 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
  8009832:	bf00      	nop
  8009834:	00000000 	.word	0x00000000
  8009838:	476a6000 	.word	0x476a6000
- 800983c:	08032dc4 	.word	0x08032dc4
+ 800983c:	08032dd0 	.word	0x08032dd0
  8009840:	47c34f80 	.word	0x47c34f80
  8009844:	20000644 	.word	0x20000644
             spmm[i] = mc_mode_spmm_get(i);
@@ -22790,7 +22790,7 @@ void mc_mode_init() {
  800a87a:	bd80      	pop	{r7, pc}
  800a87c:	200031f8 	.word	0x200031f8
  800a880:	200031f9 	.word	0x200031f9
- 800a884:	08032dc8 	.word	0x08032dc8
+ 800a884:	08032dd4 	.word	0x08032dd4
  800a888:	20000050 	.word	0x20000050
  800a88c:	20000060 	.word	0x20000060
  800a890:	44bb8000 	.word	0x44bb8000
@@ -31170,7 +31170,7 @@ void mc_cfg_apply_defaults() {
  800eb22:	3708      	adds	r7, #8
  800eb24:	46bd      	mov	sp, r7
  800eb26:	bd80      	pop	{r7, pc}
- 800eb28:	08032dd8 	.word	0x08032dd8
+ 800eb28:	08032de4 	.word	0x08032de4
  800eb2c:	42c80000 	.word	0x42c80000
  800eb30:	00000000 	.word	0x00000000
 
@@ -32832,7 +32832,7 @@ void mc_settings_init() {
 }
  800f6f8:	bf00      	nop
  800f6fa:	bd80      	pop	{r7, pc}
- 800f6fc:	08032de8 	.word	0x08032de8
+ 800f6fc:	08032df4 	.word	0x08032df4
  800f700:	cbf43926 	.word	0xcbf43926
  800f704:	20003ac8 	.word	0x20003ac8
 
@@ -38752,10 +38752,10 @@ void mc_temp_protect_poll() {
  80120b6:	46bd      	mov	sp, r7
  80120b8:	bd80      	pop	{r7, pc}
  80120ba:	bf00      	nop
- 80120bc:	08032df4 	.word	0x08032df4
+ 80120bc:	08032e00 	.word	0x08032e00
  80120c0:	200061a8 	.word	0x200061a8
  80120c4:	2000619c 	.word	0x2000619c
- 80120c8:	08032e0c 	.word	0x08032e0c
+ 80120c8:	08032e18 	.word	0x08032e18
  80120cc:	200061c8 	.word	0x200061c8
  80120d0:	200061a0 	.word	0x200061a0
 
@@ -56649,7 +56649,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef  *RCC_ClkInitStru
  8019346:	bf00      	nop
  8019348:	40023c00 	.word	0x40023c00
  801934c:	40023800 	.word	0x40023800
- 8019350:	08032afc 	.word	0x08032afc
+ 8019350:	08032b08 	.word	0x08032b08
  8019354:	20000000 	.word	0x20000000
  8019358:	200000c0 	.word	0x200000c0
 
@@ -56953,7 +56953,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  801959c:	4618      	mov	r0, r3
  801959e:	bd80      	pop	{r7, pc}
  80195a0:	40023800 	.word	0x40023800
- 80195a4:	08032b0c 	.word	0x08032b0c
+ 80195a4:	08032b18 	.word	0x08032b18
 
 080195a8 <HAL_SPI_Init>:
   * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
@@ -68352,7 +68352,7 @@ void MX_FATFS_Init(void)
  801d8e8:	bf00      	nop
  801d8ea:	bd80      	pop	{r7, pc}
  801d8ec:	2000627c 	.word	0x2000627c
- 801d8f0:	08032e24 	.word	0x08032e24
+ 801d8f0:	08032e30 	.word	0x08032e30
  801d8f4:	20006278 	.word	0x20006278
  801d8f8:	20006284 	.word	0x20006284
  801d8fc:	200000c8 	.word	0x200000c8
@@ -86541,7 +86541,7 @@ bool mc_adc_read(AdcChannel ch, uint16_t* raw12) {
  8023f76:	46bd      	mov	sp, r7
  8023f78:	bd80      	pop	{r7, pc}
  8023f7a:	bf00      	nop
- 8023f7c:	08032e38 	.word	0x08032e38
+ 8023f7c:	08032e44 	.word	0x08032e44
  8023f80:	200002f4 	.word	0x200002f4
 
 08023f84 <_ZN2mc15mc_adc_selftestEv>:
@@ -87402,8 +87402,8 @@ bool mc_display_init() {
  80244fe:	bf00      	nop
  8024500:	20008650 	.word	0x20008650
  8024504:	2000864c 	.word	0x2000864c
- 8024508:	08032e40 	.word	0x08032e40
- 802450c:	08032f72 	.word	0x08032f72
+ 8024508:	08032e4c 	.word	0x08032e4c
+ 802450c:	08032f7e 	.word	0x08032f7e
  8024510:	200001f0 	.word	0x200001f0
 
 08024514 <_ZN2mc20mc_display_backlightEb>:
@@ -88665,7 +88665,7 @@ inline const PinDef& def(PinId p) {
  8024ed4:	f85d 7b04 	ldr.w	r7, [sp], #4
  8024ed8:	4770      	bx	lr
  8024eda:	bf00      	nop
- 8024edc:	08032f74 	.word	0x08032f74
+ 8024edc:	08032f80 	.word	0x08032f80
 
 08024ee0 <_ZN2mc12_GLOBAL__N_19is_outputERKNS0_6PinDefE>:
 
@@ -89061,7 +89061,7 @@ bool mc_gpio_selftest() {
  8025196:	46bd      	mov	sp, r7
  8025198:	bd80      	pop	{r7, pc}
  802519a:	bf00      	nop
- 802519c:	08032f74 	.word	0x08032f74
+ 802519c:	08032f80 	.word	0x08032f80
 
 080251a0 <mc_gpio_selftest_c>:
 
@@ -89594,7 +89594,7 @@ void mc_board_safe_state() {
  80254fe:	3720      	adds	r7, #32
  8025500:	46bd      	mov	sp, r7
  8025502:	bd80      	pop	{r7, pc}
- 8025504:	0803308c 	.word	0x0803308c
+ 8025504:	08033098 	.word	0x08033098
 
 08025508 <_ZN2mc25mc_board_safe_state_checkEv>:
 
@@ -89678,7 +89678,7 @@ bool mc_board_safe_state_check() {
  802558a:	3710      	adds	r7, #16
  802558c:	46bd      	mov	sp, r7
  802558e:	bd80      	pop	{r7, pc}
- 8025590:	0803308c 	.word	0x0803308c
+ 8025590:	08033098 	.word	0x08033098
 
 08025594 <mc_board_safe_state_c>:
 
@@ -91028,7 +91028,7 @@ void mc_stepper_enable(StepAxis axis, bool on) {
  8025e22:	46bd      	mov	sp, r7
  8025e24:	bd80      	pop	{r7, pc}
  8025e26:	bf00      	nop
- 8025e28:	080331a0 	.word	0x080331a0
+ 8025e28:	080331ac 	.word	0x080331ac
 
 08025e2c <_ZN2mc21mc_stepper_is_enabledENS_8StepAxisE>:
 
@@ -91071,7 +91071,7 @@ bool mc_stepper_is_enabled(StepAxis axis) {
  8025e72:	3710      	adds	r7, #16
  8025e74:	46bd      	mov	sp, r7
  8025e76:	bd80      	pop	{r7, pc}
- 8025e78:	080331a0 	.word	0x080331a0
+ 8025e78:	080331ac 	.word	0x080331ac
 
 08025e7c <_ZN2mc18mc_stepper_set_dirENS_8StepAxisEb>:
 
@@ -91129,8 +91129,8 @@ void mc_stepper_set_dir(StepAxis axis, bool forward) {
  8025eda:	3710      	adds	r7, #16
  8025edc:	46bd      	mov	sp, r7
  8025ede:	bd80      	pop	{r7, pc}
- 8025ee0:	080331ac 	.word	0x080331ac
- 8025ee4:	080331a0 	.word	0x080331a0
+ 8025ee0:	080331b8 	.word	0x080331b8
+ 8025ee4:	080331ac 	.word	0x080331ac
 
 08025ee8 <_ZN2mc18mc_stepper_get_dirENS_8StepAxisE>:
 
@@ -91183,8 +91183,8 @@ bool mc_stepper_get_dir(StepAxis axis) {
  8025f3e:	46bd      	mov	sp, r7
  8025f40:	bd80      	pop	{r7, pc}
  8025f42:	bf00      	nop
- 8025f44:	080331a0 	.word	0x080331a0
- 8025f48:	080331ac 	.word	0x080331ac
+ 8025f44:	080331ac 	.word	0x080331ac
+ 8025f48:	080331b8 	.word	0x080331b8
 
 08025f4c <_ZN2mc16mc_stepper_pulseENS_8StepAxisE>:
 
@@ -91241,7 +91241,7 @@ void mc_stepper_pulse(StepAxis axis) {
  8025faa:	3710      	adds	r7, #16
  8025fac:	46bd      	mov	sp, r7
  8025fae:	bd80      	pop	{r7, pc}
- 8025fb0:	080331a0 	.word	0x080331a0
+ 8025fb0:	080331ac 	.word	0x080331ac
 
 08025fb4 <_ZN2mc21mc_stepper_step_levelENS_8StepAxisE>:
 
@@ -91283,7 +91283,7 @@ bool mc_stepper_step_level(StepAxis axis) {
  8025ff6:	46bd      	mov	sp, r7
  8025ff8:	bd80      	pop	{r7, pc}
  8025ffa:	bf00      	nop
- 8025ffc:	080331a0 	.word	0x080331a0
+ 8025ffc:	080331ac 	.word	0x080331ac
 
 08026000 <_ZN2mc20mc_thermistor_paramsENS_10AdcChannelEPNS_16ThermistorParamsE>:
     { 4700.0f, 100000.0f, 25.0f, 3950.0f }    // بستر
@@ -91331,7 +91331,7 @@ bool mc_thermistor_params(AdcChannel ch, ThermistorParams* out) {
  802603e:	bc90      	pop	{r4, r7}
  8026040:	4770      	bx	lr
  8026042:	bf00      	nop
- 8026044:	080331b0 	.word	0x080331b0
+ 8026044:	080331bc 	.word	0x080331bc
 
 08026048 <_ZN2mc12mc_time_initEv>:
 volatile uint32_t g_ticks = 0;     // فقط وقفه TIM6 این را زیاد می‌کند
@@ -92869,7 +92869,7 @@ GcodeStatus mc_gcode_g92(const GcodeCommand& cmd, bool first_call) {
  8026a7e:	46bd      	mov	sp, r7
  8026a80:	bd90      	pop	{r4, r7, pc}
  8026a82:	bf00      	nop
- 8026a84:	080331d0 	.word	0x080331d0
+ 8026a84:	080331dc 	.word	0x080331dc
  8026a88:	00000000 	.word	0x00000000
  8026a8c:	c7c34f80 	.word	0xc7c34f80
  8026a90:	47c34f80 	.word	0x47c34f80
@@ -93198,7 +93198,7 @@ const GcodeEntry* mc_gcode_find(char letter, uint16_t number, int8_t sub) {
  8026ccc:	46bd      	mov	sp, r7
  8026cce:	f85d 7b04 	ldr.w	r7, [sp], #4
  8026cd2:	4770      	bx	lr
- 8026cd4:	080331d4 	.word	0x080331d4
+ 8026cd4:	080331e0 	.word	0x080331e0
 
 08026cd8 <_ZN2mc16mc_temp_c_to_x10Ef>:
 // هیچ هدر ST اینجا include نمی‌شود.
@@ -93932,7 +93932,7 @@ GcodeStatus mc_gcode_m115(const GcodeCommand& cmd, bool first_call) {
  8027286:	bd80      	pop	{r7, pc}
  8027288:	08032314 	.word	0x08032314
  802728c:	08032358 	.word	0x08032358
- 8027290:	080333cc 	.word	0x080333cc
+ 8027290:	080333d8 	.word	0x080333d8
 
 08027294 <_ZN2mc13mc_gcode_m119ERKNS_12GcodeCommandEb>:
 volatile uint32_t mc_dbg_215_m119_runs = 0;  // خواندنی: تعداد اجراهای دستور M119
@@ -94263,7 +94263,7 @@ GcodeStatus mc_gcode_m17(const GcodeCommand& cmd, bool first_call) {
  80274ea:	3710      	adds	r7, #16
  80274ec:	46bd      	mov	sp, r7
  80274ee:	bd80      	pop	{r7, pc}
- 80274f0:	080333e8 	.word	0x080333e8
+ 80274f0:	080333f4 	.word	0x080333f4
 
 080274f4 <_ZN2mc12mc_gcode_m18ERKNS_12GcodeCommandEb>:
 #include "motion_queue.h"
@@ -94369,7 +94369,7 @@ GcodeStatus mc_gcode_m18(const GcodeCommand& cmd, bool first_call) {
  8027586:	46bd      	mov	sp, r7
  8027588:	bd80      	pop	{r7, pc}
  802758a:	bf00      	nop
- 802758c:	080333ec 	.word	0x080333ec
+ 802758c:	080333f8 	.word	0x080333f8
 
 08027590 <_ZN2mc13mc_gcode_m190ERKNS_12GcodeCommandEb>:
 #include "temp_param.h"
@@ -94763,7 +94763,7 @@ GcodeStatus mc_gcode_m203(const GcodeCommand& cmd, bool first_call) {
  80278de:	378c      	adds	r7, #140	@ 0x8c
  80278e0:	46bd      	mov	sp, r7
  80278e2:	bd90      	pop	{r4, r7, pc}
- 80278e4:	080333f0 	.word	0x080333f0
+ 80278e4:	080333fc 	.word	0x080333fc
  80278e8:	00000000 	.word	0x00000000
  80278ec:	3dcccccd 	.word	0x3dcccccd
  80278f0:	447a0000 	.word	0x447a0000
@@ -98202,7 +98202,7 @@ GcodeStatus mc_gcode_m84(const GcodeCommand& cmd, bool first_call) {
  8029636:	46bd      	mov	sp, r7
  8029638:	bd80      	pop	{r7, pc}
  802963a:	bf00      	nop
- 802963c:	080333f4 	.word	0x080333f4
+ 802963c:	08033400 	.word	0x08033400
 
 08029640 <_ZN2mc13mc_gcode_m851ERKNS_12GcodeCommandEb>:
 #include "text_format.h"
@@ -98792,7 +98792,7 @@ GcodeStatus mc_gcode_m92(const GcodeCommand& cmd, bool first_call) {
  8029b5e:	46bd      	mov	sp, r7
  8029b60:	bd90      	pop	{r4, r7, pc}
  8029b62:	bf00      	nop
- 8029b64:	080333f8 	.word	0x080333f8
+ 8029b64:	08033404 	.word	0x08033404
  8029b68:	00000000 	.word	0x00000000
  8029b6c:	461c4000 	.word	0x461c4000
  8029b70:	080327b4 	.word	0x080327b4
@@ -102042,8 +102042,8 @@ static void draw_ex_item(uint8_t item_idx) {
  802b57c:	e012      	b.n	802b5a4 <_ZN2mc12_GLOBAL__N_1L12draw_ex_itemEh+0x768>
  802b57e:	bf00      	nop
  802b580:	2000022d 	.word	0x2000022d
- 802b584:	080333fc 	.word	0x080333fc
- 802b588:	08033404 	.word	0x08033404
+ 802b584:	08033408 	.word	0x08033408
+ 802b588:	08033410 	.word	0x08033410
  802b58c:	08032898 	.word	0x08032898
  802b590:	20008b74 	.word	0x20008b74
  802b594:	080328a4 	.word	0x080328a4
@@ -103294,7 +103294,7 @@ static void draw_option_highlight(uint8_t opt_idx, uint16_t color) {
  802beaa:	3718      	adds	r7, #24
  802beac:	46bd      	mov	sp, r7
  802beae:	bd80      	pop	{r7, pc}
- 802beb0:	08033410 	.word	0x08033410
+ 802beb0:	0803341c 	.word	0x0803341c
 
 0802beb4 <_ZN2mc12_GLOBAL__N_1L16media_sd_presentEv>:
 static uint32_t   g_splash_hold_start_ms = 0U;
@@ -103978,7 +103978,7 @@ void format_field(uint8_t idx, char* out_buf, uint16_t cap, uint16_t& out_fg) {
  802c394:	e029      	b.n	802c3ea <_ZN2mc12_GLOBAL__N_112format_fieldEhPctRt+0x35e>
  802c396:	bf00      	nop
  802c398:	20008b90 	.word	0x20008b90
- 802c39c:	08033444 	.word	0x08033444
+ 802c39c:	08033450 	.word	0x08033450
  802c3a0:	20008b94 	.word	0x20008b94
  802c3a4:	20008b9c 	.word	0x20008b9c
  802c3a8:	ffffd8f1 	.word	0xffffd8f1
@@ -105672,7 +105672,7 @@ void update_one_field() {
  802d1a6:	f887 3083 	strb.w	r3, [r7, #131]	@ 0x83
  802d1aa:	e020      	b.n	802d1ee <_ZN2mc12_GLOBAL__N_116update_one_fieldEv+0x2c6>
  802d1ac:	20008dad 	.word	0x20008dad
- 802d1b0:	08033444 	.word	0x08033444
+ 802d1b0:	08033450 	.word	0x08033450
  802d1b4:	20008bdc 	.word	0x20008bdc
  802d1b8:	20008b90 	.word	0x20008b90
  802d1bc:	20008ba8 	.word	0x20008ba8
@@ -106506,11 +106506,11 @@ void update_one_field() {
  802d88a:	e028      	b.n	802d8de <_ZN2mc12_GLOBAL__N_116update_one_fieldEv+0x9b6>
  802d88c:	20008bbc 	.word	0x20008bbc
  802d890:	20008bc8 	.word	0x20008bc8
- 802d894:	08033504 	.word	0x08033504
- 802d898:	080334fc 	.word	0x080334fc
+ 802d894:	08033510 	.word	0x08033510
+ 802d898:	08033508 	.word	0x08033508
  802d89c:	08032914 	.word	0x08032914
  802d8a0:	080328f0 	.word	0x080328f0
- 802d8a4:	0803350c 	.word	0x0803350c
+ 802d8a4:	08033518 	.word	0x08033518
  802d8a8:	20008b88 	.word	0x20008b88
  802d8ac:	20008bdc 	.word	0x20008bdc
                 cache.text[i] = new_text[i];
@@ -108312,7 +108312,7 @@ void mc_ui_poll() {
  802e522:	bf00      	nop
  802e524:	20008bd4 	.word	0x20008bd4
  802e528:	20008bcc 	.word	0x20008bcc
- 802e52c:	08033410 	.word	0x08033410
+ 802e52c:	0803341c 	.word	0x0803341c
  802e530:	66666667 	.word	0x66666667
  802e534:	20008bd0 	.word	0x20008bd0
  802e538:	2000023c 	.word	0x2000023c
@@ -111004,7 +111004,7 @@ static void draw_menu_row(uint8_t row_idx) {
  802f7a0:	46bd      	mov	sp, r7
  802f7a2:	bd80      	pop	{r7, pc}
  802f7a4:	20008dc1 	.word	0x20008dc1
- 802f7a8:	0803351c 	.word	0x0803351c
+ 802f7a8:	08033528 	.word	0x08033528
  802f7ac:	20008dc0 	.word	0x20008dc0
 
 0802f7b0 <_ZN2mc12_GLOBAL__N_1L14draw_scrollbarEv>:
@@ -111887,8 +111887,8 @@ static void draw_axis_row_info(uint8_t r) {
  802fda6:	3728      	adds	r7, #40	@ 0x28
  802fda8:	46bd      	mov	sp, r7
  802fdaa:	bd80      	pop	{r7, pc}
- 802fdac:	08033568 	.word	0x08033568
- 802fdb0:	0803355c 	.word	0x0803355c
+ 802fdac:	08033574 	.word	0x08033574
+ 802fdb0:	08033568 	.word	0x08033568
  802fdb4:	08032a30 	.word	0x08032a30
  802fdb8:	20000254 	.word	0x20000254
  802fdbc:	20008dd0 	.word	0x20008dd0
@@ -112591,8 +112591,8 @@ static void draw_move_item(uint8_t item_idx) {
  803039a:	f240 635c 	movw	r3, #1628	@ 0x65c
  803039e:	e00b      	b.n	80303b8 <_ZN2mc12_GLOBAL__N_1L14draw_move_itemEh+0x5f8>
  80303a0:	20000251 	.word	0x20000251
- 80303a4:	0803357c 	.word	0x0803357c
- 80303a8:	08033570 	.word	0x08033570
+ 80303a4:	08033588 	.word	0x08033588
+ 80303a8:	0803357c 	.word	0x0803357c
  80303ac:	08032a50 	.word	0x08032a50
  80303b0:	08032a5c 	.word	0x08032a5c
  80303b4:	f243 13ca 	movw	r3, #12746	@ 0x31ca
@@ -113503,6 +113503,7 @@ static bool read_filament_empty() {
 08030a04 <_ZN2mc12_GLOBAL__N_1L17draw_endstop_cardEh>:
 
 // ۱. کارت‌های اندستاپ (غیرقابل انتخاب)
+// اندستاپ‌ها NC هستند. TRIG یعنی فشرده یا قطع‌سیم، FREE یعنی آزاد (بند ۸.۱۲)
 static void draw_endstop_card(uint8_t axis) {
  8030a04:	b580      	push	{r7, lr}
  8030a06:	b08a      	sub	sp, #40	@ 0x28
@@ -113539,7 +113540,7 @@ static void draw_endstop_card(uint8_t axis) {
  8030a2e:	f7ff ff5d 	bl	80308ec <_ZN2mc12_GLOBAL__N_1L16read_endstop_hitEh>
  8030a32:	4603      	mov	r3, r0
  8030a34:	75fb      	strb	r3, [r7, #23]
-    const char* st_text = hit ? "HIT" : "OK";
+    const char* st_text = hit ? "TRIG" : "FREE";
  8030a36:	7dfb      	ldrb	r3, [r7, #23]
  8030a38:	2b00      	cmp	r3, #0
  8030a3a:	d001      	beq.n	8030a40 <_ZN2mc12_GLOBAL__N_1L17draw_endstop_cardEh+0x3c>
@@ -113635,11 +113636,11 @@ static void draw_endstop_card(uint8_t axis) {
  8030ade:	3720      	adds	r7, #32
  8030ae0:	46bd      	mov	sp, r7
  8030ae2:	bd80      	pop	{r7, pc}
- 8030ae4:	08033584 	.word	0x08033584
+ 8030ae4:	08033590 	.word	0x08033590
  8030ae8:	08032a84 	.word	0x08032a84
- 8030aec:	08032a88 	.word	0x08032a88
+ 8030aec:	08032a8c 	.word	0x08032a8c
  8030af0:	2000026c 	.word	0x2000026c
- 8030af4:	0803358c 	.word	0x0803358c
+ 8030af4:	08033598 	.word	0x08033598
  8030af8:	20008de4 	.word	0x20008de4
 
 08030afc <_ZN2mc12_GLOBAL__N_1L18draw_bltouch_badgeEv>:
@@ -113796,11 +113797,11 @@ static void draw_bltouch_badge() {
  8030bfa:	3718      	adds	r7, #24
  8030bfc:	46bd      	mov	sp, r7
  8030bfe:	bd80      	pop	{r7, pc}
- 8030c00:	08032a8c 	.word	0x08032a8c
- 8030c04:	08032a94 	.word	0x08032a94
- 8030c08:	08032a9c 	.word	0x08032a9c
- 8030c0c:	08032aa4 	.word	0x08032aa4
- 8030c10:	08032ab0 	.word	0x08032ab0
+ 8030c00:	08032a94 	.word	0x08032a94
+ 8030c04:	08032a9c 	.word	0x08032a9c
+ 8030c08:	08032aa4 	.word	0x08032aa4
+ 8030c0c:	08032aac 	.word	0x08032aac
+ 8030c10:	08032ab8 	.word	0x08032ab8
  8030c14:	20008de7 	.word	0x20008de7
  8030c18:	20000269 	.word	0x20000269
 
@@ -113915,9 +113916,9 @@ static void draw_filament_row() {
  8030ce2:	46bd      	mov	sp, r7
  8030ce4:	bd80      	pop	{r7, pc}
  8030ce6:	bf00      	nop
- 8030ce8:	08032ab8 	.word	0x08032ab8
- 8030cec:	08032ac4 	.word	0x08032ac4
- 8030cf0:	08032a88 	.word	0x08032a88
+ 8030ce8:	08032ac0 	.word	0x08032ac0
+ 8030cec:	08032acc 	.word	0x08032acc
+ 8030cf0:	08032ad4 	.word	0x08032ad4
  8030cf4:	20008de8 	.word	0x20008de8
 
 08030cf8 <_ZN2mc12_GLOBAL__N_1L13draw_sen_itemEh>:
@@ -114197,9 +114198,9 @@ static void draw_sen_item(uint8_t item_idx) {
  8030f10:	bd80      	pop	{r7, pc}
  8030f12:	bf00      	nop
  8030f14:	20000268 	.word	0x20000268
- 8030f18:	08033594 	.word	0x08033594
+ 8030f18:	080335a0 	.word	0x080335a0
  8030f1c:	20000278 	.word	0x20000278
- 8030f20:	08032aec 	.word	0x08032aec
+ 8030f20:	08032af8 	.word	0x08032af8
 
 08030f24 <_ZN2mc12_GLOBAL__N_1L19apply_sen_selectionEh>:
 
@@ -114769,7 +114770,7 @@ SensorsResult mc_ui_sensors_poll() {
  80312cc:	20008ddc 	.word	0x20008ddc
  80312d0:	20000268 	.word	0x20000268
  80312d4:	20008de0 	.word	0x20008de0
- 80312d8:	08032af4 	.word	0x08032af4
+ 80312d8:	08032b00 	.word	0x08032b00
  80312dc:	66666667 	.word	0x66666667
  80312e0:	20008de1 	.word	0x20008de1
  80312e4:	cccccccd 	.word	0xcccccccd
@@ -115116,10 +115117,10 @@ SensorsResult mc_ui_sensors_poll() {
  803161e:	4798      	blx	r3
  8031620:	3601      	adds	r6, #1
  8031622:	e7f2      	b.n	803160a <__libc_init_array+0x1e>
- 8031624:	080335a4 	.word	0x080335a4
- 8031628:	080335a4 	.word	0x080335a4
- 803162c:	080335a4 	.word	0x080335a4
- 8031630:	080335a8 	.word	0x080335a8
+ 8031624:	080335b0 	.word	0x080335b0
+ 8031628:	080335b0 	.word	0x080335b0
+ 803162c:	080335b0 	.word	0x080335b0
+ 8031630:	080335b4 	.word	0x080335b4
 
 08031634 <__retarget_lock_acquire_recursive>:
  8031634:	4770      	bx	lr

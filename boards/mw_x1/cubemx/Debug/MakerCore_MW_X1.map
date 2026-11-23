@@ -20477,7 +20477,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
 .iplt           0x08031700        0x0
  .iplt          0x08031700        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rodata         0x08031700     0x1e9c
+.rodata         0x08031700     0x1ea8
                 0x08031700                        . = ALIGN (0x4)
  *(.rodata)
  .rodata        0x08031700      0x2e3 ./Core/core_src/core_main.o
@@ -20558,175 +20558,175 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  *fill*         0x08032a21        0x3 
  .rodata        0x08032a24       0x51 ./ui/ui_move.o
  *fill*         0x08032a75        0x3 
- .rodata        0x08032a78       0x84 ./ui/ui_sensors.o
+ .rodata        0x08032a78       0x90 ./ui/ui_sensors.o
  *(.rodata*)
  .rodata.AHBPrescTable
-                0x08032afc       0x10 ./Core/Src/system_stm32f4xx.o
-                0x08032afc                AHBPrescTable
+                0x08032b08       0x10 ./Core/Src/system_stm32f4xx.o
+                0x08032b08                AHBPrescTable
  .rodata.APBPrescTable
-                0x08032b0c        0x8 ./Core/Src/system_stm32f4xx.o
-                0x08032b0c                APBPrescTable
+                0x08032b18        0x8 ./Core/Src/system_stm32f4xx.o
+                0x08032b18                APBPrescTable
  .rodata._ZN2mc12_GLOBAL__N_1L5kCmdsE
-                0x08032b14       0x40 ./Core/core_src/bltouch.o
+                0x08032b20       0x40 ./Core/core_src/bltouch.o
  .rodata._ZZN2mc12_GLOBAL__N_113task_tft_testEvE7kColors
-                0x08032b54        0xa ./Core/core_src/core_main.o
- *fill*         0x08032b5e        0x2 
+                0x08032b60        0xa ./Core/core_src/core_main.o
+ *fill*         0x08032b6a        0x2 
  .rodata._ZN2mc12_GLOBAL__N_1L5kCalXE
-                0x08032b60        0x6 ./Core/core_src/core_main.o
- *fill*         0x08032b66        0x2 
+                0x08032b6c        0x6 ./Core/core_src/core_main.o
+ *fill*         0x08032b72        0x2 
  .rodata._ZN2mc12_GLOBAL__N_1L5kCalYE
-                0x08032b68        0x6 ./Core/core_src/core_main.o
- *fill*         0x08032b6e        0x2 
+                0x08032b74        0x6 ./Core/core_src/core_main.o
+ *fill*         0x08032b7a        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_111show_targetEhE6kTitle
-                0x08032b70        0xc ./Core/core_src/core_main.o
+                0x08032b7c        0xc ./Core/core_src/core_main.o
  .rodata._ZN2mc12_GLOBAL__N_1L10kQuadTableE
-                0x08032b7c       0x10 ./Core/core_src/encoder.o
+                0x08032b88       0x10 ./Core/core_src/encoder.o
  .rodata._ZN2mc12_GLOBAL__N_1L5kPinsE
-                0x08032b8c        0x3 ./Core/core_src/endstop.o
- *fill*         0x08032b8f        0x1 
+                0x08032b98        0x3 ./Core/core_src/endstop.o
+ *fill*         0x08032b9b        0x1 
  .rodata._ZZN2mc12_GLOBAL__N_112parse_numberERPKcRfE6kPow10
-                0x08032b90       0x28 ./Core/core_src/gcode_parser.o
+                0x08032b9c       0x28 ./Core/core_src/gcode_parser.o
  .rodata._ZN2mcL8kFont5x7E
-                0x08032bb8      0x1db ./Core/core_src/gfx.o
- *fill*         0x08032d93        0x1 
+                0x08032bc4      0x1db ./Core/core_src/gfx.o
+ *fill*         0x08032d9f        0x1 
  .rodata._ZN2mc12_GLOBAL__N_1L10kHomeMaxMmE
-                0x08032d94        0xc ./Core/core_src/homing.o
- .rodata._ZN2mc12_GLOBAL__N_1L12kHomeFastMmSE
                 0x08032da0        0xc ./Core/core_src/homing.o
- .rodata._ZN2mc12_GLOBAL__N_1L12kHomeSlowMmSE
+ .rodata._ZN2mc12_GLOBAL__N_1L12kHomeFastMmSE
                 0x08032dac        0xc ./Core/core_src/homing.o
- .rodata._ZN2mc12_GLOBAL__N_1L14kHomeBackoffMmE
+ .rodata._ZN2mc12_GLOBAL__N_1L12kHomeSlowMmSE
                 0x08032db8        0xc ./Core/core_src/homing.o
+ .rodata._ZN2mc12_GLOBAL__N_1L14kHomeBackoffMmE
+                0x08032dc4        0xc ./Core/core_src/homing.o
  .rodata._ZZN2mc12mc_gmove_runERKNS_12GcodeCommandEbE8kLetters
-                0x08032dc4        0x4 ./Core/core_src/motion_cmd.o
+                0x08032dd0        0x4 ./Core/core_src/motion_cmd.o
  .rodata._ZN2mcL22kModeDefaultStepsPerMmE
-                0x08032dc8       0x10 ./Core/core_src/motion_modes.o
+                0x08032dd4       0x10 ./Core/core_src/motion_modes.o
  .rodata._ZN2mcL22kModeDefaultStepsPerMmE
-                0x08032dd8       0x10 ./Core/core_src/settings_data.o
+                0x08032de4       0x10 ./Core/core_src/settings_data.o
  .rodata._ZZN2mc16mc_settings_initEvE4kVec
-                0x08032de8        0x9 ./Core/core_src/settings_store.o
- *fill*         0x08032df1        0x3 
+                0x08032df4        0x9 ./Core/core_src/settings_store.o
+ *fill*         0x08032dfd        0x3 
  .rodata._ZN2mc12_GLOBAL__N_1L9kExParamsE
-                0x08032df4       0x18 ./Core/core_src/temp_protect.o
+                0x08032e00       0x18 ./Core/core_src/temp_protect.o
  .rodata._ZN2mc12_GLOBAL__N_1L10kBedParamsE
-                0x08032e0c       0x18 ./Core/core_src/temp_protect.o
+                0x08032e18       0x18 ./Core/core_src/temp_protect.o
  .rodata.USBH_Driver
-                0x08032e24       0x14 ./FATFS/Target/usbh_diskio.o
-                0x08032e24                USBH_Driver
+                0x08032e30       0x14 ./FATFS/Target/usbh_diskio.o
+                0x08032e30                USBH_Driver
  .rodata._ZN2mc12_GLOBAL__N_1L9kChannelsE
-                0x08032e38        0x8 ./board_src/board_adc.o
+                0x08032e44        0x8 ./board_src/board_adc.o
  .rodata._ZN2mc12_GLOBAL__N_1L5kInitE
-                0x08032e40      0x132 ./board_src/board_display.o
- *fill*         0x08032f72        0x2 
+                0x08032e4c      0x132 ./board_src/board_display.o
+ *fill*         0x08032f7e        0x2 
  .rodata._ZN2mc12_GLOBAL__N_1L5kPinsE
-                0x08032f74      0x118 ./board_src/board_gpio.o
+                0x08032f80      0x118 ./board_src/board_gpio.o
  .rodata._ZN2mc12_GLOBAL__N_1L12kSafeOutputsE
-                0x0803308c      0x114 ./board_src/board_safe_state.o
+                0x08033098      0x114 ./board_src/board_safe_state.o
  .rodata._ZN2mc12_GLOBAL__N_1L9kAxisPinsE
-                0x080331a0        0xc ./board_src/board_stepper.o
+                0x080331ac        0xc ./board_src/board_stepper.o
  .rodata._ZN2mc12_GLOBAL__N_1L10kDirInvertE
-                0x080331ac        0x4 ./board_src/board_stepper.o
+                0x080331b8        0x4 ./board_src/board_stepper.o
  .rodata._ZN2mc12_GLOBAL__N_1L7kParamsE
-                0x080331b0       0x20 ./board_src/board_thermistor.o
+                0x080331bc       0x20 ./board_src/board_thermistor.o
  .rodata._ZZN2mc12mc_gcode_g92ERKNS_12GcodeCommandEbE8kLetters
-                0x080331d0        0x4 ./gcode/g92.o
+                0x080331dc        0x4 ./gcode/g92.o
  .rodata._ZN2mc12_GLOBAL__N_1L6kTableE
-                0x080331d4      0x1f8 ./gcode/gcode_table.o
+                0x080331e0      0x1f8 ./gcode/gcode_table.o
  .rodata._ZN2mc12_GLOBAL__N_1L5kCapsE
-                0x080333cc       0x1c ./gcode/m115.o
+                0x080333d8       0x1c ./gcode/m115.o
  .rodata._ZZN2mc12mc_gcode_m17ERKNS_12GcodeCommandEbE8kLetters
-                0x080333e8        0x4 ./gcode/m17.o
+                0x080333f4        0x4 ./gcode/m17.o
  .rodata._ZZN2mc12mc_gcode_m18ERKNS_12GcodeCommandEbE8kLetters
-                0x080333ec        0x4 ./gcode/m18.o
+                0x080333f8        0x4 ./gcode/m18.o
  .rodata._ZZN2mc13mc_gcode_m203ERKNS_12GcodeCommandEbE8kLetters
-                0x080333f0        0x4 ./gcode/m203.o
+                0x080333fc        0x4 ./gcode/m203.o
  .rodata._ZZN2mc12mc_gcode_m84ERKNS_12GcodeCommandEbE8kLetters
-                0x080333f4        0x4 ./gcode/m84.o
+                0x08033400        0x4 ./gcode/m84.o
  .rodata._ZZN2mc12mc_gcode_m92ERKNS_12GcodeCommandEbE8kLetters
-                0x080333f8        0x4 ./gcode/m92.o
+                0x08033404        0x4 ./gcode/m92.o
  .rodata._ZZN2mc12_GLOBAL__N_1L12draw_ex_itemEhE6kChipX
-                0x080333fc        0x6 ./ui/ui_extruder.o
- *fill*         0x08033402        0x2 
+                0x08033408        0x6 ./ui/ui_extruder.o
+ *fill*         0x0803340e        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_1L12draw_ex_itemEhE10kChipSteps
-                0x08033404        0xc ./ui/ui_extruder.o
+                0x08033410        0xc ./ui/ui_extruder.o
  .rodata._ZN2mc12_GLOBAL__N_1L12kOptionRectsE
-                0x08033410       0x32 ./ui/ui_home.o
- *fill*         0x08033442        0x2 
+                0x0803341c       0x32 ./ui/ui_home.o
+ *fill*         0x0803344e        0x2 
  .rodata._ZN2mc12_GLOBAL__N_1L7kFieldsE
-                0x08033444       0xb8 ./ui/ui_home.o
+                0x08033450       0xb8 ./ui/ui_home.o
  .rodata._ZZN2mc12_GLOBAL__N_116update_one_fieldEvE13kInactLetters
-                0x080334fc        0x8 ./ui/ui_home.o
+                0x08033508        0x8 ./ui/ui_home.o
  .rodata._ZZN2mc12_GLOBAL__N_116update_one_fieldEvE11kActLetters
-                0x08033504        0x8 ./ui/ui_home.o
+                0x08033510        0x8 ./ui/ui_home.o
  .rodata._ZZN2mc12_GLOBAL__N_116update_one_fieldEvE10kLetterStr
-                0x0803350c       0x10 ./ui/ui_home.o
+                0x08033518       0x10 ./ui/ui_home.o
  .rodata._ZN2mc12_GLOBAL__N_1L10kMenuItemsE
-                0x0803351c       0x40 ./ui/ui_menu.o
+                0x08033528       0x40 ./ui/ui_menu.o
  .rodata._ZZN2mc12_GLOBAL__N_1L18draw_axis_row_infoEhE12kAxisLetters
-                0x0803355c        0xc ./ui/ui_move.o
+                0x08033568        0xc ./ui/ui_move.o
  .rodata._ZZN2mc12_GLOBAL__N_1L18draw_axis_row_infoEhE11kAxisColors
-                0x08033568        0x6 ./ui/ui_move.o
- *fill*         0x0803356e        0x2 
+                0x08033574        0x6 ./ui/ui_move.o
+ *fill*         0x0803357a        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_1L14draw_move_itemEhE10kChipTexts
-                0x08033570        0xc ./ui/ui_move.o
+                0x0803357c        0xc ./ui/ui_move.o
  .rodata._ZZN2mc12_GLOBAL__N_1L14draw_move_itemEhE6kChipX
-                0x0803357c        0x6 ./ui/ui_move.o
- *fill*         0x08033582        0x2 
+                0x08033588        0x6 ./ui/ui_move.o
+ *fill*         0x0803358e        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_1L17draw_endstop_cardEhE6kCardX
-                0x08033584        0x6 ./ui/ui_sensors.o
- *fill*         0x0803358a        0x2 
+                0x08033590        0x6 ./ui/ui_sensors.o
+ *fill*         0x08033596        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_1L17draw_endstop_cardEhE10kAxisColor
-                0x0803358c        0x6 ./ui/ui_sensors.o
- *fill*         0x08033592        0x2 
+                0x08033598        0x6 ./ui/ui_sensors.o
+ *fill*         0x0803359e        0x2 
  .rodata._ZZN2mc12_GLOBAL__N_1L13draw_sen_itemEhE5kBtnX
-                0x08033594        0x8 ./ui/ui_sensors.o
-                0x0803359c                        . = ALIGN (0x4)
+                0x080335a0        0x8 ./ui/ui_sensors.o
+                0x080335a8                        . = ALIGN (0x4)
 
-.ARM.extab      0x0803359c        0x0
-                0x0803359c                        . = ALIGN (0x4)
+.ARM.extab      0x080335a8        0x0
+                0x080335a8                        . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0803359c                        . = ALIGN (0x4)
+                0x080335a8                        . = ALIGN (0x4)
 
-.ARM            0x0803359c        0x8
-                0x0803359c                        . = ALIGN (0x4)
-                0x0803359c                        __exidx_start = .
+.ARM            0x080335a8        0x8
+                0x080335a8                        . = ALIGN (0x4)
+                0x080335a8                        __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x0803359c        0x8 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strcmp.o)
- .ARM.exidx     0x080335a4        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+ .ARM.exidx     0x080335a8        0x8 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strcmp.o)
+ .ARM.exidx     0x080335b0        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
                                   0x8 (size before relaxing)
-                0x080335a4                        __exidx_end = .
-                0x080335a4                        . = ALIGN (0x4)
+                0x080335b0                        __exidx_end = .
+                0x080335b0                        . = ALIGN (0x4)
 
-.preinit_array  0x080335a4        0x0
-                0x080335a4                        . = ALIGN (0x4)
-                0x080335a4                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x080335b0        0x0
+                0x080335b0                        . = ALIGN (0x4)
+                0x080335b0                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x080335a4                        PROVIDE (__preinit_array_end = .)
-                0x080335a4                        . = ALIGN (0x4)
+                0x080335b0                        PROVIDE (__preinit_array_end = .)
+                0x080335b0                        . = ALIGN (0x4)
 
-.init_array     0x080335a4        0x4
-                0x080335a4                        . = ALIGN (0x4)
-                0x080335a4                        PROVIDE (__init_array_start = .)
+.init_array     0x080335b0        0x4
+                0x080335b0                        . = ALIGN (0x4)
+                0x080335b0                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x080335a4        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x080335a8                        PROVIDE (__init_array_end = .)
-                0x080335a8                        . = ALIGN (0x4)
+ .init_array    0x080335b0        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x080335b4                        PROVIDE (__init_array_end = .)
+                0x080335b4                        . = ALIGN (0x4)
 
-.fini_array     0x080335a8        0x4
-                0x080335a8                        . = ALIGN (0x4)
+.fini_array     0x080335b4        0x4
+                0x080335b4                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x080335a8        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .fini_array    0x080335b4        0x4 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x080335ac                        . = ALIGN (0x4)
-                0x080335ac                        _sidata = LOADADDR (.data)
+                0x080335b8                        . = ALIGN (0x4)
+                0x080335b8                        _sidata = LOADADDR (.data)
 
-.rel.dyn        0x080335ac        0x0
- .rel.iplt      0x080335ac        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.rel.dyn        0x080335b8        0x0
+ .rel.iplt      0x080335b8        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.data           0x20000000      0x2d8 load address 0x080335ac
+.data           0x20000000      0x2d8 load address 0x080335b8
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -20958,12 +20958,12 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  *(.RamFunc*)
                 0x200002d8                        . = ALIGN (0x4)
                 0x200002d8                        _edata = .
-                0x08033884                        _siccmram = LOADADDR (.ccmram)
+                0x08033890                        _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x200002d8        0x0 load address 0x08033884
+.igot.plt       0x200002d8        0x0 load address 0x08033890
  .igot.plt      0x200002d8        0x0 C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin/../lib/gcc/arm-none-eabi/14.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x08033884
+.ccmram         0x10000000        0x0 load address 0x08033890
                 0x10000000                        . = ALIGN (0x4)
                 0x10000000                        _sccmram = .
  *(.ccmram)
@@ -24584,7 +24584,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_macro   0x00038dc9       0x95 ./ui/ui_move.o
  .debug_macro   0x00038e5e       0x99 ./ui/ui_sensors.o
 
-.debug_line     0x00000000    0x74634
+.debug_line     0x00000000    0x74632
  .debug_line    0x00000000      0x8a7 ./Core/Src/adc.o
  .debug_line    0x000008a7      0x8dc ./Core/Src/gpio.o
  .debug_line    0x00001183      0x88d ./Core/Src/i2c.o
@@ -24745,7 +24745,7 @@ LOAD C:/ST/STM32CubeIDE_2.2.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_line    0x0007189d      0xd64 ./ui/ui_icons.o
  .debug_line    0x00072601      0x927 ./ui/ui_menu.o
  .debug_line    0x00072f28      0xbb4 ./ui/ui_move.o
- .debug_line    0x00073adc      0xb58 ./ui/ui_sensors.o
+ .debug_line    0x00073adc      0xb56 ./ui/ui_sensors.o
 
 .debug_str      0x00000000    0xfb85f
  .debug_str     0x00000000    0xfb85f ./Core/Src/adc.o

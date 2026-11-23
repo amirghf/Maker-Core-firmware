@@ -8,6 +8,8 @@
 #include "ui_extruder.h"
 #include "ui_bed.h"
 #include "ui_sensors.h"
+#include "ui_sd.h"
+#include "ui_otg.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -49,7 +51,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)، 4 = صفحه داغ (بند ۸.۱۰)، 5 = صفحه سنسورها (بند ۸.۱۲)
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)، 4 = صفحه داغ (بند ۸.۱۰)، 5 = صفحه سنسورها (بند ۸.۱۲)، 6 = صفحه SD CARD (بند ۸.۱۴)، 7 = صفحه USB OTG (بند ۸.۱۵)
 }
 
 namespace mc {
@@ -865,6 +867,16 @@ void mc_ui_init() {
     mc_dbg_346_sen_enter_idx = 255U;
     mc_dbg_347_sen_force = 0U;
     mc_dbg_348_sen_fake = 0U;
+    mc_dbg_349_sd_sel_shown = 2U;
+    mc_dbg_350_sd_enter_cnt = 0U;
+    mc_dbg_351_sd_enter_idx = 255U;
+    mc_dbg_352_sd_force = 0U;
+    mc_dbg_353_sd_fake = 0U;
+    mc_dbg_354_otg_sel_shown = 2U;
+    mc_dbg_355_otg_enter_cnt = 0U;
+    mc_dbg_356_otg_enter_idx = 255U;
+    mc_dbg_357_otg_force = 0U;
+    mc_dbg_358_otg_fake = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -937,6 +949,16 @@ void mc_ui_poll() {
     (void)mc_dbg_346_sen_enter_idx;
     (void)mc_dbg_347_sen_force;
     (void)mc_dbg_348_sen_fake;
+    (void)mc_dbg_349_sd_sel_shown;
+    (void)mc_dbg_350_sd_enter_cnt;
+    (void)mc_dbg_351_sd_enter_idx;
+    (void)mc_dbg_352_sd_force;
+    (void)mc_dbg_353_sd_fake;
+    (void)mc_dbg_354_otg_sel_shown;
+    (void)mc_dbg_355_otg_enter_cnt;
+    (void)mc_dbg_356_otg_enter_idx;
+    (void)mc_dbg_357_otg_force;
+    (void)mc_dbg_358_otg_fake;
 
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
@@ -972,6 +994,12 @@ void mc_ui_poll() {
         } else if (m_res == MenuResult::OpenSensors) {
             mc_dbg_323_ui_page = 5U;
             mc_ui_sensors_open();
+        } else if (m_res == MenuResult::OpenSd) {
+            mc_dbg_323_ui_page = 6U;
+            mc_ui_sd_open();
+        } else if (m_res == MenuResult::OpenOtg) {
+            mc_dbg_323_ui_page = 7U;
+            mc_ui_otg_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
@@ -1034,6 +1062,38 @@ void mc_ui_poll() {
         if (s_res == SensorsResult::Back) {
             mc_dbg_323_ui_page = 1U;
             mc_ui_menu_open_at(3U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه SD CARD باشد (۶)
+    if (mc_dbg_323_ui_page == 6U) {
+        const SdResult sd_res = mc_ui_sd_poll();
+        if (sd_res == SdResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(4U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه USB OTG باشد (۷)
+    if (mc_dbg_323_ui_page == 7U) {
+        const OtgResult otg_res = mc_ui_otg_poll();
+        if (otg_res == OtgResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(5U);
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
         }
@@ -1121,6 +1181,46 @@ void mc_ui_poll() {
             return;
         } else if (f_sen == 2U) {
             mc_dbg_347_sen_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_352_sd_force جهت ورود مستقیم به صفحه SD CARD
+    if (mc_dbg_352_sd_force != 0U) {
+        const uint32_t f_sd = mc_dbg_352_sd_force;
+        if ((f_sd == 1U) || ((f_sd >= 3U) && (f_sd <= 5U))) {
+            if (f_sd == 1U) {
+                mc_dbg_352_sd_force = 0U;
+            }
+            mc_ui_sd_open();
+            mc_dbg_323_ui_page = 6U;
+            (void)mc_ui_sd_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_sd == 2U) {
+            mc_dbg_352_sd_force = 0U;
+        }
+    }
+
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_357_otg_force جهت ورود مستقیم به صفحه USB OTG
+    if (mc_dbg_357_otg_force != 0U) {
+        const uint32_t f_otg = mc_dbg_357_otg_force;
+        if ((f_otg == 1U) || ((f_otg >= 3U) && (f_otg <= 5U))) {
+            if (f_otg == 1U) {
+                mc_dbg_357_otg_force = 0U;
+            }
+            mc_ui_otg_open();
+            mc_dbg_323_ui_page = 7U;
+            (void)mc_ui_otg_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_otg == 2U) {
+            mc_dbg_357_otg_force = 0U;
         }
     }
 

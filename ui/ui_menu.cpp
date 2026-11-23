@@ -267,6 +267,18 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::OpenSensors;
+        } else if (g_menu_sel == 4U) { // SD CARD (بند ۸.۱۴)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 4U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenSd;
+        } else if (g_menu_sel == 5U) { // USB OTG (بند ۸.۱۵)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 5U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenOtg;
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;
