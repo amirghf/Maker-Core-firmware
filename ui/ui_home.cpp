@@ -59,9 +59,8 @@ volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. ان�
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
 volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL
 volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
-volatile uint32_t mc_dbg_362_touch_cal_force   = 0;  // نوشتنی: ۰ بی‌اثر، ۱ شروع، ۲ لغو، ۳ پاک‌کردن (بند ۸.۱۷)
-volatile uint32_t mc_dbg_370_touch_cal_src     = 0;  // خواندنی: ۰ کالیبره نیست، ۱ از EEPROM، ۲ تازه کالیبره (بند ۸.۱۷)
-volatile uint32_t mc_dbg_371_touch_save_result = 0;  // خواندنی: ۰ هنوز، ۱ موفق، ۲ ناموفق (بند ۸.۱۷)
+// متغیرهای دیباگ صفحه TOUCH CAL (mc_dbg_362/370/371) طبق اصل «یک define در فایل صاحب»
+// در ui_tcal.cpp تعریف می‌شوند و اعلانشان در ui_tcal.h است.
 }
 
 namespace mc {

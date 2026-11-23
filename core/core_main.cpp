@@ -380,9 +380,6 @@ void task_cmd_intake() {
     }
 }
 
-
-
-}  // namespace
 }  // namespace mc
 
 extern "C" void mc_core_init_c(void) {

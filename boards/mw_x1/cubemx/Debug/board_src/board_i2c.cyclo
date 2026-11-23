@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_i2c.cpp:20:6:bool mc::mc_i2c_probe(uint8_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_i2c.cpp:24:6:bool mc::mc_i2c_write(uint8_t, const uint8_t*, uint16_t, uint32_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_i2c.cpp:30:6:bool mc::mc_i2c_read(uint8_t, uint8_t*, uint16_t, uint32_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_i2c.cpp:36:6:bool mc::mc_i2c_selftest()	6
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_i2c.cpp:48:16:int mc_i2c_selftest_c()	2
