@@ -82,6 +82,7 @@ static bool read_filament_empty() {
 }
 
 // ۱. کارت‌های اندستاپ (غیرقابل انتخاب)
+// اندستاپ‌ها NC هستند. TRIG یعنی فشرده یا قطع‌سیم، FREE یعنی آزاد (بند ۸.۱۲)
 static void draw_endstop_card(uint8_t axis) {
     if (axis >= 3U) { return; }
 
@@ -95,7 +96,7 @@ static void draw_endstop_card(uint8_t axis) {
     constexpr uint16_t ch = 44U;
 
     const bool hit = read_endstop_hit(axis);
-    const char* st_text = hit ? "HIT" : "OK";
+    const char* st_text = hit ? "TRIG" : "FREE";
     const uint16_t st_color = hit ? kColorRed : kColorGreen;
 
     mc_gfx_fill_rect(cx, cy, cw, ch, kCardBg);
