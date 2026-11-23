@@ -12,10 +12,10 @@
 #include "../config/mc_config.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_340_bed_sel_shown  = 3;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۳)
-volatile uint32_t mc_dbg_341_bed_enter_cnt  = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
-volatile uint32_t mc_dbg_342_bed_enter_idx  = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_343_bed_force      = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه داغ؛ ۲ = برگشت به منو؛ ۳ تا ۶ = فوکوس روی مورد (مقدار - ۳)
+volatile uint32_t mc_dbg_340_bed_sel_shown = 3;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۳)
+volatile uint32_t mc_dbg_341_bed_enter_cnt = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
+volatile uint32_t mc_dbg_342_bed_enter_idx = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
+volatile uint32_t mc_dbg_343_bed_force     = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه داغ؛ ۲ = برگشت به منو؛ ۳ تا ۶ = فوکوس روی مورد (مقدار - ۳)
 }
 
 namespace mc {
@@ -36,7 +36,7 @@ static bool    g_cached_sensor_ok    = false;
 static bool    g_cached_heat1_active = false;
 static bool    g_cached_heat2_active = false;
 
-static void draw_bed_temp_group() {
+static void draw_temp_group() {
     int32_t cur_temp_x10 = 0;
     bool sensor_ok = false;
     const bool fake = (mc_dbg_297_ui_fake_on != 0U);
@@ -152,7 +152,7 @@ static void draw_bed_item(uint8_t item_idx) {
         tgt_temp_x10 = mc_heater_bed_target_x10();
     }
 
-    if (item_idx == 0U) { // HEAT 1
+    if (item_idx == 0U) { // HEAT Preset 1
         constexpr uint16_t bx = 8U;
         constexpr uint16_t by = 130U;
         constexpr uint16_t bw = 150U;
@@ -181,7 +181,7 @@ static void draw_bed_item(uint8_t item_idx) {
         mc_gfx_text(tx, ty, text_buf, fg_col, bg_col, 2U);
 
         g_cached_heat1_active = is_active;
-    } else if (item_idx == 1U) { // HEAT 2
+    } else if (item_idx == 1U) { // HEAT Preset 2
         constexpr uint16_t bx = 166U;
         constexpr uint16_t by = 130U;
         constexpr uint16_t bw = 150U;
@@ -231,7 +231,7 @@ static void draw_bed_item(uint8_t item_idx) {
         const uint16_t tx = static_cast<uint16_t>(bx + (bw - tw) / 2U);
         const uint16_t ty = static_cast<uint16_t>(by + (bh - 16U) / 2U);
         mc_gfx_text(tx, ty, "COOL", fg_col, bg_col, 2U);
-    } else if (item_idx == 3U) { // BACK
+    } else if (item_idx == 3U) { // BACK Button
         constexpr uint16_t bx = 324U;
         constexpr uint16_t by = 258U;
         constexpr uint16_t bw = 148U;
@@ -270,7 +270,7 @@ static void apply_bed_selection(uint8_t target_sel) {
 }  // namespace
 
 void mc_ui_bed_open() {
-    g_bed_sel        = 3U;
+    g_bed_sel        = 3U; // فوکوس اولیه روی BACK (اندیس ۳)
     g_bed_step       = 0U;
     g_bed_live_cycle = 0U;
 
@@ -331,7 +331,7 @@ BedResult mc_ui_bed_poll() {
             }
 
             case 2:
-                draw_bed_temp_group();
+                draw_temp_group();
                 g_bed_step = 3U;
                 return BedResult::Stay;
 
@@ -417,23 +417,21 @@ BedResult mc_ui_bed_poll() {
             (cur_temp_x10 != g_cached_cur_temp_x10) ||
             (tgt_temp_x10 != g_cached_tgt_temp_x10) ||
             (badge_code != g_cached_badge_code)) {
-            draw_bed_temp_group();
+            draw_temp_group();
         }
-    } else if (cycle == 1U) { // HEAT buttons active state check
+    } else if (cycle == 1U) { // HEAT buttons active state
         int32_t tgt_temp_x10 = 0;
         if (mc_dbg_297_ui_fake_on != 0U) {
             tgt_temp_x10 = mc_dbg_301_ui_fake_bed_tgt_x10;
         } else {
             tgt_temp_x10 = mc_heater_bed_target_x10();
         }
-
-        const bool h1_active = (tgt_temp_x10 == (MC_UI_BED_PRESET_1_C * 10));
-        const bool h2_active = (tgt_temp_x10 == (MC_UI_BED_PRESET_2_C * 10));
-
-        if (h1_active != g_cached_heat1_active) {
+        const bool h1_act = (tgt_temp_x10 == (MC_UI_BED_PRESET_1_C * 10));
+        const bool h2_act = (tgt_temp_x10 == (MC_UI_BED_PRESET_2_C * 10));
+        if (h1_act != g_cached_heat1_active) {
             draw_bed_item(0U);
         }
-        if (h2_active != g_cached_heat2_active) {
+        if (h2_act != g_cached_heat2_active) {
             draw_bed_item(1U);
         }
     }

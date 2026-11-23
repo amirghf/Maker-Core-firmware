@@ -12,7 +12,7 @@ extern volatile uint32_t mc_dbg_344_sen_sel_shown;   // خواندنی: اندی
 extern volatile uint32_t mc_dbg_345_sen_enter_cnt;   // خواندنی: تعداد اینترها روی مورد غیر BACK
 extern volatile uint32_t mc_dbg_346_sen_enter_idx;   // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
 extern volatile uint32_t mc_dbg_347_sen_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه سنسورها؛ ۲ = برگشت به منو؛ ۳ تا ۷ = فوکوس روی مورد (مقدار - ۳)
-extern volatile uint32_t mc_dbg_348_sen_fake;        // نوشتنی: حالت ساختگی ظاهر صفحه سنسورها (بیت ۷ = فعال‌سازی)
+extern volatile uint32_t mc_dbg_348_sen_fake;        // نوشتنی: حالت ساختگی ظاهر صفحه سنسورها، بیت‌ها طبق بند پ-۱۲ (بیت ۷ = فعال‌سازی)
 
 #ifdef __cplusplus
 }

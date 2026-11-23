@@ -49,7 +49,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = صفحه حرکت، 3 = صفحه اکسترودر، 4 = صفحه داغ، 5 = صفحه سنسورها
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو (بند ۸.۷)، 2 = صفحه حرکت (بند ۸.۸)، 3 = صفحه اکسترودر (بند ۸.۹)، 4 = صفحه داغ (بند ۸.۱۰)، 5 = صفحه سنسورها (بند ۸.۱۲)
 }
 
 namespace mc {
@@ -856,6 +856,15 @@ void mc_ui_init() {
     mc_dbg_331_move_enter_idx = 255U;
     mc_dbg_332_move_force = 0U;
     mc_dbg_333_move_step_shown = 1U;
+    mc_dbg_340_bed_sel_shown = 3U;
+    mc_dbg_341_bed_enter_cnt = 0U;
+    mc_dbg_342_bed_enter_idx = 255U;
+    mc_dbg_343_bed_force = 0U;
+    mc_dbg_344_sen_sel_shown = 4U;
+    mc_dbg_345_sen_enter_cnt = 0U;
+    mc_dbg_346_sen_enter_idx = 255U;
+    mc_dbg_347_sen_force = 0U;
+    mc_dbg_348_sen_fake = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -1005,8 +1014,8 @@ void mc_ui_poll() {
 
     // اگر صفحه فعال صفحه داغ باشد (۴)
     if (mc_dbg_323_ui_page == 4U) {
-        const BedResult bed_res = mc_ui_bed_poll();
-        if (bed_res == BedResult::Back) {
+        const BedResult b_res = mc_ui_bed_poll();
+        if (b_res == BedResult::Back) {
             mc_dbg_323_ui_page = 1U;
             mc_ui_menu_open_at(2U);
             (void)mc_encoder_take_clicks();
@@ -1021,8 +1030,8 @@ void mc_ui_poll() {
 
     // اگر صفحه فعال صفحه سنسورها باشد (۵)
     if (mc_dbg_323_ui_page == 5U) {
-        const SensorsResult sen_res = mc_ui_sensors_poll();
-        if (sen_res == SensorsResult::Back) {
+        const SensorsResult s_res = mc_ui_sensors_poll();
+        if (s_res == SensorsResult::Back) {
             mc_dbg_323_ui_page = 1U;
             mc_ui_menu_open_at(3U);
             (void)mc_encoder_take_clicks();
