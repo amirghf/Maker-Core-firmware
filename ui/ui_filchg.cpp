@@ -25,8 +25,9 @@ extern volatile int32_t  mc_dbg_300_ui_fake_noz_tgt_x10;
 namespace mc {
 namespace {
 
-constexpr uint16_t kSelBg    = mc_rgb565(24, 38, 64);
-constexpr uint16_t kWarn     = mc_rgb565(255, 170, 0);
+constexpr uint16_t kSelBg      = mc_rgb565(24, 38, 64);
+constexpr uint16_t kWarn       = mc_rgb565(255, 170, 0);
+constexpr uint16_t kOrangeTgt  = mc_rgb565(255, 140, 0);   // رنگ نارنجی وضعیت گرم‌شدن (بند ۹.۱؛ همان رنگ ui_home.cpp)
 
 static uint8_t  g_fc_sel          = 0U; // 0 = CONTINUE, 1 = STOP
 static uint8_t  g_fc_step         = 0U; // گام نقاشی ورود (۰ تا ۵، ۲۵۵ = کار عادی)
