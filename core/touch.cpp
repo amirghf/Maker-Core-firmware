@@ -3,7 +3,7 @@
 #include "touch.h"
 #include "hal_display.h"
 
-// متغیر دیباگ؛ ضرایب A تا F در CubeIDE با Live Expressions دیده می‌شوند (بند ۸.۱۷).
+// متغیر دیباگ؛ ضرایب A تا F در CubeIDE با Live Expressions دیده می‌شوند (بند ۸.۱۵).
 extern "C" {
 volatile float mc_dbg_375_touch_coef[6] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 }

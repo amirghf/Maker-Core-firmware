@@ -1,4 +1,4 @@
-// صفحه USB OTG رابط کاربری (بند ۸.۱۵).
+// صفحه USB OTG رابط کاربری (بند ۸.۱۴).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder استفاده می‌کند.
 #include "ui_otg.h"
 #include "ui_home.h"

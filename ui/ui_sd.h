@@ -1,5 +1,5 @@
 #pragma once
-// صفحه SD CARD رابط کاربری (بند ۸.۱۴).
+// صفحه SD CARD رابط کاربری (بند ۸.۱۳).
 // فقط از هدرهای core و hal استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 
@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// متغیرهای دیباگ صفحه SD CARD (بند ۸.۱۴)
+// متغیرهای دیباگ صفحه SD CARD (بند ۸.۱۳)
 extern volatile uint32_t mc_dbg_349_sd_sel_shown;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۲)
 extern volatile uint32_t mc_dbg_350_sd_enter_cnt;   // خواندنی: تعداد اینترها روی مورد غیر BACK
 extern volatile uint32_t mc_dbg_351_sd_enter_idx;   // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)

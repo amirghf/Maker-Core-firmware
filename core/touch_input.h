@@ -1,5 +1,5 @@
 #pragma once
-// سرویس ورودی لمس هسته MakerCore (بند ۸.۱۷).
+// سرویس ورودی لمس هسته MakerCore (بند ۸.۱۵).
 // فقط از hal_touch.h، touch.h و hal_time.h استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 #include "../config/mc_config.h"
@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-// متغیرهای دیباگ سرویس لمس (بند ۸.۱۷)
+// متغیرهای دیباگ سرویس لمس (بند ۸.۱۵)
 extern volatile uint32_t mc_dbg_364_touch_pressed;     // خواندنی: ۱ = صفحه الان (بعد از debounce) فشرده است
 extern volatile uint32_t mc_dbg_365_touch_raw_x;       // خواندنی: آخرین مختصات خام X
 extern volatile uint32_t mc_dbg_366_touch_raw_y;       // خواندنی: آخرین مختصات خام Y

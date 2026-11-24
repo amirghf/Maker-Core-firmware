@@ -184,7 +184,7 @@
 
 ---
 
-## 🔷 بند ۸.۱۴: صفحه SD CARD (`ui/ui_sd.cpp` و `ui/ui_home.cpp`)
+## 🔷 بند ۸.۱۳: صفحه SD CARD (`ui/ui_sd.cpp` و `ui/ui_home.cpp`)
 
 | نام کامل | نوع | دسترسی | توضیح |
 | :--- | :--- | :--- | :--- |
@@ -196,7 +196,7 @@
 
 ---
 
-## 🔷 بند ۸.۱۵: صفحه USB OTG (`ui/ui_otg.cpp` و `ui/ui_home.cpp`)
+## 🔷 بند ۸.۱۴: صفحه USB OTG (`ui/ui_otg.cpp` و `ui/ui_home.cpp`)
 
 | نام کامل | نوع | دسترسی | توضیح |
 | :--- | :--- | :--- | :--- |
@@ -208,7 +208,7 @@
 
 ---
 
-## 🔷 بند ۸.۲۰: صفحه درباره من (ABOUT) (`ui/ui_about.cpp` و `ui/ui_home.cpp`)
+## 🔷 بند ۸.۱۸: صفحه درباره من (ABOUT) (`ui/ui_about.cpp` و `ui/ui_home.cpp`)
 
 | نام کامل | نوع | دسترسی | توضیح |
 | :--- | :--- | :--- | :--- |
@@ -217,7 +217,7 @@
 
 ---
 
-## 🔷 بند ۸.۱۷: سرویس ورودی لمس، کالیبراسیون و ذخیره در EEPROM (`core/touch_input.cpp` و `core/touch_cal_store.cpp` و `ui/ui_tcal.cpp` و `core/touch.cpp` و `boards/mw_x1/src/board_touch.cpp`)
+## 🔷 بند ۸.۱۵: سرویس ورودی لمس، کالیبراسیون و ذخیره در EEPROM (`core/touch_input.cpp` و `core/touch_cal_store.cpp` و `ui/ui_tcal.cpp` و `core/touch.cpp` و `boards/mw_x1/src/board_touch.cpp`)
 
 | نام کامل | نوع | دسترسی | توضیح |
 | :--- | :--- | :--- | :--- |

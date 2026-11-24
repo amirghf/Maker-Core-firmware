@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-// متغیر دیباگ ضرایب کالیبراسیون لمس (بند ۸.۱۷)
+// متغیر دیباگ ضرایب کالیبراسیون لمس (بند ۸.۱۵)
 extern volatile float mc_dbg_375_touch_coef[6];
 
 #ifdef __cplusplus
@@ -23,9 +23,9 @@ bool mc_touch_is_calibrated();
 // مختصات خام را به پیکسل تبدیل می‌کند (در محدوده صفحه بریده می‌شود). false = هنوز کالیبره نشده.
 bool mc_touch_apply(uint16_t raw_x, uint16_t raw_y, uint16_t* scr_x, uint16_t* scr_y);
 
-// دریافت ضرایب کالیبراسیون لمس (۶ ضریب float). false = کالیبره نیست (بند ۸.۱۷)
+// دریافت ضرایب کالیبراسیون لمس (۶ ضریب float). false = کالیبره نیست (بند ۸.۱۵)
 bool mc_touch_get_coef(float out[6]);
-// تنظیم ضرایب کالیبراسیون لمس (۶ ضریب float). true = موفق، false = نامعقول (بند ۸.۱۷)
+// تنظیم ضرایب کالیبراسیون لمس (۶ ضریب float). true = موفق، false = نامعقول (بند ۸.۱۵)
 bool mc_touch_set_coef(const float in[6]);
 
 }  // namespace mc

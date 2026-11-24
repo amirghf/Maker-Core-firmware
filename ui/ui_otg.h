@@ -1,5 +1,5 @@
 #pragma once
-// صفحه USB OTG رابط کاربری (بند ۸.۱۵).
+// صفحه USB OTG رابط کاربری (بند ۸.۱۴).
 // فقط از هدرهای core و hal استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 
@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// متغیرهای دیباگ صفحه USB OTG (بند ۸.۱۵)
+// متغیرهای دیباگ صفحه USB OTG (بند ۸.۱۴)
 extern volatile uint32_t mc_dbg_354_otg_sel_shown;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۲)
 extern volatile uint32_t mc_dbg_355_otg_enter_cnt;   // خواندنی: تعداد اینترها روی مورد غیر BACK
 extern volatile uint32_t mc_dbg_356_otg_enter_idx;   // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)

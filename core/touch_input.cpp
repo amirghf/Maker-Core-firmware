@@ -1,4 +1,4 @@
-// سرویس ورودی لمس هسته MakerCore (بند ۸.۱۷).
+// سرویس ورودی لمس هسته MakerCore (بند ۸.۱۵).
 // فقط از hal_touch.h، touch.h و hal_time.h استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include "touch_input.h"
 #include "touch.h"

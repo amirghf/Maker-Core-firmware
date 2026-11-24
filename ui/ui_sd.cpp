@@ -1,4 +1,4 @@
-// صفحه SD CARD رابط کاربری (بند ۸.۱۴).
+// صفحه SD CARD رابط کاربری (بند ۸.۱۳).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder استفاده می‌کند.
 #include "ui_sd.h"
 #include "ui_home.h"

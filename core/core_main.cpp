@@ -403,9 +403,9 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_settings_init();   // بند ۷.۲
     mc::mc_cfg_boot_init();   // بند ۷.۴
     mc::mc_encoder_init();   // بند ۸.۸
-    mc::g_enc_pressed_at_boot = mc::mc_encoder_is_pressed();   // بند ۸.۱۷: بررسی فشردن انکودر هنگام روشن شدن
-    mc::mc_touchin_init();   // بند ۸.۱۷: سرویس ورودی لمس
-    mc::mc_tcal_store_init();   // بند ۸.۱۷: ذخیره‌سازی کالیبراسیون لمس
+    mc::g_enc_pressed_at_boot = mc::mc_encoder_is_pressed();   // بند ۸.۱۵: بررسی فشردن انکودر هنگام روشن شدن
+    mc::mc_touchin_init();   // بند ۸.۱۵: سرویس ورودی لمس
+    mc::mc_tcal_store_init();   // بند ۸.۱۵: ذخیره‌سازی کالیبراسیون لمس
     mc::mc_ui_init();   // بند ۸.۲
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
@@ -416,8 +416,8 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_heartbeat, 60000U);
     mc::g_main.add(mc::task_tft_test, 100U);
     mc::g_main.add(mc::task_gfx_test, 100U);
-    mc::g_main.add(mc::mc_touchin_poll, MC_TOUCH_POLL_MS);   // بند ۸.۱۷: ورودی لمس
-    mc::g_main.add(mc::mc_tcal_store_poll, MC_TOUCH_CAL_STORE_POLL_MS);   // بند ۸.۱۷: ذخیره لمس
+    mc::g_main.add(mc::mc_touchin_poll, MC_TOUCH_POLL_MS);   // بند ۸.۱۵: ورودی لمس
+    mc::g_main.add(mc::mc_tcal_store_poll, MC_TOUCH_CAL_STORE_POLL_MS);   // بند ۸.۱۵: ذخیره لمس
     mc::g_main.add(mc::task_flash_test, 100U);
     mc::g_main.add(mc::task_splash, 100U);
 

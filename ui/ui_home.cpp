@@ -1025,7 +1025,7 @@ void mc_ui_poll() {
     (void)mc_dbg_370_touch_cal_src;
     (void)mc_dbg_371_touch_save_result;
 
-    // بررسی تغییر اجباری وضعیت کالیبراسیون با متغیر دیباگ 362 (بند ۸.۱۷)
+    // بررسی تغییر اجباری وضعیت کالیبراسیون با متغیر دیباگ 362 (بند ۸.۱۵)
     if (mc_dbg_362_touch_cal_force != 0U) {
         const uint32_t f_cal = mc_dbg_362_touch_cal_force;
         mc_dbg_362_touch_cal_force = 0U;
@@ -1237,7 +1237,7 @@ void mc_ui_poll() {
         return;
     }
 
-    // اگر صفحه فعال صفحه TOUCH CAL باشد (۹) (بند ۸.۱۷)
+    // اگر صفحه فعال صفحه TOUCH CAL باشد (۹) (بند ۸.۱۵)
     if (mc_dbg_323_ui_page == 9U) {
         const TcalResult tc_res = mc_ui_tcal_poll();
         if (tc_res != TcalResult::Stay) {

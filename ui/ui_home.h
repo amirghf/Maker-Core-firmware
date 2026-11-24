@@ -15,9 +15,9 @@ extern volatile int32_t  mc_dbg_300_ui_fake_noz_tgt_x10; // نوشتنی: هدف
 extern volatile int32_t  mc_dbg_301_ui_fake_bed_tgt_x10; // نوشتنی: هدف بستر ×۱۰ (بند ۸.۱۰)
 extern volatile uint32_t mc_dbg_304_ui_fake_fan_pct;      // نوشتنی: درصد فن ۰ تا ۱۰۰ (فقط وقتی fake روشن است) (بند ۸.۹)
 extern volatile uint32_t mc_dbg_305_ui_fake_axis_en;     // نوشتنی: بیت ۰ تا ۳ = فعال بودن X، Y، Z، E (فقط وقتی fake روشن است)
-extern volatile uint32_t mc_dbg_323_ui_page;            // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)، ۲ = صفحه حرکت (بند ۸.۸)، ۳ = صفحه اکسترودر (بند ۸.۹)، ۴ = صفحه داغ (بند ۸.۱۰)، ۵ = صفحه سنسورها (بند ۸.۱۲)، ۶ = صفحه SD CARD (بند ۸.۱۴)، ۷ = صفحه USB OTG (بند ۸.۱۵)، ۸ = صفحه ABOUT (بند ۸.۲۰)، ۹ = صفحه TOUCH CAL (بند ۸.۱۷)
+extern volatile uint32_t mc_dbg_323_ui_page;            // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)، ۲ = صفحه حرکت (بند ۸.۸)، ۳ = صفحه اکسترودر (بند ۸.۹)، ۴ = صفحه داغ (بند ۸.۱۰)، ۵ = صفحه سنسورها (بند ۸.۱۲)، ۶ = صفحه SD CARD (بند ۸.۱۳)، ۷ = صفحه USB OTG (بند ۸.۱۴)، ۸ = صفحه ABOUT (بند ۸.۱۸)، ۹ = صفحه TOUCH CAL (بند ۸.۱۵)
 extern volatile uint32_t mc_dbg_359_ui_fake_print_pct;   // نوشتنی: درصد ساختگی چاپ ۰ تا ۱۰۰ (فقط وقتی fake روشن است) (بند ۸.۶)
-// متغیرهای mc_dbg_362/370/371 (TOUCH CAL) در ui_tcal.h اعلان شده‌اند (بند ۸.۱۷).
+// متغیرهای mc_dbg_362/370/371 (TOUCH CAL) در ui_tcal.h اعلان شده‌اند (بند ۸.۱۵).
 
 
 #ifdef __cplusplus
@@ -27,7 +27,7 @@ namespace mc {
 
 constexpr uint32_t kUiPollMs = MC_UI_POLL_MS;
 
-// بند ۸.۱۷: وضعیت فشرده بودن دکمه انکودر در لحظه روشن شدن دستگاه
+// بند ۸.۱۵: وضعیت فشرده بودن دکمه انکودر در لحظه روشن شدن دستگاه
 // (هسته آن را در mc_core_init_c پر می‌کند و UI برای ورود به صفحه TOUCH CAL می‌خواند).
 extern bool g_enc_pressed_at_boot;
 

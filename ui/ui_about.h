@@ -1,5 +1,5 @@
 #pragma once
-// صفحه ABOUT رابط کاربری (بند ۸.۲۰).
+// صفحه ABOUT رابط کاربری (بند ۸.۱۸).
 // فقط از هدرهای core و hal استفاده می‌کند. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
 
@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// متغیرهای دیباگ صفحه ABOUT (بند ۸.۲۰)
+// متغیرهای دیباگ صفحه ABOUT (بند ۸.۱۸)
 extern volatile uint32_t mc_dbg_360_about_sel_shown; // خواندنی: اندیس مورد فوکوس‌شده (همیشه ۰ = BACK)
 extern volatile uint32_t mc_dbg_361_about_force;     // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه؛ ۲ = برگشت به منو
 

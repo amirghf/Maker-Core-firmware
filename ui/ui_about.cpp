@@ -1,4 +1,4 @@
-// صفحه ABOUT رابط کاربری (بند ۸.۲۰).
+// صفحه ABOUT رابط کاربری (بند ۸.۱۸).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder استفاده می‌کند.
 #include "ui_about.h"
 #include "ui_home.h"

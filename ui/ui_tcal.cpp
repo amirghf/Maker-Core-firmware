@@ -1,4 +1,4 @@
-// صفحه کالیبراسیون لمس (TOUCH CAL - صفحه ۹) (بند ۸.۱۷).
+// صفحه کالیبراسیون لمس (TOUCH CAL - صفحه ۹) (بند ۸.۱۵).
 // هیچ هدر ST اینجا include نمی‌شود. فقط از hal و gfx و encoder استفاده می‌کند.
 #include "ui_tcal.h"
 #include "ui_colors.h"

@@ -5,7 +5,7 @@
 #include "pins.h"   // stm32f4xx_hal.h را هم می‌آورد
 #include "spi.h"    // hspi1 که CubeMX ساخته
 
-// متغیر دیباگ؛ در CubeIDE با Live Expressions دیده می‌شود (بند ۸.۱۷).
+// متغیر دیباگ؛ در CubeIDE با Live Expressions دیده می‌شود (بند ۸.۱۵).
 extern "C" {
 volatile uint32_t mc_dbg_374_touch_spi_fail = 0;   // تعداد ارسال‌های SPI لمس که خطا دادند
 }
