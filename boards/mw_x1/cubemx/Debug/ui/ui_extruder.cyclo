@@ -1,6 +1,8 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:47:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:53:13:void mc::{anonymous}::draw_temp_group()	16
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:158:13:void mc::{anonymous}::draw_ex_item(uint8_t)	49
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:398:13:void mc::{anonymous}::apply_ex_selection(uint8_t)	3
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:412:6:void mc::mc_ui_extruder_open()	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:439:16:mc::ExtruderResult mc::mc_ui_extruder_poll()	45
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:60:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:66:13:void mc::{anonymous}::draw_temp_group()	16
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:171:13:void mc::{anonymous}::draw_ex_item(uint8_t)	49
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:411:13:void mc::{anonymous}::apply_ex_selection(uint8_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:423:14:float mc::{anonymous}::ex_chip_step_mm(uint8_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:432:13:void mc::{anonymous}::ex_run_action(uint8_t)	27
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:538:6:void mc::mc_ui_extruder_open()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:565:16:mc::ExtruderResult mc::mc_ui_extruder_poll()	55

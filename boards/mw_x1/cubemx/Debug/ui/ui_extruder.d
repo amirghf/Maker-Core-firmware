@@ -15,6 +15,12 @@ ui/ui_extruder.o: \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/extruder.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/output_pwm.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/encoder.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/error.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/command_queue.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/gcode_parser.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/line_reader.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/motion_modes.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/machine_state.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../hal/hal_display.h
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_extruder.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_home.h:
@@ -31,4 +37,10 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Cor
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/extruder.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/output_pwm.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/encoder.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/error.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/command_queue.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/gcode_parser.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/line_reader.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/motion_modes.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../core/machine_state.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/../hal/hal_display.h:

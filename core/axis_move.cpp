@@ -5,10 +5,11 @@
 #include "planner.h"
 #include "hal_step_timer.h"
 #include "error.h"
+#include "../config/mc_config.h"
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
-volatile uint32_t mc_dbg_80_mv_arm        = 0;  // برای تست: نوشتنی. ۱ = تست حرکت مجاز است. ۰ = همه چیز غیرفعال؛ با صفر شدن، حرکت قطع و موتورها آزاد می‌شوند.
+volatile uint32_t mc_dbg_80_mv_arm        = 0;  // برای تست: نوشتنی. ۱ = حرکت مجاز است. ۰ = همه چیز غیرفعال؛ با صفر شدن، حرکت قطع و موتورها آزاد می‌شوند. مقدار اولیه بعد از بوت از MC_MOTION_ARM_AT_BOOT می‌آید.
 volatile uint32_t mc_dbg_81_mv_axis       = 0;  // برای تست: نوشتنی. محور: ۰ = X، ۱ = Y، ۲ = Z، ۳ = E.
 volatile uint32_t mc_dbg_82_mv_dir        = 0;  // برای تست: نوشتنی. جهت: ۱ = مثبت (forward)، ۰ = منفی.
 volatile uint32_t mc_dbg_83_mv_steps      = 0;  // برای تست: نوشتنی. تعداد گام حرکت.
@@ -113,7 +114,7 @@ void mc_axis_move_init() {
     for (uint8_t i = 0U; i < 4U; ++i) {
         g_pos[i] = 0;
     }
-    mc_dbg_80_mv_arm        = 0U;
+    mc_dbg_80_mv_arm        = static_cast<uint32_t>(MC_MOTION_ARM_AT_BOOT);
     mc_dbg_81_mv_axis       = 0U;
     mc_dbg_82_mv_dir        = 0U;
     mc_dbg_83_mv_steps      = 0U;
