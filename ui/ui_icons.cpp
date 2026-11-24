@@ -196,9 +196,6 @@ void mc_icon_dir_pair_h(uint16_t x, uint16_t y, uint8_t mode, uint16_t right_col
                         static_cast<int16_t>(x + 12U), static_cast<int16_t>(y + 14U),
                         static_cast<int16_t>(x + 21U), static_cast<int16_t>(y + 7U), right_col);
 }
-                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 12U),
-                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 21U), bottom_color);
-}
 
 
 // کارت SD: بدنه با گوشه بریده بالا-راست و سه شیار تماس
