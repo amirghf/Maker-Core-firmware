@@ -3,10 +3,12 @@
 #include "ui_menu.h"
 #include "ui_colors.h"
 #include "ui_icons.h"
+#include "ui_touch.h"
 #include "../core/gfx.h"
 #include "../core/text_format.h"
 #include "../core/encoder.h"
 #include "../hal/hal_display.h"
+#include "../config/mc_config.h"
 
 extern "C" {
 volatile uint32_t mc_dbg_324_menu_sel_shown   = 0;  // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
@@ -146,6 +148,7 @@ void mc_ui_menu_open_at(uint8_t item_idx) {
 
     (void)mc_encoder_take_clicks();
     (void)mc_encoder_take_press();
+    mc_ui_touch_reset();
 }
 
 void mc_ui_menu_open() {
@@ -237,8 +240,46 @@ MenuResult mc_ui_menu_poll() {
         }
     }
 
+    // ۳.۵ لمس (بند ۸.۱۶): ضربه روی ردیف = انتخاب و اینتر؛ کشیدن عمودی = اسکرول لیست
+    bool touch_enter = false;
+    {
+        const TouchGesture tg = mc_ui_touch_poll();
+        const bool in_list = (tg.y >= 46U) && (tg.y < 296U);   // ناحیه ۵ ردیف (هر ردیف ۵۰ پیکسل از y=46)
+        if ((tg.evt == TouchEvt::Tap) && in_list &&
+            mc_ui_touch_in_rect(tg.x, tg.y, 8U, 46U, 448U, 250U)) {
+            const uint8_t row  = static_cast<uint8_t>((tg.y - 46U) / 50U);
+            const uint8_t item = static_cast<uint8_t>(g_menu_first + row);
+            if (item < 8U) {
+                mc_ui_touch_accept(static_cast<uint32_t>(10U + item));
+                if (item != g_menu_sel) {
+                    apply_selection_change(item);
+                }
+                touch_enter = true;
+            }
+        } else if (((tg.evt == TouchEvt::SwipeUp) || (tg.evt == TouchEvt::SwipeDown)) && in_list) {
+            // کشیدن به بالا = لیست به آخر می‌رود (first = 3)؛ کشیدن به پایین = لیست به اول می‌رود (first = 0)
+            const uint8_t new_first = (tg.evt == TouchEvt::SwipeUp) ? 3U : 0U;
+            if (new_first != g_menu_first) {
+                g_menu_first = new_first;
+                // انتخاب باید داخل پنجره دیده‌شده بماند
+                if (g_menu_sel < g_menu_first) {
+                    g_menu_sel = g_menu_first;
+                } else if (g_menu_sel > static_cast<uint8_t>(g_menu_first + 4U)) {
+                    g_menu_sel = static_cast<uint8_t>(g_menu_first + 4U);
+                }
+                mc_dbg_324_menu_sel_shown   = g_menu_sel;
+                mc_dbg_325_menu_first_shown = g_menu_first;
+                for (uint8_t k = 0U; k < 5U; ++k) {
+                    draw_menu_row(k);
+                }
+                draw_scrollbar();
+            }
+        }
+    }
+
     // ۴. پردازش دکمه انکودر (اینتر)
-    if (mc_encoder_take_press()) {
+    const bool enc_enter = mc_encoder_take_press();
+    if (touch_enter || enc_enter) {
         if (g_menu_sel == 7U) { // BACK
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();

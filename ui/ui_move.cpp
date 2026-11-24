@@ -3,6 +3,7 @@
 #include "ui_move.h"
 #include "ui_home.h"
 #include "ui_colors.h"
+#include "ui_touch.h"
 #include "../core/gfx.h"
 #include "../core/text_format.h"
 #include "../core/machine_state.h"
@@ -256,6 +257,7 @@ void mc_ui_move_open() {
 
     (void)mc_encoder_take_clicks();
     (void)mc_encoder_take_press();
+    mc_ui_touch_reset();
 }
 
 MoveResult mc_ui_move_poll() {
@@ -337,6 +339,17 @@ MoveResult mc_ui_move_poll() {
             default:
                 g_move_step = 255U;
                 return MoveResult::Stay;
+        }
+    }
+
+    // لمس (بند ۸.۱۶): ضربه روی دکمه BACK مثل اینتر روی BACK است
+    {
+        const TouchGesture tg = mc_ui_touch_poll();
+        if ((tg.evt == TouchEvt::Tap) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 244U, 148U, 52U)) {
+            mc_ui_touch_accept(20U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MoveResult::Back;
         }
     }
 

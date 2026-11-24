@@ -12,6 +12,7 @@
 #include "ui_otg.h"
 #include "ui_about.h"
 #include "ui_tcal.h"
+#include "ui_touch.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -1435,6 +1436,7 @@ void mc_ui_poll() {
                     // بند ۸.۲: هنگام ورود به کار عادی/بازنقاشی کامل، کلیک‌ها و اینترهای قدیمی دور ریخته می‌شوند و هایلایت گزینه فعلی کشیده می‌شود
                     (void)mc_encoder_take_clicks();
                     (void)mc_encoder_take_press();
+                    mc_ui_touch_reset();
                     if (mc_dbg_319_ui_sel_shown >= 5U) {
                         mc_dbg_319_ui_sel_shown = 0U;
                     }
@@ -1476,8 +1478,40 @@ void mc_ui_poll() {
                 }
             }
 
+            // ۲.۵ لمس (بند ۸.۱۶): ضربه روی دکمه‌ها مثل رفتن هایلایت به آن گزینه و فشردن انکودر است
+            bool touch_enter = false;
+            {
+                const TouchGesture tg = mc_ui_touch_poll();
+                if (tg.evt == TouchEvt::Tap) {
+                    int32_t hit = -1;
+                    // ناحیه دکمه MENU برای لمس بزرگ‌تر از ظاهرش است (گوشه بالا راست)
+                    if (mc_ui_touch_in_rect(tg.x, tg.y, 416U, 0U, 64U, 40U)) {
+                        hit = 4;
+                    } else {
+                        for (uint8_t i = 0U; i < 4U; ++i) {
+                            if (mc_ui_touch_in_rect(tg.x, tg.y, kOptionRects[i].x, kOptionRects[i].y,
+                                                    kOptionRects[i].w, kOptionRects[i].h)) {
+                                hit = static_cast<int32_t>(i);
+                                break;
+                            }
+                        }
+                    }
+                    if (hit >= 0) {
+                        mc_ui_touch_accept(static_cast<uint32_t>(hit + 1));
+                        if (static_cast<uint32_t>(hit) != mc_dbg_319_ui_sel_shown) {
+                            draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown),
+                                                  kOptionRects[mc_dbg_319_ui_sel_shown].bg_color);
+                            mc_dbg_319_ui_sel_shown = static_cast<uint32_t>(hit);
+                            draw_option_highlight(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown), kColorWhite);
+                        }
+                        touch_enter = true;
+                    }
+                }
+            }
+
             // ۳. خواندن فشردن دکمه انکودر (اینتر)
-            if (mc_encoder_take_press()) {
+            const bool enc_enter = mc_encoder_take_press();
+            if (touch_enter || enc_enter) {
                 mc_dbg_320_ui_enter_cnt = mc_dbg_320_ui_enter_cnt + 1U;
                 mc_dbg_321_ui_enter_idx = mc_dbg_319_ui_sel_shown;
                 if (mc_dbg_319_ui_sel_shown == 4U) { // اینتر روی گزینه منو

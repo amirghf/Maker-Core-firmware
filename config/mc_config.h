@@ -199,6 +199,10 @@
 #define MC_TOUCH_CAL_RELEASE_MS         300     // کمترین مکث بعد از رها شدن انگشت بین دو نقطه (میلی‌ثانیه)
 #define MC_TOUCH_CAL_MAX_RETRY          3       // حداکثر تکرار خودکار بعد از شکست محاسبه
 #define MC_TOUCH_TEST_MS                20000   // مدت صفحه آزمون (میلی‌ثانیه)
+#define MC_UI_TOUCH_BEEP_MS             40      // طول بوق ضربه لمس (میلی‌ثانیه)
+#define MC_UI_TOUCH_TAP_SLOP_PX         14      // بیشترین جابه‌جایی انگشت (پیکسل) تا حرکت هنوز «ضربه» حساب شود
+#define MC_UI_TOUCH_SWIPE_MIN_PX        40      // کمترین جابه‌جایی عمودی (پیکسل) تا حرکت «کشیدن» حساب شود
+#define MC_UI_TOUCH_HIT_MARGIN_PX       4       // حاشیه اضافه دور هر دکمه برای راحت‌تر زدن با انگشت (پیکسل)
 
 
 

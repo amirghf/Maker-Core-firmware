@@ -36,6 +36,12 @@ uint16_t g_last_pos_x        = 0U;
 uint16_t g_last_pos_y        = 0U;
 bool     g_pos_valid         = false;
 
+bool     g_press_pos_wait  = false;   // منتظر اولین مختصات معتبر بعد از فشردن
+bool     g_press_pos_valid = false;   // مختصات لحظه فشردن آماده است
+uint16_t g_press_x         = 0U;
+uint16_t g_press_y         = 0U;
+bool     g_last_pos_ever   = false;   // دست‌کم یک‌بار مختصات معتبر داشته‌ایم
+
 uint32_t g_down_cnt          = 0U;
 uint32_t g_up_cnt            = 0U;
 
@@ -51,6 +57,9 @@ void mc_touchin_init() {
     g_up_confirm_cnt   = 0U;
     g_has_prev_raw     = false;
     g_pos_valid        = false;
+    g_press_pos_wait  = false;
+    g_press_pos_valid = false;
+    g_last_pos_ever   = false;
     g_down_cnt         = 0U;
     g_up_cnt           = 0U;
 
@@ -95,6 +104,8 @@ void mc_touchin_poll() {
             if (!g_is_down) {
                 g_is_down = true;
                 g_pending_down = true;
+                g_press_pos_wait  = true;
+                g_press_pos_valid = false;
                 g_down_cnt = g_down_cnt + 1U;
                 mc_dbg_372_touch_down_cnt = g_down_cnt;
             }
@@ -106,6 +117,13 @@ void mc_touchin_poll() {
                 g_last_pos_x = px;
                 g_last_pos_y = py;
                 g_pos_valid  = true;
+                g_last_pos_ever = true;
+                if (g_press_pos_wait) {
+                    g_press_x         = px;
+                    g_press_y         = py;
+                    g_press_pos_valid = true;
+                    g_press_pos_wait  = false;
+                }
             } else {
                 g_pos_valid  = false;
             }
@@ -170,6 +188,20 @@ bool mc_touchin_take_up() {
         return true;
     }
     return false;
+}
+
+bool mc_touchin_press_pos(uint16_t* x, uint16_t* y) {
+    if ((!g_press_pos_valid) || (x == nullptr) || (y == nullptr)) { return false; }
+    *x = g_press_x;
+    *y = g_press_y;
+    return true;
+}
+
+bool mc_touchin_last_pos(uint16_t* x, uint16_t* y) {
+    if ((!g_last_pos_ever) || (x == nullptr) || (y == nullptr)) { return false; }
+    *x = g_last_pos_x;
+    *y = g_last_pos_y;
+    return true;
 }
 
 }  // namespace mc

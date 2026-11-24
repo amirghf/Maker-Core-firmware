@@ -3,6 +3,7 @@
 #include "ui_extruder.h"
 #include "ui_home.h"
 #include "ui_colors.h"
+#include "ui_touch.h"
 #include "../core/gfx.h"
 #include "../core/text_format.h"
 #include "../core/thermistor.h"
@@ -432,6 +433,7 @@ void mc_ui_extruder_open() {
 
     (void)mc_encoder_take_clicks();
     (void)mc_encoder_take_press();
+    mc_ui_touch_reset();
 }
 
 ExtruderResult mc_ui_extruder_poll() {
@@ -510,6 +512,17 @@ ExtruderResult mc_ui_extruder_poll() {
             default:
                 g_ex_step = 255U;
                 return ExtruderResult::Stay;
+        }
+    }
+
+    // لمس (بند ۸.۱۶): ضربه روی دکمه BACK مثل اینتر روی BACK است
+    {
+        const TouchGesture tg = mc_ui_touch_poll();
+        if ((tg.evt == TouchEvt::Tap) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
+            mc_ui_touch_accept(20U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return ExtruderResult::Back;
         }
     }
 

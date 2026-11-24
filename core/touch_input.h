@@ -44,5 +44,11 @@ bool mc_touchin_take_down();
 // رویداد رها شدن (یک‌بار مصرف، بافر صفر می‌شود)
 bool mc_touchin_take_up();
 
+// مختصات پیکسل لحظه فشردن (اولین نقطه معتبر بعد از تأیید فشردن). false اگر هنوز نیست.
+bool mc_touchin_press_pos(uint16_t* x, uint16_t* y);
+
+// آخرین مختصات پیکسل معتبر (حتی بعد از رها شدن انگشت). false اگر هیچ‌وقت معتبر نبوده.
+bool mc_touchin_last_pos(uint16_t* x, uint16_t* y);
+
 }  // namespace mc
 #endif
