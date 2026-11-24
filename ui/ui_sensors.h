@@ -14,6 +14,13 @@ extern volatile uint32_t mc_dbg_346_sen_enter_idx;   // خواندنی: اندی
 extern volatile uint32_t mc_dbg_347_sen_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه سنسورها؛ ۲ = برگشت به منو؛ ۳ تا ۷ = فوکوس روی مورد (مقدار - ۳)
 extern volatile uint32_t mc_dbg_348_sen_fake;        // نوشتنی: حالت ساختگی ظاهر صفحه سنسورها، بیت‌ها طبق بند پ-۱۲ (بیت ۷ = فعال‌سازی)
 
+// متغیرهای دیباگ عملکردهای صفحه سنسورها (بند ۸.۱۶)
+extern volatile uint32_t mc_dbg_401_sen_act_cnt;         // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+extern volatile uint32_t mc_dbg_402_sen_act_last;        // خواندنی: اندیس آخرین دکمه موفق (0 = DEPLOY، 1 = STOW، 2 = TEST، 3 = ALM CLR؛ 255 = هنوز نشده)
+extern volatile uint32_t mc_dbg_403_sen_act_refused;     // خواندنی: تعداد دفعاتی که دکمه رد شد
+extern volatile uint32_t mc_dbg_404_sen_act_en;          // نوشتنی: 0 = دکمه‌ها هیچ کاری نمی‌کنند (پیش‌فرض 1)
+extern volatile uint32_t mc_dbg_405_sen_refuse_reason;   // خواندنی: علت آخرین رد شدن
+
 #ifdef __cplusplus
 }
 

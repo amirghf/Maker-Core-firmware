@@ -8,17 +8,31 @@
 #include "../core/text_format.h"
 #include "../core/endstop.h"
 #include "../core/bltouch.h"
+#include "../core/error.h"
+#include "../core/command_queue.h"
+#include "../core/gcode_parser.h"
+#include "../core/machine_state.h"
+#include "../gcode/gcode_dispatch.h"
 #include "../hal/hal_gpio.h"
 #include "../core/encoder.h"
 #include "../hal/hal_display.h"
+#include "../hal/hal_buzzer.h"
+#include "../hal/hal_time.h"
 #include "../config/mc_config.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_344_sen_sel_shown = 4;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۴)
-volatile uint32_t mc_dbg_345_sen_enter_cnt = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
-volatile uint32_t mc_dbg_346_sen_enter_idx = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_347_sen_force     = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه سنسورها؛ ۲ = برگشت به منو؛ ۳ تا ۷ = فوکوس روی مورد (مقدار - ۳)
-volatile uint32_t mc_dbg_348_sen_fake      = 0;   // نوشتنی: حالت ساختگی ظاهر صفحه سنسورها
+extern volatile uint32_t mc_dbg_297_ui_fake_on;
+
+volatile uint32_t mc_dbg_344_sen_sel_shown     = 4;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۴)
+volatile uint32_t mc_dbg_345_sen_enter_cnt     = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
+volatile uint32_t mc_dbg_346_sen_enter_idx     = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
+volatile uint32_t mc_dbg_347_sen_force         = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه سنسورها؛ ۲ = برگشت به منو؛ ۳ تا ۷ = فوکوس روی مورد (مقدار - ۳)
+volatile uint32_t mc_dbg_348_sen_fake          = 0;   // نوشتنی: حالت ساختگی ظاهر صفحه سنسورها
+volatile uint32_t mc_dbg_401_sen_act_cnt       = 0;   // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+volatile uint32_t mc_dbg_402_sen_act_last      = 255; // خواندنی: اندیس آخرین دکمه موفق (0 = DEPLOY، 1 = STOW، 2 = TEST، 3 = ALM CLR؛ 255 = هنوز نشده)
+volatile uint32_t mc_dbg_403_sen_act_refused   = 0;   // خواندنی: تعداد دفعاتی که دکمه رد شد
+volatile uint32_t mc_dbg_404_sen_act_en        = 1;   // نوشتنی: 0 = دکمه‌ها هیچ کاری نمی‌کنند (پیش‌فرض 1)
+volatile uint32_t mc_dbg_405_sen_refuse_reason = 0;   // خواندنی: علت آخرین رد شدن
 }
 
 namespace mc {
@@ -38,6 +52,9 @@ static bool    g_cached_endstop_hit[3] = { false, false, false };
 static bool    g_cached_bltouch_busy   = false;
 static uint8_t g_cached_bltouch_pin    = 255U;
 static bool    g_cached_fil_empty      = false;
+
+static bool     g_msg_shown    = false;   // پیام علت رد شدن به‌جای عنوان نوار بالا
+static uint32_t g_msg_start_ms = 0U;      // زمان شروع نمایش پیام
 
 static void draw_dot(uint16_t cx, uint16_t cy, uint16_t color) {
     mc_gfx_fill_rect(static_cast<uint16_t>(cx - 2U), static_cast<uint16_t>(cy - 4U), 5U, 9U, color);
@@ -259,12 +276,107 @@ static void apply_sen_selection(uint8_t target_sel) {
     }
 }
 
+// بند ۸.۱۶: پیام علت رد شدن به‌جای عنوان نوار بالا و بوق بلند
+static void sen_refuse_feedback(uint32_t reason) {
+    const char* txt = "REFUSED";
+    switch (reason) {
+        case 2U: txt = "KILLED";             break;
+        case 3U: txt = "FAKE MODE ON";       break;
+        case 4U: txt = "BUTTONS DISABLED";   break;
+        case 7U: txt = "WAIT: JOB RUNNING";  break;
+        case 8U: txt = "QUEUE ERROR";        break;
+        default: break;
+    }
+    mc_gfx_fill_rect(0U, 0U, 480U, 36U, kTopBarBg);
+    const uint16_t tw = mc_gfx_text_width(txt, 2U);
+    const uint16_t tx = static_cast<uint16_t>((480U - tw) / 2U);
+    mc_gfx_text(tx, 10U, txt, kWarn, kTopBarBg, 2U);
+    g_msg_shown    = true;
+    g_msg_start_ms = mc_millis();
+    mc_buzzer_click(MC_UI_REFUSE_BEEP_MS);   // غیرمسدودکننده؛ بوق کوتاه لمس یا انکودر را با بوق بلند عوض می‌کند
+}
+
+// بعد از MC_UI_SEN_MSG_MS میلی‌ثانیه عنوان SENSORS را برمی‌گرداند
+static void sen_msg_poll() {
+    if (g_msg_shown && ((mc_millis() - g_msg_start_ms) >= static_cast<uint32_t>(MC_UI_SEN_MSG_MS))) {
+        mc_gfx_fill_rect(0U, 0U, 480U, 36U, kTopBarBg);
+        const uint16_t tw = mc_gfx_text_width("SENSORS", 2U);
+        const uint16_t tx = static_cast<uint16_t>((480U - tw) / 2U);
+        mc_gfx_text(tx, 10U, "SENSORS", kColorWhite, kTopBarBg, 2U);
+        g_msg_shown = false;
+    }
+}
+
+static void sen_note_refuse(uint32_t reason) {
+    mc_dbg_403_sen_act_refused   = mc_dbg_403_sen_act_refused + 1U;
+    mc_dbg_405_sen_refuse_reason = reason;
+    sen_refuse_feedback(reason);
+}
+
+static void sen_note_ok(uint8_t item_idx) {
+    mc_dbg_401_sen_act_cnt       = mc_dbg_401_sen_act_cnt + 1U;
+    mc_dbg_402_sen_act_last      = item_idx;
+    mc_dbg_405_sen_refuse_reason = 0U;
+}
+
+static bool sen_push_line(const char* line) {
+    static GcodeCommand cmd;
+    if (mc_gcode_parse(line, cmd) != GcodeResult::Ok) { return false; }
+    return mc_cmdq_push(cmd);
+}
+
+static bool sen_job_busy() {
+    return (!mc_cmdq_empty()) || mc_dispatch_busy() || mc_motion_busy() || mc_bltouch_busy();
+}
+
+static void sen_run_action(uint8_t item_idx) {
+    if (item_idx > 3U) { return; }
+
+    // شرط‌های رد شدن به ترتیب
+    if (mc_is_killed()) {
+        sen_note_refuse(2U);
+        return;
+    }
+    if ((mc_dbg_297_ui_fake_on != 0U) || ((mc_dbg_348_sen_fake & 0x80U) != 0U)) {
+        sen_note_refuse(3U);
+        return;
+    }
+    if (mc_dbg_404_sen_act_en == 0U) {
+        sen_note_refuse(4U);
+        return;
+    }
+    if (sen_job_busy()) {
+        sen_note_refuse(7U);
+        return;
+    }
+
+    const char* line = nullptr;
+    if (item_idx == 0U) {
+        line = "M401";
+    } else if (item_idx == 1U) {
+        line = "M402";
+    } else if (item_idx == 2U) {
+        line = "M280 P0 S120";
+    } else if (item_idx == 3U) {
+        line = "M280 P0 S160";
+    }
+
+    if ((line == nullptr) || (!sen_push_line(line))) {
+        sen_note_refuse(8U);
+        return;
+    }
+
+    sen_note_ok(item_idx);
+}
+
 }  // namespace
 
 void mc_ui_sensors_open() {
     g_sen_sel        = 4U; // فوکوس اولیه روی BACK (اندیس ۴)
     g_sen_step       = 0U;
     g_sen_live_cycle = 0U;
+    g_msg_shown      = false;
+    g_msg_start_ms   = 0U;
 
     g_cached_endstop_hit[0] = false;
     g_cached_endstop_hit[1] = false;
@@ -290,6 +402,11 @@ SensorsResult mc_ui_sensors_poll() {
     (void)mc_dbg_346_sen_enter_idx;
     (void)mc_dbg_347_sen_force;
     (void)mc_dbg_348_sen_fake;
+    (void)mc_dbg_401_sen_act_cnt;
+    (void)mc_dbg_402_sen_act_last;
+    (void)mc_dbg_403_sen_act_refused;
+    (void)mc_dbg_404_sen_act_en;
+    (void)mc_dbg_405_sen_refuse_reason;
 
     if (mc_dbg_347_sen_force != 0U) {
         const uint32_t force_val = mc_dbg_347_sen_force;
@@ -356,14 +473,36 @@ SensorsResult mc_ui_sensors_poll() {
         }
     }
 
-    // لمس (بند ۸.۱۶): ضربه روی دکمه BACK مثل اینتر روی BACK است
+    bool touch_enter = false;
+    // لمس (بند ۸.۱۶): ضربه روی دکمه‌های صفحه سنسورها
     {
         const TouchGesture tg = mc_ui_touch_poll();
-        if ((tg.evt == TouchEvt::Tap) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
-            mc_ui_touch_accept(20U);
-            (void)mc_encoder_take_clicks();
-            (void)mc_encoder_take_press();
-            return SensorsResult::Back;
+        if (tg.evt == TouchEvt::Tap) {
+            if (mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
+                mc_ui_touch_accept(20U);
+                (void)mc_encoder_take_clicks();
+                (void)mc_encoder_take_press();
+                return SensorsResult::Back;
+            }
+
+            int32_t hit = -1;   // اندیس دکمه عملیاتی (0 تا 3)
+            if (mc_ui_touch_in_rect(tg.x, tg.y, 8U, 128U, 110U, 40U)) {
+                hit = 0;   // DEPLOY
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 126U, 128U, 110U, 40U)) {
+                hit = 1;   // STOW
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 244U, 128U, 110U, 40U)) {
+                hit = 2;   // TEST
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 362U, 128U, 110U, 40U)) {
+                hit = 3;   // ALM CLR
+            }
+
+            if (hit >= 0) {
+                mc_ui_touch_accept(static_cast<uint32_t>(70 + hit));
+                if (static_cast<uint8_t>(hit) != g_sen_sel) {
+                    apply_sen_selection(static_cast<uint8_t>(hit));
+                }
+                touch_enter = true;
+            }
         }
     }
 
@@ -382,7 +521,8 @@ SensorsResult mc_ui_sensors_poll() {
         }
     }
 
-    if (mc_encoder_take_press()) {
+    const bool enc_enter = mc_encoder_take_press();
+    if (touch_enter || enc_enter) {
         if (g_sen_sel == 4U) { // BACK
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
@@ -390,8 +530,11 @@ SensorsResult mc_ui_sensors_poll() {
         } else {
             mc_dbg_345_sen_enter_cnt = mc_dbg_345_sen_enter_cnt + 1U;
             mc_dbg_346_sen_enter_idx = g_sen_sel;
+            sen_run_action(g_sen_sel);
         }
     }
+
+    sen_msg_poll();
 
     const uint8_t cycle = g_sen_live_cycle;
     g_sen_live_cycle = static_cast<uint8_t>((g_sen_live_cycle + 1U) % 5U);
