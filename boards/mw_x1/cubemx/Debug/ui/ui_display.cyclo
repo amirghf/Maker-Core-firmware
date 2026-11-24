@@ -1,0 +1,15 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:59:10:uint16_t mc::{anonymous}::row_y(uint8_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:64:9:uint8_t mc::{anonymous}::nearest_index(const uint32_t*, uint32_t)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:72:6:void mc::{anonymous}::draw_top_bar()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:81:6:void mc::{anonymous}::draw_step_button(uint16_t, uint16_t, const char*, bool)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:91:6:void mc::{anonymous}::draw_row(uint8_t)	8
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:111:6:void mc::{anonymous}::draw_back_button()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:127:6:void mc::{anonymous}::draw_hint()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:135:6:void mc::{anonymous}::draw_item(uint8_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:144:6:void mc::{anonymous}::request_save_now()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:151:6:void mc::{anonymous}::set_focus(uint8_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:163:6:bool mc::{anonymous}::change_value(uint8_t, int32_t)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:179:6:void mc::mc_ui_display_open()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:194:15:mc::DisplayResult mc::mc_ui_display_poll()	24
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_display.cpp:309:6:void mc::mc_ui_display_bg_poll()	7

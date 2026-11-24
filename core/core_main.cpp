@@ -42,6 +42,7 @@
 #include "bltouch.h"
 #include "probe.h"
 #include "filament_sensor.h"
+#include "filament_change.h"
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
@@ -364,9 +365,14 @@ void task_cmd_intake() {
     const GcodeResult r = mc_gcode_parse(cmd_text, cmd);
     mc_dbg_gc_result = static_cast<uint32_t>(r);
     if (r == GcodeResult::Ok) {
-        if (!mc_cmdq_push(cmd)) {
-            mc_log(LogLevel::Error, "command queue push failed");
-            mc_reply_error("Command queue full");
+        if ((cmd.letter == 'M') && (cmd.number == 108U) && (cmd.sub == -1) && mc_filchg_waiting_user()) {
+            mc_filchg_resume_request(3U);
+            mc_reply_ok();
+        } else {
+            if (!mc_cmdq_push(cmd)) {
+                mc_log(LogLevel::Error, "command queue push failed");
+                mc_reply_error("Command queue full");
+            }
         }
     } else if (r == GcodeResult::Empty) {
         mc_reply_ok();   // خط فقط کامنت بود: کامپیوتر هم ok می‌خواهد
@@ -401,6 +407,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_homing_init();   // بند ۶.۳
     mc::mc_bltouch_init();   // بند ۶.۵
     mc::mc_filament_init();  // بند ۸.۱۶.۴: سنسور فیلامنت
+    mc::mc_filchg_init();    // بند ۹.۱: تعویض فیلامنت
     mc::mc_probe_init();   // بند ۶.۶
     mc::mc_eeprom_init();   // بند ۷.۱
     mc::mc_settings_init();   // بند ۷.۲
@@ -450,6 +457,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_homing_poll, 100U);   // بند ۶.۳: متغیرهای debug هومینگ
     mc::g_main.add(mc::mc_bltouch_poll, mc::kBltouchPeriodMs);   // بند ۶.۵: BLTouch و متغیرهای debug
     mc::g_main.add(mc::mc_filament_poll, 10U);   // بند ۸.۱۶.۴: سنسور فیلامنت
+    mc::g_main.add(mc::mc_filchg_poll, 100U);   // بند ۹.۱: تعویض فیلامنت
     mc::g_main.add(mc::mc_probe_poll, 100U);   // بند ۶.۶: G30 و متغیرهای debug
     mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_settings_poll, mc::kSettingsPollMs);   // بند ۷.۲: ذخیره‌سازی سخت‌دار

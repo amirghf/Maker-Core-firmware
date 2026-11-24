@@ -36,5 +36,8 @@ bool mc_ui_screen_poll(bool can_sleep, bool can_exit);
 // آیا نمایشگر الان خاموش است؟
 bool mc_ui_screen_is_asleep();
 
+// روشن‌کردن صریح نمایشگر (بند ۹.۱)
+void mc_ui_screen_wake();
+
 }  // namespace mc
 #endif

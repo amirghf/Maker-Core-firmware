@@ -10,6 +10,7 @@
 #include "probe.h"
 #include "temp_wait.h"
 #include "pid_autotune.h"
+#include "filament_change.h"
 #include "heater_ex.h"
 #include "heater_bed.h"
 #include "output_pwm.h"
@@ -38,6 +39,7 @@ void mc_quick_stop() {
     mc_probe_init();
     mc_temp_wait_abort();
     mc_autotune_release();
+    mc_filchg_abort();
 
     // ۵) خاموش‌کردن هیترها و فن و غیرفعال‌کردن موتورها
     (void)mc_heater_ex_set_target_x10(0);

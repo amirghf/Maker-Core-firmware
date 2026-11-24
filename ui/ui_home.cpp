@@ -12,6 +12,7 @@
 #include "ui_otg.h"
 #include "ui_about.h"
 #include "ui_display.h"
+#include "ui_filchg.h"
 #include "ui_tcal.h"
 #include "ui_touch.h"
 #include "ui_screen.h"
@@ -20,6 +21,7 @@
 #include "../core/text_format.h"
 #include "../core/thermistor.h"
 #include "../core/heater_ex.h"
+#include "../core/filament_change.h"
 #include "../core/heater_bed.h"
 #include "../core/machine_state.h"
 #include "../core/output_pwm.h"
@@ -66,7 +68,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL، 10 = DISPLAY
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL، 10 = DISPLAY، 11 = FILAMENT CHANGE
 volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
 volatile uint32_t mc_dbg_409_home_act_en        = 1;  // نوشتنی: 0 = دکمه‌های START و PAUSE و STOP و RESET هیچ کاری نمی‌کنند (پیش‌فرض 1)
 volatile uint32_t mc_dbg_410_home_act_cnt       = 0;  // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
@@ -1313,6 +1315,23 @@ void mc_ui_poll() {
     // بند ۸.۲۱: تازه‌سازی متغیرهای نمایشی و انجام ذخیره‌های معلق تنظیمات نمایشگر
     mc_ui_display_bg_poll();
 
+    // بند ۹.۱: مدیریت صفحه FILAMENT CHANGE (صفحه ۱۱)
+    if (mc_filchg_active()) {
+        if ((mc_dbg_323_ui_page != 11U) && (mc_dbg_323_ui_page != 9U)) {
+            mc_ui_screen_wake();
+            mc_dbg_323_ui_page = 11U;
+            mc_ui_filchg_open();
+        }
+    } else {
+        if (mc_dbg_323_ui_page == 11U) {
+            mc_dbg_323_ui_page = 0U;
+            if (mc_dbg_294_ui_state != 5U) {
+                g_static_frame_step = 0U;
+                mc_dbg_294_ui_state = 3U;   // بازنقاشی کامل صفحه اصلی
+            }
+        }
+    }
+
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
         mc_dbg_293_ui_request = 0U;
@@ -1506,6 +1525,17 @@ void mc_ui_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
         }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه FILAMENT CHANGE باشد (۱۱) (بند ۹.۱)
+    if (mc_dbg_323_ui_page == 11U) {
+        const FilChgUiResult fc_res = mc_ui_filchg_poll();
+        (void)fc_res;
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
             mc_dbg_296_ui_max_tick_us = elapsed_us;

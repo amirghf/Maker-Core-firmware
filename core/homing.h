@@ -11,6 +11,8 @@ namespace mc {
 void mc_homing_init();
 // وظیفه زمان‌بند (هر ۱۰۰ میلی‌ثانیه): متغیرهای debug را به‌روز می‌کند.
 void mc_homing_poll();
+// ماسک محورهای هوم‌شده (بیت ۰ = X، ۱ = Y، ۲ = Z)
+uint8_t mc_homing_homed_mask();
 // اجرای G28. تا پایان کار Busy برمی‌گرداند و منتظر نمی‌ماند.
 GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call);
 

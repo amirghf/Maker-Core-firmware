@@ -142,4 +142,13 @@ bool mc_ui_screen_is_asleep() {
     return g_asleep;
 }
 
+void mc_ui_screen_wake() {
+    if (g_asleep) {
+        wake_up(0U, false);
+    } else {
+        mc_display_backlight(true);
+        g_last_active_ms = mc_millis();
+    }
+}
+
 }  // namespace mc

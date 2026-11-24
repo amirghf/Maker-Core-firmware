@@ -427,6 +427,10 @@ void mc_homing_poll() {
     mc_dbg_210_hm_homed_mask = g_homed;
 }
 
+uint8_t mc_homing_homed_mask() {
+    return g_homed;
+}
+
 GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
     if (first_call) {
         g = Ctx{};
