@@ -1,6 +1,6 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:46:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:52:13:void mc::{anonymous}::draw_temp_group()	112	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:157:13:void mc::{anonymous}::draw_ex_item(uint8_t)	232	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:397:13:void mc::{anonymous}::apply_ex_selection(uint8_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:411:6:void mc::mc_ui_extruder_open()	8	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:437:16:mc::ExtruderResult mc::mc_ui_extruder_poll()	64	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:47:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:53:13:void mc::{anonymous}::draw_temp_group()	112	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:158:13:void mc::{anonymous}::draw_ex_item(uint8_t)	232	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:398:13:void mc::{anonymous}::apply_ex_selection(uint8_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:412:6:void mc::mc_ui_extruder_open()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_extruder.cpp:439:16:mc::ExtruderResult mc::mc_ui_extruder_poll()	72	static

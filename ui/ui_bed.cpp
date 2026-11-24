@@ -9,14 +9,20 @@
 #include "../core/thermistor.h"
 #include "../core/heater_bed.h"
 #include "../core/encoder.h"
+#include "../core/error.h"
 #include "../hal/hal_display.h"
 #include "../config/mc_config.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_340_bed_sel_shown = 3;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۳)
-volatile uint32_t mc_dbg_341_bed_enter_cnt = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
-volatile uint32_t mc_dbg_342_bed_enter_idx = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_343_bed_force     = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه داغ؛ ۲ = برگشت به منو؛ ۳ تا ۶ = فوکوس روی مورد (مقدار - ۳)
+volatile uint32_t mc_dbg_340_bed_sel_shown      = 3;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۳)
+volatile uint32_t mc_dbg_341_bed_enter_cnt      = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK
+volatile uint32_t mc_dbg_342_bed_enter_idx      = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
+volatile uint32_t mc_dbg_343_bed_force          = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه داغ؛ ۲ = برگشت به منو؛ ۳ تا ۶ = فوکوس روی مورد (مقدار - ۳)
+volatile uint32_t mc_dbg_384_bed_act_cnt        = 0;   // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً هدف هیتر بستر را عوض کردند
+volatile uint32_t mc_dbg_385_bed_act_last_c     = 0;   // خواندنی: آخرین هدف (درجه سانتی‌گراد) که دکمه‌ها گذاشتند
+volatile uint32_t mc_dbg_386_bed_act_refused    = 0;   // خواندنی: تعداد دفعاتی که دکمه به‌خاطر شرط ایمنی رد شد
+volatile uint32_t mc_dbg_387_bed_act_en         = 1;   // نوشتنی: 0 = دکمه‌ها هیتر را عوض نمی‌کنند (پیش‌فرض 1)
+volatile uint32_t mc_dbg_388_bed_refuse_reason  = 0;   // خواندنی: علت آخرین رد شدن
 }
 
 namespace mc {
@@ -268,6 +274,49 @@ static void apply_bed_selection(uint8_t target_sel) {
     }
 }
 
+static void bed_run_action(uint8_t item_idx) {
+    if (item_idx >= 3U) { return; }
+
+    // ۱) بررسی شرط‌های رد شدن به ترتیب
+    if (mc_heater_bed_test_mode()) {
+        mc_dbg_386_bed_act_refused = mc_dbg_386_bed_act_refused + 1U;
+        mc_dbg_388_bed_refuse_reason = 1U;
+        return;
+    }
+    if (mc_is_killed()) {
+        mc_dbg_386_bed_act_refused = mc_dbg_386_bed_act_refused + 1U;
+        mc_dbg_388_bed_refuse_reason = 2U;
+        return;
+    }
+    if (mc_dbg_297_ui_fake_on != 0U) {
+        mc_dbg_386_bed_act_refused = mc_dbg_386_bed_act_refused + 1U;
+        mc_dbg_388_bed_refuse_reason = 3U;
+        return;
+    }
+    if (mc_dbg_387_bed_act_en == 0U) {
+        mc_dbg_386_bed_act_refused = mc_dbg_386_bed_act_refused + 1U;
+        mc_dbg_388_bed_refuse_reason = 4U;
+        return;
+    }
+
+    // ۲) اگر هیچ شرطی برقرار نبود، هدف اعمال می‌شود
+    int32_t want_c = 0;
+    if (item_idx == 0U) {
+        want_c = MC_UI_BED_PRESET_1_C;
+    } else if (item_idx == 1U) {
+        want_c = MC_UI_BED_PRESET_2_C;
+    } else {
+        want_c = 0;
+    }
+
+    const int32_t got_x10 = mc_heater_bed_set_target_x10(want_c * 10);
+    const uint32_t got_c  = static_cast<uint32_t>(got_x10 / 10);
+
+    mc_dbg_384_bed_act_cnt       = mc_dbg_384_bed_act_cnt + 1U;
+    mc_dbg_385_bed_act_last_c    = got_c;
+    mc_dbg_388_bed_refuse_reason = 0U;
+}
+
 }  // namespace
 
 void mc_ui_bed_open() {
@@ -298,6 +347,11 @@ BedResult mc_ui_bed_poll() {
     (void)mc_dbg_341_bed_enter_cnt;
     (void)mc_dbg_342_bed_enter_idx;
     (void)mc_dbg_343_bed_force;
+    (void)mc_dbg_384_bed_act_cnt;
+    (void)mc_dbg_385_bed_act_last_c;
+    (void)mc_dbg_386_bed_act_refused;
+    (void)mc_dbg_387_bed_act_en;
+    (void)mc_dbg_388_bed_refuse_reason;
 
     if (mc_dbg_343_bed_force != 0U) {
         const uint32_t force_val = mc_dbg_343_bed_force;
@@ -355,14 +409,34 @@ BedResult mc_ui_bed_poll() {
         }
     }
 
-    // لمس (بند ۸.۱۶): ضربه روی دکمه BACK مثل اینتر روی BACK است
+    bool touch_enter = false;
+    // لمس (بند ۸.۱۶): ضربه روی دکمه‌های عملیاتی و دکمه BACK
     {
         const TouchGesture tg = mc_ui_touch_poll();
-        if ((tg.evt == TouchEvt::Tap) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
-            mc_ui_touch_accept(20U);
-            (void)mc_encoder_take_clicks();
-            (void)mc_encoder_take_press();
-            return BedResult::Back;
+        if (tg.evt == TouchEvt::Tap) {
+            static const struct {
+                uint16_t x; uint16_t y; uint16_t w; uint16_t h;
+            } kBedRects[3] = {
+                { 8U,   130U, 150U, 56U },  // 0: HEAT 1
+                { 166U, 130U, 150U, 56U },  // 1: HEAT 2
+                { 324U, 130U, 148U, 56U }   // 2: COOL
+            };
+            for (uint8_t i = 0U; i < 3U; ++i) {
+                if (mc_ui_touch_in_rect(tg.x, tg.y, kBedRects[i].x, kBedRects[i].y, kBedRects[i].w, kBedRects[i].h)) {
+                    mc_ui_touch_accept(static_cast<uint32_t>(30U + i));
+                    if (i != g_bed_sel) {
+                        apply_bed_selection(i);
+                    }
+                    touch_enter = true;
+                    break;
+                }
+            }
+            if ((!touch_enter) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
+                mc_ui_touch_accept(20U);
+                (void)mc_encoder_take_clicks();
+                (void)mc_encoder_take_press();
+                return BedResult::Back;
+            }
         }
     }
 
@@ -381,7 +455,8 @@ BedResult mc_ui_bed_poll() {
         }
     }
 
-    if (mc_encoder_take_press()) {
+    const bool enc_enter = mc_encoder_take_press();
+    if (touch_enter || enc_enter) {
         if (g_bed_sel == 3U) { // BACK
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
@@ -389,6 +464,7 @@ BedResult mc_ui_bed_poll() {
         } else {
             mc_dbg_341_bed_enter_cnt = mc_dbg_341_bed_enter_cnt + 1U;
             mc_dbg_342_bed_enter_idx = g_bed_sel;
+            bed_run_action(g_bed_sel);
         }
     }
 

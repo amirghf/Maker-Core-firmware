@@ -13,6 +13,13 @@ extern volatile uint32_t mc_dbg_341_bed_enter_cnt;   // خواندنی: تعدا
 extern volatile uint32_t mc_dbg_342_bed_enter_idx;   // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
 extern volatile uint32_t mc_dbg_343_bed_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه داغ؛ ۲ = برگشت به منو؛ ۳ تا ۶ = فوکوس روی مورد (مقدار - ۳)
 
+// متغیرهای دیباگ عملکردهای صفحه داغ (بند ۸.۱۶)
+extern volatile uint32_t mc_dbg_384_bed_act_cnt;        // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً هدف هیتر بستر را عوض کردند
+extern volatile uint32_t mc_dbg_385_bed_act_last_c;     // خواندنی: آخرین هدف (درجه سانتی‌گراد) که دکمه‌ها گذاشتند
+extern volatile uint32_t mc_dbg_386_bed_act_refused;    // خواندنی: تعداد دفعاتی که دکمه به‌خاطر شرط ایمنی رد شد
+extern volatile uint32_t mc_dbg_387_bed_act_en;         // نوشتنی: 0 = دکمه‌ها هیتر را عوض نمی‌کنند (پیش‌فرض 1)
+extern volatile uint32_t mc_dbg_388_bed_refuse_reason;  // خواندنی: علت آخرین رد شدن (0 = ندارد، 1 = حالت تست هیتر، 2 = kill، 3 = حالت fake روشن، 4 = کلید 387 صفر)
+
 #ifdef __cplusplus
 }
 

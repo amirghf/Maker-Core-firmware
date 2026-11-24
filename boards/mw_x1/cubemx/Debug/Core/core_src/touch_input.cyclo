@@ -1,7 +1,9 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:44:6:void mc::mc_touchin_init()	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:66:6:void mc::mc_touchin_poll()	13
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:141:6:bool mc::mc_touchin_is_down()	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:145:6:bool mc::mc_touchin_raw(uint16_t*, uint16_t*)	4
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:152:6:bool mc::mc_touchin_pos(uint16_t*, uint16_t*)	5
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:159:6:bool mc::mc_touchin_take_down()	2
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:167:6:bool mc::mc_touchin_take_up()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:50:6:void mc::mc_touchin_init()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:75:6:void mc::mc_touchin_poll()	14
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:159:6:bool mc::mc_touchin_is_down()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:163:6:bool mc::mc_touchin_raw(uint16_t*, uint16_t*)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:170:6:bool mc::mc_touchin_pos(uint16_t*, uint16_t*)	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:177:6:bool mc::mc_touchin_take_down()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:185:6:bool mc::mc_touchin_take_up()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:193:6:bool mc::mc_touchin_press_pos(uint16_t*, uint16_t*)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/touch_input.cpp:200:6:bool mc::mc_touchin_last_pos(uint16_t*, uint16_t*)	4

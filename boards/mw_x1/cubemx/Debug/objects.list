@@ -180,3 +180,4 @@
 "./ui/ui_sd.o"
 "./ui/ui_sensors.o"
 "./ui/ui_tcal.o"
+"./ui/ui_touch.o"
