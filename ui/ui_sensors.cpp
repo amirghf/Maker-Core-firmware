@@ -8,6 +8,7 @@
 #include "../core/text_format.h"
 #include "../core/endstop.h"
 #include "../core/bltouch.h"
+#include "../core/filament_sensor.h"
 #include "../core/error.h"
 #include "../core/command_queue.h"
 #include "../core/gcode_parser.h"
@@ -94,9 +95,7 @@ static bool read_filament_empty() {
     if ((fake & 0x80U) != 0U) {
         return (fake & 0x08U) != 0U; // بیت ۳
     }
-    const bool raw_pin = mc_gpio_read(PinId::FilamentSensor);
-    const int pin_level = raw_pin ? 1 : 0;
-    return (pin_level == MC_UI_FIL_EMPTY_LEVEL);
+    return mc_filament_empty();
 }
 
 // ۱. کارت‌های اندستاپ (غیرقابل انتخاب)

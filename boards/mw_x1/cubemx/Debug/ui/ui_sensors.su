@@ -1,13 +1,20 @@
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/../core/gfx.h:8:20:constexpr uint16_t mc::mc_rgb565(uint8_t, uint8_t, uint8_t)	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:42:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:49:13:bool mc::{anonymous}::read_endstop_hit(uint8_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:58:13:bool mc::{anonymous}::read_bltouch_busy()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:66:16:uint8_t mc::{anonymous}::read_bltouch_pin_code()	16	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:75:13:bool mc::{anonymous}::read_filament_empty()	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:87:13:void mc::{anonymous}::draw_endstop_card(uint8_t)	48	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:120:13:void mc::{anonymous}::draw_bltouch_badge()	40	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:165:13:void mc::{anonymous}::draw_filament_row()	40	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:191:13:void mc::{anonymous}::draw_sen_item(uint8_t)	72	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:250:13:void mc::{anonymous}::apply_sen_selection(uint8_t)	24	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:264:6:void mc::mc_ui_sensors_open()	8	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:287:15:mc::SensorsResult mc::mc_ui_sensors_poll()	56	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:59:13:void mc::{anonymous}::draw_dot(uint16_t, uint16_t, uint16_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:66:13:bool mc::{anonymous}::read_endstop_hit(uint8_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:75:13:bool mc::{anonymous}::read_bltouch_busy()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:83:16:uint8_t mc::{anonymous}::read_bltouch_pin_code()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:92:13:bool mc::{anonymous}::read_filament_empty()	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:104:13:void mc::{anonymous}::draw_endstop_card(uint8_t)	48	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:137:13:void mc::{anonymous}::draw_bltouch_badge()	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:182:13:void mc::{anonymous}::draw_filament_row()	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:208:13:void mc::{anonymous}::draw_sen_item(uint8_t)	72	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:267:13:void mc::{anonymous}::apply_sen_selection(uint8_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:280:13:void mc::{anonymous}::sen_refuse_feedback(uint32_t)	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:300:13:void mc::{anonymous}::sen_msg_poll()	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:310:13:void mc::{anonymous}::sen_note_refuse(uint32_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:316:13:void mc::{anonymous}::sen_note_ok(uint8_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:322:13:bool mc::{anonymous}::sen_push_line(const char*)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:328:13:bool mc::{anonymous}::sen_job_busy()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:332:13:void mc::{anonymous}::sen_run_action(uint8_t)	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:374:6:void mc::mc_ui_sensors_open()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_sensors.cpp:399:15:mc::SensorsResult mc::mc_ui_sensors_poll()	64	static
