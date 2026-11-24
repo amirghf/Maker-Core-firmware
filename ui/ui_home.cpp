@@ -11,6 +11,7 @@
 #include "ui_sd.h"
 #include "ui_otg.h"
 #include "ui_about.h"
+#include "ui_display.h"
 #include "ui_tcal.h"
 #include "ui_touch.h"
 #include "ui_screen.h"
@@ -26,6 +27,7 @@
 #include "../core/log.h"
 #include "../core/touch_input.h"
 #include "../core/touch_cal_store.h"
+#include "../core/disp_settings.h"
 #include "../core/settings_boot.h"
 #include "../config/mc_version.h"
 #include "../core/command_queue.h"
@@ -64,7 +66,7 @@ volatile uint32_t mc_dbg_319_ui_sel_shown        = 0;  // خواندنی. اند
 volatile uint32_t mc_dbg_320_ui_enter_cnt        = 0;  // خواندنی. تعداد دفعات فشردن دکمه انکودر (اینتر) در صفحه اصلی
 volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. اندیس گزینه در آخرین اینتر (255 = هنوز نشده)
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
-volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL
+volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL، 10 = DISPLAY
 volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
 volatile uint32_t mc_dbg_409_home_act_en        = 1;  // نوشتنی: 0 = دکمه‌های START و PAUSE و STOP و RESET هیچ کاری نمی‌کنند (پیش‌فرض 1)
 volatile uint32_t mc_dbg_410_home_act_cnt       = 0;  // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
@@ -1212,8 +1214,28 @@ void mc_ui_poll() {
     (void)mc_dbg_370_touch_cal_src;
     (void)mc_dbg_371_touch_save_result;
 
-    // بند ۸.۱۹: خاموش و روشن شدن خودکار نمایشگر (فقط در کار عادی و وقتی صفحه TOUCH CAL باز نیست مجاز است)
-    mc_ui_screen_poll((mc_dbg_294_ui_state == 4U) && (mc_dbg_323_ui_page != 9U));
+    // بند ۸.۱۹ و ۸.۲۰: خاموشی خودکار نمایشگر (فقط در صفحه اصلی و کار عادی) و خروج خودکار
+    // از منو و صفحه‌های داخلی ۱ تا ۸ و ۱۰ هنگام بیکاری (صفحه TOUCH CAL مستثناست).
+    const bool scr_can_sleep = (mc_dbg_294_ui_state == 4U) && (mc_dbg_323_ui_page == 0U);
+    const bool scr_can_exit  = (mc_dbg_294_ui_state == 4U) && (mc_dbg_323_ui_page != 0U) &&
+                               ((mc_dbg_323_ui_page <= 8U) || (mc_dbg_323_ui_page == 10U));
+    if (mc_ui_screen_poll(scr_can_sleep, scr_can_exit)) {
+        // بند ۸.۲۰: بیکاری طولانی در منو یا صفحه داخلی؛ برگشت به صفحه اصلی
+        mc_dbg_323_ui_page = 0U;
+        (void)mc_encoder_take_clicks();
+        (void)mc_encoder_take_press();
+        mc_ui_touch_reset();
+        if (mc_dbg_294_ui_state != 5U) {
+            g_static_frame_step = 0U;
+            mc_dbg_294_ui_state = 3U;     // بازنقاشی کامل صفحه اصلی
+            mc_dbg_319_ui_sel_shown = 4U; // هایلایت روی گزینه منو (اندیس ۴)
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
 
     // بررسی تغییر اجباری وضعیت کالیبراسیون با متغیر دیباگ 362 (بند ۸.۱۵)
     if (mc_dbg_362_touch_cal_force != 0U) {
@@ -1263,6 +1285,34 @@ void mc_ui_poll() {
         }
     }
 
+    // بند ۸.۲۱: بارگذاری تنظیمات نمایشگر هنگام بوت، بعد از پایان خواندن تنظیمات
+    static bool g_boot_disp_loaded  = false;
+    static bool g_boot_disp_started = false;
+    if ((!g_boot_disp_loaded) && (!mc_cfg_boot_busy()) && (mc_dbg_294_ui_state == 4U)) {
+        if (!g_boot_disp_started) {
+            if (mc_dispset_load_start()) {
+                g_boot_disp_started = true;
+            }
+        } else {
+            mc_dispset_poll();
+            const uint8_t st = mc_dispset_state();
+            if (st != 1U) {   // کار بارگذاری تمام شد
+                g_boot_disp_loaded = true;
+                const uint8_t res = mc_dispset_result();
+                if (res == 1U) {
+                    mc_dbg_432_disp_boot_src = 1U;   // از EEPROM بارگذاری شد
+                } else if (res == 3U) {
+                    mc_dbg_432_disp_boot_src = 0U;   // رکورد معتبر نبود؛ پیش‌فرض ماند
+                } else {
+                    mc_dbg_432_disp_boot_src = 2U;   // خطای خواندن EEPROM
+                }
+            }
+        }
+    }
+
+    // بند ۸.۲۱: تازه‌سازی متغیرهای نمایشی و انجام ذخیره‌های معلق تنظیمات نمایشگر
+    mc_ui_display_bg_poll();
+
     // بررسی درخواست نقاشی مجدد
     if (mc_dbg_293_ui_request != 0U) {
         mc_dbg_293_ui_request = 0U;
@@ -1307,6 +1357,9 @@ void mc_ui_poll() {
         } else if (m_res == MenuResult::OpenAbout) {
             mc_dbg_323_ui_page = 8U;
             mc_ui_about_open();
+        } else if (m_res == MenuResult::OpenDisplay) {
+            mc_dbg_323_ui_page = 10U;
+            mc_ui_display_open();
         }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
@@ -1443,6 +1496,22 @@ void mc_ui_poll() {
         return;
     }
 
+
+    // اگر صفحه فعال صفحه DISPLAY باشد (۱۰) (بند ۸.۲۱)
+    if (mc_dbg_323_ui_page == 10U) {
+        const DisplayResult dp_res = mc_ui_display_poll();
+        if (dp_res == DisplayResult::Back) {
+            mc_dbg_323_ui_page = 1U;
+            mc_ui_menu_open_at(7U);
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+        }
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
 
     // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_332_move_force جهت ورود مستقیم به صفحه حرکت
     if (mc_dbg_332_move_force != 0U) {
@@ -1582,10 +1651,28 @@ void mc_ui_poll() {
         }
     }
 
+    // اگر صفحه فعال 0 یا 1 باشد، بررسی mc_dbg_424_disp_force جهت ورود مستقیم به صفحه DISPLAY
+    if (mc_dbg_424_disp_force != 0U) {
+        const uint32_t f_disp = mc_dbg_424_disp_force;
+        if (f_disp == 1U) {
+            mc_dbg_424_disp_force = 0U;
+            mc_ui_display_open();
+            mc_dbg_323_ui_page = 10U;
+            (void)mc_ui_display_poll();
+            const uint32_t elapsed_us = mc_micros() - start_us;
+            if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+                mc_dbg_296_ui_max_tick_us = elapsed_us;
+            }
+            return;
+        } else if (f_disp == 2U) {
+            mc_dbg_424_disp_force = 0U;
+        }
+    }
+
     // اگر صفحه فعال صفحه اصلی باشد (۰)، بررسی mc_dbg_328_menu_force جهت ورود به منو
     if (mc_dbg_328_menu_force != 0U) {
         const uint32_t f_val = mc_dbg_328_menu_force;
-        if ((f_val == 1U) || ((f_val >= 3U) && (f_val <= 10U))) {
+        if ((f_val == 1U) || ((f_val >= 3U) && (f_val <= 11U))) {
             mc_ui_menu_open();
             mc_dbg_323_ui_page = 1U;
             (void)mc_ui_menu_poll();

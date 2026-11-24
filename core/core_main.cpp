@@ -48,6 +48,7 @@
 #include "encoder.h"
 #include "touch_input.h"
 #include "touch_cal_store.h"
+#include "disp_settings.h"
 #include "../ui/ui_home.h"
 
 
@@ -408,6 +409,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_enc_pressed_at_boot = mc::mc_encoder_is_pressed();   // بند ۸.۱۵: بررسی فشردن انکودر هنگام روشن شدن
     mc::mc_touchin_init();   // بند ۸.۱۵: سرویس ورودی لمس
     mc::mc_tcal_store_init();   // بند ۸.۱۵: ذخیره‌سازی کالیبراسیون لمس
+    mc::mc_dispset_init();   // بند ۸.۲۱: تنظیمات نمایشگر
     mc::mc_ui_init();   // بند ۸.۲
     mc::g_main.add(mc::task_100ms, 100U);
     mc::g_main.add(mc::task_1s, 1000U);
@@ -420,6 +422,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::task_gfx_test, 100U);
     mc::g_main.add(mc::mc_touchin_poll, MC_TOUCH_POLL_MS);   // بند ۸.۱۵: ورودی لمس
     mc::g_main.add(mc::mc_tcal_store_poll, MC_TOUCH_CAL_STORE_POLL_MS);   // بند ۸.۱۵: ذخیره لمس
+    mc::g_main.add(mc::mc_dispset_poll, MC_DISPSET_POLL_MS);   // بند ۸.۲۱: ذخیره تنظیمات نمایشگر
     mc::g_main.add(mc::task_flash_test, 100U);
     mc::g_main.add(mc::task_splash, 100U);
 

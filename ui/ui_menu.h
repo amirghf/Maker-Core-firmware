@@ -8,11 +8,11 @@ extern "C" {
 #endif
 
 // متغیرهای دیباگ منو (بند ۸.۷)
-extern volatile uint32_t mc_dbg_324_menu_sel_shown;   // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
-extern volatile uint32_t mc_dbg_325_menu_first_shown; // خواندنی: اندیس اولین ردیف قابل مشاهده در منو (۰ تا ۳)
+extern volatile uint32_t mc_dbg_324_menu_sel_shown;   // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۸)
+extern volatile uint32_t mc_dbg_325_menu_first_shown; // خواندنی: اندیس اولین ردیف قابل مشاهده در منو (۰ تا ۴)
 extern volatile uint32_t mc_dbg_326_menu_enter_cnt;   // خواندنی: تعداد اینترهای منو روی آیتم‌های غیر BACK
 extern volatile uint32_t mc_dbg_327_menu_enter_idx;   // خواندنی: اندیس آیتم آخرین اینتر (۲۵۵ = هنوز نشده)
-extern volatile uint32_t mc_dbg_328_menu_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۰ = انتخاب آیتم
+extern volatile uint32_t mc_dbg_328_menu_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۱ = انتخاب آیتم
 
 #ifdef __cplusplus
 }
@@ -28,7 +28,8 @@ enum class MenuResult : uint8_t {
     OpenSensors = 5,
     OpenSd = 6,
     OpenOtg = 7,
-    OpenAbout = 8
+    OpenAbout = 8,
+    OpenDisplay = 9
 };
 
 // آمادگی منو برای نقاشی از اول (انتخاب = ۰، اولین ردیف = ۰، شروع نقاشی مرحله‌ای).

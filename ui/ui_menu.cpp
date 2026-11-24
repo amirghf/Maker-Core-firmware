@@ -11,11 +11,11 @@
 #include "../config/mc_config.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_324_menu_sel_shown   = 0;  // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۷)
-volatile uint32_t mc_dbg_325_menu_first_shown = 0;  // خواندنی: اندیس اولین ردیف قابل مشاهده (۰ تا ۳)
+volatile uint32_t mc_dbg_324_menu_sel_shown   = 0;  // خواندنی: اندیس آیتم هایلایت‌شده منو (۰ تا ۸)
+volatile uint32_t mc_dbg_325_menu_first_shown = 0;  // خواندنی: اندیس اولین ردیف قابل مشاهده (۰ تا ۴)
 volatile uint32_t mc_dbg_326_menu_enter_cnt   = 0;  // خواندنی: تعداد اینترهای منو روی آیتم‌های غیر BACK
 volatile uint32_t mc_dbg_327_menu_enter_idx   = 255; // خواندنی: اندیس آیتم آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_328_menu_force       = 0;  // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۰ = انتخاب آیتم
+volatile uint32_t mc_dbg_328_menu_force       = 0;  // نوشتنی: ۰ = بی‌اثر؛ ۱ = ورود به منو؛ ۲ = برگشت به صفحه اصلی؛ ۳ تا ۱۱ = انتخاب آیتم
 }
 
 namespace mc {
@@ -29,8 +29,8 @@ struct MenuItemSpec {
 // پس‌زمینه تیره ردیف انتخاب‌شده (بند ۸.۷)
 constexpr uint16_t kSelBg = mc_rgb565(24, 38, 64);
 
-// لیست ۸ آیتم منو با ترتیب و اندیس دقیق (بند ۸.۷: آیتم اندیس ۲ برابر HOT BED است)
-static const MenuItemSpec kMenuItems[8] = {
+// لیست ۹ آیتم منو با ترتیب و اندیس دقیق (بند ۸.۷: آیتم اندیس ۲ برابر HOT BED است)
+static const MenuItemSpec kMenuItems[9] = {
     { "MOVE",     mc_rgb565(80, 220, 120) },    // 0: MOVE
     { "EXTRUDER", kAccNozzle },                // 1: EXTRUDER
     { "HOT BED",  kAccBed },                   // 2: HOT BED (بند ۸.۷)
@@ -38,17 +38,18 @@ static const MenuItemSpec kMenuItems[8] = {
     { "SD CARD",  mc_rgb565(0, 200, 100) },    // 4: SD CARD
     { "USB OTG",  kYellowBusy },               // 5: USB OTG
     { "ABOUT",    kAccFan },                   // 6: ABOUT
-    { "BACK",     kLabelGray }                 // 7: BACK
+    { "DISPLAY",  mc_rgb565(255, 90, 160) },   // 7: DISPLAY (بند ۸.۲۱)
+    { "BACK",     kLabelGray }                 // 8: BACK
 };
 
-static uint8_t g_menu_sel   = 0U;   // اندیس آیتم انتخاب‌شده (۰ تا ۷)
-static uint8_t g_menu_first = 0U;   // اندیس اولین ردیف دیده‌شده (۰ تا ۳)
+static uint8_t g_menu_sel   = 0U;   // اندیس آیتم انتخاب‌شده (۰ تا ۸)
+static uint8_t g_menu_first = 0U;   // اندیس اولین ردیف دیده‌شده (۰ تا ۴)
 static uint8_t g_menu_step  = 0U;   // گام نقاشی ورود به منو (۰ تا ۸، ۲۵۵ = کار عادی)
 
 // رسم یک ردیف منو (row_idx = ۰ تا ۴)
 static void draw_menu_row(uint8_t row_idx) {
     const uint8_t item_idx = static_cast<uint8_t>(g_menu_first + row_idx);
-    if (item_idx >= 8U) { return; }
+    if (item_idx >= 9U) { return; }
 
     const uint16_t ry = static_cast<uint16_t>(46U + static_cast<uint16_t>(row_idx) * 50U);
     const MenuItemSpec& spec = kMenuItems[item_idx];
@@ -75,8 +76,8 @@ static void draw_menu_row(uint8_t row_idx) {
     const uint16_t text_color = is_sel ? kColorWhite : kLabelGray;
     mc_gfx_text(64U, static_cast<uint16_t>(ry + 15U), spec.label, text_color, bg, 2U);
 
-    // ۶. فلش نازک سمت راست با ضخامت ۲ پیکسل برای همه آیتم‌ها به جز BACK (اندیس ۷)
-    if (item_idx != 7U) {
+    // ۶. فلش نازک سمت راست با ضخامت ۲ پیکسل برای همه آیتم‌ها به جز BACK (اندیس ۸)
+    if (item_idx != 8U) {
         const uint16_t arrow_color = is_sel ? kAccentLine : kDividerGray;
         for (uint16_t i = 0U; i <= 5U; ++i) {
             const uint16_t px = static_cast<uint16_t>(436U + i);
@@ -97,8 +98,8 @@ static void draw_scrollbar() {
     mc_gfx_fill_rect(464U, 46U, 13U, 244U, kScreenBg);  // پاک‌سازی نوار قدیمی
     mc_gfx_fill_rect(470U, 46U, 3U, 244U, kBarTrack);
 
-    constexpr uint16_t thumb_h = (244U * 5U) / 8U;  // 152
-    const uint16_t thumb_y = static_cast<uint16_t>(46U + (static_cast<uint16_t>(g_menu_first) * (244U - thumb_h)) / 3U);
+    constexpr uint16_t thumb_h = (244U * 5U) / 9U;  // 135
+    const uint16_t thumb_y = static_cast<uint16_t>(46U + (static_cast<uint16_t>(g_menu_first) * (244U - thumb_h)) / 4U);
     mc_gfx_fill_rect(470U, thumb_y, 3U, thumb_h, kAccentLine);
 }
 
@@ -136,7 +137,7 @@ static void apply_selection_change(uint8_t target_sel) {
 }  // namespace
 
 void mc_ui_menu_open_at(uint8_t item_idx) {
-    g_menu_sel = (item_idx < 8U) ? item_idx : 0U;
+    g_menu_sel = (item_idx < 9U) ? item_idx : 0U;
     g_menu_first = 0U;
     if (g_menu_sel > 4U) {
         g_menu_first = static_cast<uint8_t>(g_menu_sel - 4U);
@@ -161,7 +162,7 @@ MenuResult mc_ui_menu_poll() {
     (void)mc_dbg_326_menu_enter_cnt;
     (void)mc_dbg_327_menu_enter_idx;
 
-    // ۱. بررسی انتخاب اجباری با متغیر دیباگ mc_dbg_328_menu_force (۰ تا ۱۰)
+    // ۱. بررسی انتخاب اجباری با متغیر دیباگ mc_dbg_328_menu_force (۰ تا ۱۱)
     if (mc_dbg_328_menu_force != 0U) {
         const uint32_t force_val = mc_dbg_328_menu_force;
         mc_dbg_328_menu_force = 0U;
@@ -171,7 +172,7 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::Back;
-        } else if ((force_val >= 3U) && (force_val <= 10U)) {
+        } else if ((force_val >= 3U) && (force_val <= 11U)) {
             // انتخاب اجباری آیتم (مقدار - ۳)
             const uint8_t target_sel = static_cast<uint8_t>(force_val - 3U);
             if (target_sel != g_menu_sel) {
@@ -229,10 +230,10 @@ MenuResult mc_ui_menu_poll() {
     if (clicks != 0) {
         int32_t new_idx = static_cast<int32_t>(g_menu_sel) + clicks;
         while (new_idx < 0) {
-            new_idx += 8;
+            new_idx += 9;
         }
-        while (new_idx >= 8) {
-            new_idx %= 8;
+        while (new_idx >= 9) {
+            new_idx %= 9;
         }
         const uint8_t target_sel = static_cast<uint8_t>(new_idx);
         if (target_sel != g_menu_sel) {
@@ -249,7 +250,7 @@ MenuResult mc_ui_menu_poll() {
             mc_ui_touch_in_rect(tg.x, tg.y, 8U, 46U, 448U, 250U)) {
             const uint8_t row  = static_cast<uint8_t>((tg.y - 46U) / 50U);
             const uint8_t item = static_cast<uint8_t>(g_menu_first + row);
-            if (item < 8U) {
+            if (item < 9U) {
                 mc_ui_touch_accept(static_cast<uint32_t>(10U + item));
                 if (item != g_menu_sel) {
                     apply_selection_change(item);
@@ -257,8 +258,8 @@ MenuResult mc_ui_menu_poll() {
                 touch_enter = true;
             }
         } else if (((tg.evt == TouchEvt::SwipeUp) || (tg.evt == TouchEvt::SwipeDown)) && in_list) {
-            // کشیدن به بالا = لیست به آخر می‌رود (first = 3)؛ کشیدن به پایین = لیست به اول می‌رود (first = 0)
-            const uint8_t new_first = (tg.evt == TouchEvt::SwipeUp) ? 3U : 0U;
+            // کشیدن به بالا = لیست به آخر می‌رود (first = 4)؛ کشیدن به پایین = لیست به اول می‌رود (first = 0)
+            const uint8_t new_first = (tg.evt == TouchEvt::SwipeUp) ? 4U : 0U;
             if (new_first != g_menu_first) {
                 g_menu_first = new_first;
                 // انتخاب باید داخل پنجره دیده‌شده بماند
@@ -280,7 +281,7 @@ MenuResult mc_ui_menu_poll() {
     // ۴. پردازش دکمه انکودر (اینتر)
     const bool enc_enter = mc_encoder_take_press();
     if (touch_enter || enc_enter) {
-        if (g_menu_sel == 7U) { // BACK
+        if (g_menu_sel == 8U) { // BACK
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::Back;
@@ -326,6 +327,12 @@ MenuResult mc_ui_menu_poll() {
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
             return MenuResult::OpenAbout;
+        } else if (g_menu_sel == 7U) { // DISPLAY (بند ۸.۲۱)
+            mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
+            mc_dbg_327_menu_enter_idx = 7U;
+            (void)mc_encoder_take_clicks();
+            (void)mc_encoder_take_press();
+            return MenuResult::OpenDisplay;
         } else {
             mc_dbg_326_menu_enter_cnt = mc_dbg_326_menu_enter_cnt + 1U;
             mc_dbg_327_menu_enter_idx = g_menu_sel;

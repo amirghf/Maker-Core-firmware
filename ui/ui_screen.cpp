@@ -4,6 +4,7 @@
 #include "ui_touch.h"
 #include "../core/encoder.h"
 #include "../core/touch_input.h"
+#include "../core/disp_settings.h"
 #include "../hal/hal_display.h"
 #include "../hal/hal_time.h"
 
@@ -15,6 +16,8 @@ volatile uint32_t mc_dbg_420_scr_timeout_s  = 0;
 volatile uint32_t mc_dbg_421_scr_sleep_cnt  = 0;
 volatile uint32_t mc_dbg_422_scr_wake_cnt   = 0;
 volatile uint32_t mc_dbg_423_scr_wake_src   = 0;
+volatile uint32_t mc_dbg_428_scr_menu_tmo_s = 0;
+volatile uint32_t mc_dbg_429_scr_exit_cnt   = 0;
 }
 
 namespace mc {
@@ -25,14 +28,30 @@ uint32_t g_last_active_ms   = 0U;      // زمان آخرین فعالیت کا�
 uint32_t g_last_enc_cnt     = 0U;      // آخرین مقدار شمارنده فعالیت انکودر
 uint32_t g_last_touch_cnt   = 0U;      // آخرین مقدار شمارنده فشردن لمس
 
+// تبدیل ثانیه به میلی‌ثانیه با سقف یک روز (تا سرریز نشود)
+uint32_t seconds_to_ms(uint32_t s) {
+    const uint32_t kMaxS = 86400U;
+    return ((s > kMaxS) ? kMaxS : s) * 1000U;
+}
+
 // مدت بیکاری تا خاموشی (میلی‌ثانیه). 0 = خاموشی غیرفعال.
+// اولویت: متغیر debug 420 (اگر غیرصفر) و بعد تنظیم ذخیره‌شده صفحه DISPLAY.
 uint32_t timeout_ms() {
     const uint32_t s = mc_dbg_420_scr_timeout_s;
     if (s != 0U) {
-        const uint32_t kMaxS = 86400U;   // سقف یک روز تا سرریز نشود
-        return ((s > kMaxS) ? kMaxS : s) * 1000U;
+        return seconds_to_ms(s);
     }
-    return static_cast<uint32_t>(MC_UI_SCREEN_SLEEP_MS);
+    return seconds_to_ms(mc_dispset_screen_off_s());
+}
+
+// مدت بیکاری تا خروج خودکار از منو (میلی‌ثانیه). 0 = هیچ‌وقت.
+// اولویت: متغیر debug 428 (اگر غیرصفر) و بعد تنظیم ذخیره‌شده صفحه DISPLAY.
+uint32_t menu_exit_ms() {
+    const uint32_t s = mc_dbg_428_scr_menu_tmo_s;
+    if (s != 0U) {
+        return seconds_to_ms(s);
+    }
+    return seconds_to_ms(mc_dispset_menu_exit_s());
 }
 
 // روشن‌کردن نمایشگر. src: 0 = بدون ورودی، 1 = انکودر، 2 = لمس.
@@ -65,11 +84,15 @@ void mc_ui_screen_init() {
     mc_dbg_421_scr_sleep_cnt = 0U;
     mc_dbg_422_scr_wake_cnt  = 0U;
     mc_dbg_423_scr_wake_src  = 0U;
+    mc_dbg_428_scr_menu_tmo_s = 0U;
+    mc_dbg_429_scr_exit_cnt = 0U;
 }
 
-void mc_ui_screen_poll(bool can_sleep) {
+bool mc_ui_screen_poll(bool can_sleep, bool can_exit) {
     (void)mc_dbg_417_scr_sleep_en;    // خواندن متغیرهای نوشتنی برای جلوگیری از حذف توسط لینکر
     (void)mc_dbg_420_scr_timeout_s;
+    (void)mc_dbg_428_scr_menu_tmo_s;
+    (void)mc_dbg_429_scr_exit_cnt;
 
     const uint32_t now       = mc_millis();
     const uint32_t enc_cnt   = mc_encoder_activity_count();
@@ -81,8 +104,11 @@ void mc_ui_screen_poll(bool can_sleep) {
     g_last_enc_cnt   = enc_cnt;
     g_last_touch_cnt = touch_cnt;
 
-    const uint32_t tmo = timeout_ms();
-    const bool enabled = (mc_dbg_417_scr_sleep_en != 0U) && (tmo != 0U) && can_sleep;
+    const uint32_t tmo   = timeout_ms();
+    const uint32_t mtmo  = menu_exit_ms();
+    const bool enabled   = (mc_dbg_417_scr_sleep_en != 0U) && (tmo != 0U) && can_sleep;
+    const bool exit_armed = can_exit && (mtmo != 0U);
+    bool exit_due = false;
 
     if (g_asleep) {
         if (!enabled) {
@@ -91,17 +117,25 @@ void mc_ui_screen_poll(bool can_sleep) {
             wake_up(touch_act ? 2U : 1U, true);         // ورودی بیدارکننده اجرا نمی‌شود
         }
     } else {
-        if ((!enabled) || enc_act || touch_act) {
+        if (enc_act || touch_act) {
             g_last_active_ms = now;
-        } else if (mc_time_elapsed_ms(g_last_active_ms, tmo)) {
+        } else if (exit_armed && mc_time_elapsed_ms(g_last_active_ms, mtmo)) {
+            // بند ۸.۲۰: بیکاری در منو یا صفحه داخلی؛ برگشت به صفحه اصلی و شروع دوباره تایمر برای خاموشی
+            g_last_active_ms = now;
+            mc_dbg_429_scr_exit_cnt = mc_dbg_429_scr_exit_cnt + 1U;
+            exit_due = true;
+        } else if (enabled && mc_time_elapsed_ms(g_last_active_ms, tmo)) {
             mc_display_backlight(false);
             g_asleep = true;
             mc_dbg_418_scr_state = 1U;
             mc_dbg_421_scr_sleep_cnt = mc_dbg_421_scr_sleep_cnt + 1U;
+        } else if ((!enabled) && (!exit_armed)) {
+            g_last_active_ms = now;                     // نه خاموشی فعال است نه خروج؛ تایمر جلو نرود
         }
     }
 
     mc_dbg_419_scr_idle_ms = now - g_last_active_ms;
+    return exit_due;
 }
 
 bool mc_ui_screen_is_asleep() {

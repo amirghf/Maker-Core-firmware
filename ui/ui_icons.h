@@ -49,7 +49,7 @@ void mc_icon_pause(uint16_t x, uint16_t y, uint16_t color);
 void mc_icon_stop(uint16_t x, uint16_t y, uint16_t color);
 void mc_icon_reset(uint16_t x, uint16_t y, uint16_t color);
 
-// آیکون آیتم منو در جعبه ۳۲ در ۳۲ (بند ۸.۷). id = ۰ تا ۷.
+// آیکون آیتم منو در جعبه ۳۲ در ۳۲ (بند ۸.۷). id = ۰ تا ۸.
 void mc_icon_menu_item(uint16_t x, uint16_t y, uint8_t id, uint16_t color, uint16_t bg);
 
 }  // namespace mc

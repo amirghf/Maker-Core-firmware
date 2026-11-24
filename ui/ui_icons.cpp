@@ -396,7 +396,14 @@ void mc_icon_menu_item(uint16_t x, uint16_t y, uint8_t id, uint16_t color, uint1
             mc_gfx_fill_rect(x + 14U, y + 14U, 4U, 11U, bg);
             break;
 
-        case 7: // BACK: مثلث رو به چپ
+        case 7: // DISPLAY: قاب مانیتور با پایه
+            mc_gfx_fill_rect(x + 3U, y + 5U, 26U, 18U, color);
+            mc_gfx_fill_rect(x + 6U, y + 8U, 20U, 12U, bg);
+            mc_gfx_fill_rect(x + 14U, y + 23U, 4U, 4U, color);
+            mc_gfx_fill_rect(x + 9U, y + 27U, 14U, 3U, color);
+            break;
+
+        case 8: // BACK: مثلث رو به چپ
             mc_ui_fill_triangle(static_cast<int16_t>(x + 8U), static_cast<int16_t>(y + 16U),
                                 static_cast<int16_t>(x + 24U), static_cast<int16_t>(y + 6U),
                                 static_cast<int16_t>(x + 24U), static_cast<int16_t>(y + 26U), color);
