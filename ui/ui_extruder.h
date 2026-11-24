@@ -15,6 +15,14 @@ extern volatile uint32_t mc_dbg_337_ex_force;       // نوشتنی: ۰ = بی�
 extern volatile uint32_t mc_dbg_338_ex_feed_shown;  // خواندنی: اندیس چیپ گام نمایشی (۰ تا ۲)
 extern volatile uint32_t mc_dbg_339_ex_fake_rule;   // نوشتنی: ۰ = وضعیت واقعی HOT RULE؛ ۱ = نمایش «روشن»؛ ۲ = نمایش «خاموش»
 
+// متغیرهای دیباگ عملکردهای صفحه اکسترودر (بند ۸.۱۶)
+extern volatile uint32_t mc_dbg_389_ex_act_cnt;         // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+extern volatile uint32_t mc_dbg_390_ex_act_last;        // خواندنی: کد آخرین دکمه موفق (0 = هنوز نشده، 1 = HEAT، 2 = COOL، 3 = FEED منفی، 4 = FEED مثبت)
+extern volatile uint32_t mc_dbg_391_ex_act_refused;     // خواندنی: تعداد دفعاتی که دکمه به‌خاطر شرط ایمنی یا شرط اجرا رد شد
+extern volatile uint32_t mc_dbg_392_ex_act_en;          // نوشتنی: 0 = دکمه‌ها هیچ کاری نمی‌کنند (پیش‌فرض 1)
+extern volatile uint32_t mc_dbg_393_ex_refuse_reason;   // خواندنی: علت آخرین رد شدن
+extern volatile int32_t  mc_dbg_394_ex_feed_last_x10;   // خواندنی: آخرین FEED موفق، علامت‌دار، در دهم میلی‌متر
+
 #ifdef __cplusplus
 }
 

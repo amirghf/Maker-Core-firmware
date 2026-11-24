@@ -11,16 +11,29 @@
 #include "../core/extruder.h"
 #include "../core/output_pwm.h"
 #include "../core/encoder.h"
+#include "../core/error.h"
+#include "../core/command_queue.h"
+#include "../core/gcode_parser.h"
+#include "../core/motion_modes.h"
+#include "../core/machine_state.h"
 #include "../hal/hal_display.h"
 #include "../config/mc_config.h"
 
 extern "C" {
-volatile uint32_t mc_dbg_334_ex_sel_shown  = 7;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۷)
-volatile uint32_t mc_dbg_335_ex_enter_cnt  = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK و غیر چیپ‌ها
-volatile uint32_t mc_dbg_336_ex_enter_idx  = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
-volatile uint32_t mc_dbg_337_ex_force      = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه اکسترودر؛ ۲ = برگشت به منو؛ ۳ تا ۱۰ = فوکوس روی مورد (مقدار - ۳)
-volatile uint32_t mc_dbg_338_ex_feed_shown = 1;   // خواندنی: اندیس چیپ گام نمایشی (۰ تا ۲)
-volatile uint32_t mc_dbg_339_ex_fake_rule  = 0;   // نوشتنی: ۰ = وضعیت واقعی HOT RULE؛ ۱ = نمایش «روشن»؛ ۲ = نمایش «خاموش»
+extern volatile uint32_t mc_dbg_80_mv_arm;
+
+volatile uint32_t mc_dbg_334_ex_sel_shown       = 7;   // خواندنی: اندیس مورد فوکوس‌شده (۰ تا ۷)
+volatile uint32_t mc_dbg_335_ex_enter_cnt       = 0;   // خواندنی: تعداد اینترها روی مورد غیر BACK و غیر چیپ‌ها
+volatile uint32_t mc_dbg_336_ex_enter_idx       = 255; // خواندنی: اندیس مورد آخرین اینتر (۲۵۵ = هنوز نشده)
+volatile uint32_t mc_dbg_337_ex_force           = 0;   // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه اکسترودر؛ ۲ = برگشت به منو؛ ۳ تا ۱۰ = فوکوس روی مورد (مقدار - ۳)
+volatile uint32_t mc_dbg_338_ex_feed_shown      = 1;   // خواندنی: اندیس چیپ گام نمایشی (۰ تا ۲)
+volatile uint32_t mc_dbg_339_ex_fake_rule       = 0;   // نوشتنی: ۰ = وضعیت واقعی HOT RULE؛ ۱ = نمایش «روشن»؛ ۲ = نمایش «خاموش»
+volatile uint32_t mc_dbg_389_ex_act_cnt         = 0;   // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+volatile uint32_t mc_dbg_390_ex_act_last        = 0;   // خواندنی: کد آخرین دکمه موفق
+volatile uint32_t mc_dbg_391_ex_act_refused     = 0;   // خواندنی: تعداد دفعاتی که دکمه به‌خاطر شرط ایمنی رد شد
+volatile uint32_t mc_dbg_392_ex_act_en          = 1;   // نوشتنی: 0 = دکمه‌ها هیچ کاری نمی‌کنند (پیش‌فرض 1)
+volatile uint32_t mc_dbg_393_ex_refuse_reason   = 0;   // خواندنی: علت آخرین رد شدن
+volatile int32_t  mc_dbg_394_ex_feed_last_x10  = 0;   // خواندنی: آخرین FEED موفق، علامت‌دار، در دهم میلی‌متر
 }
 
 namespace mc {
@@ -407,6 +420,119 @@ static void apply_ex_selection(uint8_t target_sel) {
     }
 }
 
+static float ex_chip_step_mm(uint8_t chip_idx) {
+    if (chip_idx == 0U) {
+        return static_cast<float>(MC_UI_EX_FEED_STEP_1_MM);
+    } else if (chip_idx == 2U) {
+        return static_cast<float>(MC_UI_EX_FEED_STEP_3_MM);
+    }
+    return static_cast<float>(MC_UI_EX_FEED_STEP_2_MM);
+}
+
+static void ex_run_action(uint8_t item_idx) {
+    if (item_idx > 3U) { return; }
+
+    // ۱) فقط برای HEAT (0) و COOL (1)
+    if ((item_idx == 0U) || (item_idx == 1U)) {
+        if (mc_heater_ex_test_mode()) {
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 1U;
+            return;
+        }
+    }
+
+    // ۲) سیستم در حالت kill است
+    if (mc_is_killed()) {
+        mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+        mc_dbg_393_ex_refuse_reason = 2U;
+        return;
+    }
+
+    // ۳) حالت fake روشن است
+    if (mc_dbg_297_ui_fake_on != 0U) {
+        mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+        mc_dbg_393_ex_refuse_reason = 3U;
+        return;
+    }
+
+    // ۴) کلید ایمنی 392 صفر است
+    if (mc_dbg_392_ex_act_en == 0U) {
+        mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+        mc_dbg_393_ex_refuse_reason = 4U;
+        return;
+    }
+
+    // ۵ تا ۸) فقط برای FEED (2 و 3)
+    if ((item_idx == 2U) || (item_idx == 3U)) {
+        if (!mc_extruder_allowed()) {
+            mc_extruder_note_refused();
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 5U;
+            return;
+        }
+        if (mc_dbg_80_mv_arm != 1U) {
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 6U;
+            return;
+        }
+        if ((!mc_cmdq_empty()) || mc_motion_busy()) {
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 7U;
+            return;
+        }
+    }
+
+    // هیچ شرط رد شدنی برقرار نبود، اجرا می‌شود
+    uint32_t btn_code = 0U;
+
+    if (item_idx == 0U) { // HEAT
+        btn_code = 1U;
+        (void)mc_heater_ex_set_target_x10(MC_UI_EX_HEAT_TEMP_C * 10);
+    } else if (item_idx == 1U) { // COOL
+        btn_code = 2U;
+        (void)mc_heater_ex_set_target_x10(0);
+    } else { // FEED- (2) یا FEED+ (3)
+        btn_code = (item_idx == 2U) ? 3U : 4U;
+        const float step_mm = ex_chip_step_mm(g_ex_feed_step);
+        const float delta   = (item_idx == 2U) ? -step_mm : step_mm;
+
+        float e_val = delta;
+        if (!mc_mode_e_relative_get()) {
+            e_val = mc_position_get(kAxisE) + delta;
+        }
+        const float old_feed = mc_mode_feed_get_mmin();
+
+        char line1[48];
+        uint16_t p1 = mc_fmt_text(line1, sizeof(line1), 0U, "G1 E");
+        p1 = mc_fmt_float(line1, sizeof(line1), p1, e_val, 3U);
+        p1 = mc_fmt_text(line1, sizeof(line1), p1, " F");
+        p1 = mc_fmt_uint(line1, sizeof(line1), p1, static_cast<uint32_t>(MC_UI_EX_FEED_RATE_MM_MIN));
+
+        char line2[48];
+        uint16_t p2 = mc_fmt_text(line2, sizeof(line2), 0U, "G1 F");
+        p2 = mc_fmt_float(line2, sizeof(line2), p2, old_feed, 2U);
+
+        static GcodeCommand cmd;
+        if ((mc_gcode_parse(line1, cmd) != GcodeResult::Ok) || (!mc_cmdq_push(cmd))) {
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 8U;
+            return;
+        }
+        if ((mc_gcode_parse(line2, cmd) != GcodeResult::Ok) || (!mc_cmdq_push(cmd))) {
+            mc_dbg_391_ex_act_refused = mc_dbg_391_ex_act_refused + 1U;
+            mc_dbg_393_ex_refuse_reason = 8U;
+            return;
+        }
+
+        const int32_t feed_x10 = static_cast<int32_t>(delta >= 0.0f ? (delta * 10.0f + 0.5f) : (delta * 10.0f - 0.5f));
+        mc_dbg_394_ex_feed_last_x10 = feed_x10;
+    }
+
+    mc_dbg_389_ex_act_cnt       = mc_dbg_389_ex_act_cnt + 1U;
+    mc_dbg_390_ex_act_last      = btn_code;
+    mc_dbg_393_ex_refuse_reason = 0U;
+}
+
 }  // namespace
 
 void mc_ui_extruder_open() {
@@ -443,6 +569,12 @@ ExtruderResult mc_ui_extruder_poll() {
     (void)mc_dbg_337_ex_force;
     (void)mc_dbg_338_ex_feed_shown;
     (void)mc_dbg_339_ex_fake_rule;
+    (void)mc_dbg_389_ex_act_cnt;
+    (void)mc_dbg_390_ex_act_last;
+    (void)mc_dbg_391_ex_act_refused;
+    (void)mc_dbg_392_ex_act_en;
+    (void)mc_dbg_393_ex_refuse_reason;
+    (void)mc_dbg_394_ex_feed_last_x10;
 
     if (mc_dbg_337_ex_force != 0U) {
         const uint32_t force_val = mc_dbg_337_ex_force;
@@ -515,14 +647,51 @@ ExtruderResult mc_ui_extruder_poll() {
         }
     }
 
-    // لمس (بند ۸.۱۶): ضربه روی دکمه BACK مثل اینتر روی BACK است
+    bool touch_enter = false;
+    // لمس (بند ۸.۱۶): ضربه روی دکمه‌های صفحه اکسترودر
     {
         const TouchGesture tg = mc_ui_touch_poll();
-        if ((tg.evt == TouchEvt::Tap) && mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
-            mc_ui_touch_accept(20U);
-            (void)mc_encoder_take_clicks();
-            (void)mc_encoder_take_press();
-            return ExtruderResult::Back;
+        if (tg.evt == TouchEvt::Tap) {
+            if (mc_ui_touch_in_rect(tg.x, tg.y, 324U, 258U, 148U, 44U)) {
+                mc_ui_touch_accept(20U);
+                (void)mc_encoder_take_clicks();
+                (void)mc_encoder_take_press();
+                return ExtruderResult::Back;
+            }
+
+            int32_t hit = -1;   // اندیس دکمه عملیاتی (0 تا 3)
+            if (mc_ui_touch_in_rect(tg.x, tg.y, 190U, 118U, 146U, 32U)) {
+                hit = 0;   // HEAT
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 344U, 118U, 120U, 32U)) {
+                hit = 1;   // COOL
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 190U, 164U, 70U, 32U)) {
+                hit = 2;   // FEED منفی
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 268U, 164U, 70U, 32U)) {
+                hit = 3;   // FEED مثبت
+            }
+
+            if (hit >= 0) {
+                mc_ui_touch_accept(static_cast<uint32_t>(40 + hit));
+                if (static_cast<uint8_t>(hit) != g_ex_sel) {
+                    apply_ex_selection(static_cast<uint8_t>(hit));
+                }
+                touch_enter = true;
+            } else if (mc_ui_touch_in_rect(tg.x, tg.y, 346U, 164U, 116U, 32U)) {
+                // نوار چیپ‌های گام: ضربه روی هر چیپ آن را مستقیم فعال می‌کند (اینتر نمی‌زند)
+                uint8_t chip = 2U;
+                if (tg.x < 386U) {
+                    chip = 0U;
+                } else if (tg.x < 426U) {
+                    chip = 1U;
+                }
+                mc_ui_touch_accept(static_cast<uint32_t>(44U + chip));
+                g_ex_feed_step = chip;
+                mc_dbg_338_ex_feed_shown = g_ex_feed_step;
+                if (g_ex_sel != 4U) {
+                    apply_ex_selection(4U);
+                }
+                draw_ex_item(4U);
+            }
         }
     }
 
@@ -541,7 +710,8 @@ ExtruderResult mc_ui_extruder_poll() {
         }
     }
 
-    if (mc_encoder_take_press()) {
+    const bool enc_enter = mc_encoder_take_press();
+    if (touch_enter || enc_enter) {
         if (g_ex_sel == 7U) { // BACK
             (void)mc_encoder_take_clicks();
             (void)mc_encoder_take_press();
@@ -553,6 +723,7 @@ ExtruderResult mc_ui_extruder_poll() {
         } else {
             mc_dbg_335_ex_enter_cnt = mc_dbg_335_ex_enter_cnt + 1U;
             mc_dbg_336_ex_enter_idx = g_ex_sel;
+            ex_run_action(g_ex_sel);
         }
     }
 

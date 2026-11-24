@@ -1,5 +1,6 @@
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:40:13:void mc::{anonymous}::draw_temp_group()	16
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:145:13:void mc::{anonymous}::draw_bed_item(uint8_t)	27
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:259:13:void mc::{anonymous}::apply_bed_selection(uint8_t)	3
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:273:6:void mc::mc_ui_bed_open()	1
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:296:11:mc::BedResult mc::mc_ui_bed_poll()	36
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:46:13:void mc::{anonymous}::draw_temp_group()	16
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:151:13:void mc::{anonymous}::draw_bed_item(uint8_t)	27
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:265:13:void mc::{anonymous}::apply_bed_selection(uint8_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:277:13:void mc::{anonymous}::bed_run_action(uint8_t)	8
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:322:6:void mc::mc_ui_bed_open()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_bed.cpp:345:11:mc::BedResult mc::mc_ui_bed_poll()	41

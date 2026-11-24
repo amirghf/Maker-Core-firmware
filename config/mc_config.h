@@ -178,6 +178,7 @@
 #define MC_UI_EX_FEED_STEP_2_MM        5     // گام دوم FEED (میلی‌متر)
 #define MC_UI_EX_FEED_STEP_3_MM        10    // گام سوم FEED (میلی‌متر)
 #define MC_UI_EX_FEED_STEP_DEFAULT_IDX 1     // اندیس چیپ فعال هنگام باز شدن صفحه (۰ تا ۲)
+#define MC_UI_EX_FEED_RATE_MM_MIN      300   // سرعت حرکت FEED دکمه‌های صفحه اکسترودر (میلی‌متر بر دقیقه)
 
 // ===================== ۱۶. صفحه داغ (بند ۸.۱۰) =====================
 #define MC_UI_BED_PRESET_1_C           100   // دمای هدف دکمه HEAT اول در صفحه داغ (درجه سانتی‌گراد؛ سقف هدف بستر 120 است)
