@@ -160,6 +160,10 @@ bool mc_touchin_is_down() {
     return g_is_down;
 }
 
+uint32_t mc_touchin_down_count() {
+    return g_down_cnt;
+}
+
 bool mc_touchin_raw(uint16_t* rx, uint16_t* ry) {
     if ((!g_is_down) || (rx == nullptr) || (ry == nullptr)) { return false; }
     *rx = g_smooth_raw_x;

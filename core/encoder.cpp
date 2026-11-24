@@ -29,6 +29,9 @@ static int32_t g_pending_clicks = 0;
 // پرچم فشردن دکمه برای مصرف‌کننده (با take_press صفر می‌شود)
 static bool g_pressed_flag = false;
 
+// شمارنده فعالیت انکودر (مصرف نمی‌شود) (بند ۸.۱۹)
+static uint32_t g_activity_cnt = 0U;
+
 // وضعیت دکمه برای ضدلرزش
 static bool     g_btn_raw_state       = false;
 static bool     g_btn_debounced_state = false;
@@ -63,6 +66,7 @@ void mc_encoder_init() {
     g_step_acc = 0;
     g_pending_clicks = 0;
     g_pressed_flag = false;
+    g_activity_cnt = 0U;
 
     mc_dbg_313_enc_pos = 0;
     mc_dbg_314_enc_btn = btn_pressed ? 1U : 0U;
@@ -92,11 +96,13 @@ void mc_encoder_poll() {
                 g_step_acc = static_cast<int8_t>(g_step_acc - steps_per_click);
                 const int32_t dir = (MC_ENC_REVERSE != 0) ? -1 : 1;
                 g_pending_clicks += dir;
+                g_activity_cnt = g_activity_cnt + 1U;
                 mc_dbg_313_enc_pos += dir;
             } else if (g_step_acc <= -steps_per_click) {
                 g_step_acc = static_cast<int8_t>(g_step_acc + steps_per_click);
                 const int32_t dir = (MC_ENC_REVERSE != 0) ? 1 : -1;
                 g_pending_clicks += dir;
+                g_activity_cnt = g_activity_cnt + 1U;
                 mc_dbg_313_enc_pos += dir;
             }
         }
@@ -117,6 +123,7 @@ void mc_encoder_poll() {
             if (g_btn_debounced_state) {
                 // لبه بالارونده فشردن دکمه
                 g_pressed_flag = true;
+                g_activity_cnt = g_activity_cnt + 1U;
                 mc_dbg_315_enc_press_cnt = mc_dbg_315_enc_press_cnt + 1U;
 
                 if (mc_dbg_317_enc_beep_en != 0U) {
@@ -147,6 +154,10 @@ bool mc_encoder_take_press() {
 
 bool mc_encoder_is_pressed() {
     return g_btn_debounced_state;
+}
+
+uint32_t mc_encoder_activity_count() {
+    return g_activity_cnt;
 }
 
 }  // namespace mc

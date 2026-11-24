@@ -13,6 +13,7 @@
 #include "ui_about.h"
 #include "ui_tcal.h"
 #include "ui_touch.h"
+#include "ui_screen.h"
 #include <string.h>
 #include "../core/gfx.h"
 #include "../core/text_format.h"
@@ -1124,6 +1125,7 @@ void mc_ui_init() {
     g_splash_hold_start_ms = 0U;
     g_static_frame_step = 0U;
     g_current_field_idx = 0U;
+    mc_ui_screen_init();
 }
 
 void mc_ui_notify_splash(uint32_t result) {
@@ -1209,6 +1211,9 @@ void mc_ui_poll() {
     (void)mc_dbg_362_touch_cal_force;
     (void)mc_dbg_370_touch_cal_src;
     (void)mc_dbg_371_touch_save_result;
+
+    // بند ۸.۱۹: خاموش و روشن شدن خودکار نمایشگر (فقط در کار عادی و وقتی صفحه TOUCH CAL باز نیست مجاز است)
+    mc_ui_screen_poll((mc_dbg_294_ui_state == 4U) && (mc_dbg_323_ui_page != 9U));
 
     // بررسی تغییر اجباری وضعیت کالیبراسیون با متغیر دیباگ 362 (بند ۸.۱۵)
     if (mc_dbg_362_touch_cal_force != 0U) {

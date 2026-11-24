@@ -21,4 +21,7 @@ bool mc_encoder_take_press();
 // آیا دکمه الان پایین (فشرده) است؟
 bool mc_encoder_is_pressed();
 
+// شمارنده فعالیت انکودر: با هر کلیک چرخش و هر فشردن دکمه یکی زیاد می‌شود (مصرف نمی‌شود و بافر را خالی نمی‌کند) (بند ۸.۱۹)
+uint32_t mc_encoder_activity_count();
+
 }  // namespace mc

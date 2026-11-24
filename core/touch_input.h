@@ -32,6 +32,9 @@ void mc_touchin_poll();
 // آیا انگشت الان (بعد از debounce) روی صفحه است؟
 bool mc_touchin_is_down();
 
+// تعداد کل رویدادهای فشردن لمس از روشن‌شدن (مصرف نمی‌شود) (بند ۸.۱۹)
+uint32_t mc_touchin_down_count();
+
 // آخرین مختصات خام معتبر وقتی انگشت روی صفحه است
 bool mc_touchin_raw(uint16_t* rx, uint16_t* ry);
 
