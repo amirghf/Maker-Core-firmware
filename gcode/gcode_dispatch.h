@@ -12,4 +12,7 @@ void mc_dispatch_poll();
 // آیا الان یک دستور در حال اجراست؟ (برای M400 و ... در بندهای بعد)
 bool mc_dispatch_busy();
 
+// دستوری که الان در توزیع‌کننده در حال اجراست را رها می‌کند.
+void mc_dispatch_abort();
+
 }  // namespace mc

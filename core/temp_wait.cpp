@@ -46,6 +46,10 @@ bool mc_temp_wait_active() {
     return g_active;
 }
 
+void mc_temp_wait_abort() {
+    finish();
+}
+
 bool mc_temp_wait_poll() {
     if (!g_active) { return true; }
     const uint32_t now = mc_millis();

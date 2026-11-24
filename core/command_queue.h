@@ -17,6 +17,8 @@ bool mc_cmdq_pop(GcodeCommand& out);
 bool mc_cmdq_full();
 // آیا صف خالی است؟
 bool mc_cmdq_empty();
+// همه دستورها را از صف پاک می‌کند.
+void mc_cmdq_clear();
 // تعداد دستورهای داخل صف.
 uint16_t mc_cmdq_count();
 // ظرفیت واقعی صف (۷).

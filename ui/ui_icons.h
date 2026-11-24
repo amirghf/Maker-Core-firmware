@@ -27,6 +27,12 @@ void mc_icon_dir(uint16_t x, uint16_t y, bool positive, uint16_t color);
 // آیکون جفت‌مثلث جهت موتور بدون دم (جعبه ۱۴ در ۲۲). active: 0 = هر دو کم‌رنگ، 1 = مثلث بالا (مثبت)، 2 = مثلث پایین (منفی) (بند ۸.۷).
 void mc_icon_dir_pair(uint16_t x, uint16_t y, uint8_t active, uint16_t active_color, uint16_t dim_color);
 
+// جفت‌مثلث عمودی (جعبه ۱۴ در ۲۲): mode: 0 = هر دو کم‌رنگ، 1 = مثلث بالا روشن، 2 = مثلث پایین روشن، 3 = هر دو روشن.
+void mc_icon_dir_pair_v(uint16_t x, uint16_t y, uint8_t mode, uint16_t top_color, uint16_t bottom_color, uint16_t dim_color);
+
+// جفت‌مثلث افقی (جعبه ۲۲ در ۱۴): mode: 0 = هر دو کم‌رنگ، 1 = مثلث راست روشن، 2 = مثلث چپ روشن، 3 = هر دو روشن.
+void mc_icon_dir_pair_h(uint16_t x, uint16_t y, uint8_t mode, uint16_t right_color, uint16_t left_color, uint16_t dim_color);
+
 // آیکون‌های کوچک (۲۴ در ۲۴). پارامتر bg رنگ پس‌زمینه است و برای بریدگی‌ها استفاده می‌شود.
 void mc_icon_sd(uint16_t x, uint16_t y, uint16_t color, uint16_t bg);
 void mc_icon_usb(uint16_t x, uint16_t y, uint16_t color, uint16_t bg);

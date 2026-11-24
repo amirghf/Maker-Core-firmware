@@ -27,4 +27,7 @@ bool mc_temp_wait_poll();
 // آیا الان صبری در جریان است؟
 bool mc_temp_wait_active();
 
+// صبر در جریان را لغو می‌کند.
+void mc_temp_wait_abort();
+
 }  // namespace mc

@@ -37,6 +37,11 @@ bool mc_cmdq_empty() {
     return g_queue.empty();
 }
 
+void mc_cmdq_clear() {
+    g_queue.clear();
+    mc_dbg_cq_count = 0U;
+}
+
 uint16_t mc_cmdq_count() {
     return g_queue.size();
 }

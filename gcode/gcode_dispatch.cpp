@@ -34,6 +34,12 @@ bool mc_dispatch_busy() {
     return g_active;
 }
 
+void mc_dispatch_abort() {
+    g_active = false;
+    g_entry  = nullptr;
+    mc_dbg_disp_busy = 0U;
+}
+
 void mc_dispatch_poll() {
     if (!g_active) {
         if (!mc_cmdq_pop(g_cmd)) { return; }

@@ -9,6 +9,9 @@ void mc_board_safe_state();
 bool mc_board_safe_state_check();
 // نام برد (مثلاً "MW-X1") برای پیام‌هایی مثل M115. رشته ثابت است و نباید آزاد شود.
 const char* mc_board_name();
+
+// همه خروجی‌ها را امن می‌کند و برد را ریست سخت‌افزاری می‌کند؛ برنمی‌گردد.
+[[noreturn]] void mc_system_reset();
 }  // namespace mc
 
 extern "C" {

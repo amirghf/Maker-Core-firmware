@@ -27,9 +27,14 @@
 #include "../core/touch_cal_store.h"
 #include "../core/settings_boot.h"
 #include "../config/mc_version.h"
+#include "../core/command_queue.h"
+#include "../core/quick_stop.h"
+#include "../core/step_gen.h"
 #include "../hal/hal_stepper.h"
 #include "../hal/hal_display.h"
 #include "../hal/hal_time.h"
+#include "../hal/hal_buzzer.h"
+#include "../hal/hal_board.h"
 #include "../core/encoder.h"
 
 
@@ -60,6 +65,14 @@ volatile uint32_t mc_dbg_321_ui_enter_idx        = 255; // خواندنی. ان�
 volatile uint32_t mc_dbg_322_ui_sel_force        = 0;  // نوشتنی. 0 = بی‌اثر؛ 1 تا 5 = گزینه (مقدار - 1) را انتخاب کن و خودش 0 می‌شود
 volatile uint32_t mc_dbg_323_ui_page             = 0;  // خواندنی. 0 = صفحه اصلی، 1 = منو، 2 = حرکت، 3 = اکسترودر، 4 = داغ، 5 = سنسورها، 6 = SD CARD، 7 = USB OTG، 8 = ABOUT، 9 = TOUCH CAL
 volatile uint32_t mc_dbg_359_ui_fake_print_pct  = 0;  // نوشتنی. درصد ساختگی چاپ، 0 تا 100 (فقط وقتی fake روشن است) (بند ۸.۶)
+volatile uint32_t mc_dbg_409_home_act_en        = 1;  // نوشتنی: 0 = دکمه‌های START و PAUSE و STOP و RESET هیچ کاری نمی‌کنند (پیش‌فرض 1)
+volatile uint32_t mc_dbg_410_home_act_cnt       = 0;  // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+volatile uint32_t mc_dbg_411_home_act_last      = 255; // خواندنی: اندیس آخرین دکمه موفق (0 = START، 1 = PAUSE، 2 = STOP، 3 = RESET؛ 255 = هنوز نشده)
+volatile uint32_t mc_dbg_412_home_act_refused   = 0;  // خواندنی: تعداد دفعاتی که دکمه رد شد
+volatile uint32_t mc_dbg_413_home_refuse_reason = 0;  // خواندنی: علت آخرین رد شدن
+volatile uint32_t mc_dbg_414_home_reset_dry    = 0;  // نوشتنی: 1 = دکمه RESET همه کار را می‌کند ولی ریست سخت‌افزاری نمی‌زند
+volatile uint32_t mc_dbg_415_home_moving_mask  = 0;  // خواندنی: بیت 0 تا 3 = حرکت واقعی (یا fake) محور X، Y، Z، E
+volatile uint32_t mc_dbg_416_home_fake_move    = 0;  // نوشتنی: بیت 0 تا 3 = حرکت ساختگی X، Y، Z، E
 // متغیرهای دیباگ صفحه TOUCH CAL (mc_dbg_362/370/371) طبق اصل «یک define در فایل صاحب»
 // در ui_tcal.cpp تعریف می‌شوند و اعلانشان در ui_tcal.h است.
 }
@@ -190,6 +203,142 @@ static FieldCache g_field_cache[kFieldCount];
 static uint32_t   g_splash_hold_start_ms = 0U;
 static uint8_t    g_static_frame_step    = 0U;
 static uint8_t    g_current_field_idx    = 0U;
+
+static bool     g_home_msg_shown    = false;   // پیام علت رد شدن به‌جای عنوان نوار بالا
+static uint32_t g_home_msg_start_ms = 0U;      // زمان شروع نمایش پیام
+
+static uint32_t g_last_emitted[4]   = { 0U, 0U, 0U, 0U };
+static uint32_t g_last_motion_ms[4] = { 0U, 0U, 0U, 0U };
+static bool     g_axis_moving[4]    = { false, false, false, false };
+
+constexpr uint16_t kExLetterDx = 4U;
+constexpr uint16_t kExStatusDx = 44U;
+
+// بند ۸.۱۶: پیام علت رد شدن به‌جای عنوان نوار بالا و بوق بلند
+static void home_refuse_feedback(uint32_t reason) {
+    const char* txt = "REFUSED";
+    switch (reason) {
+        case 2U: txt = "KILLED";           break;
+        case 3U: txt = "FAKE MODE ON";     break;
+        case 4U: txt = "BUTTONS DISABLED"; break;
+        case 8U: txt = "QUEUE ERROR";      break;
+        default: break;
+    }
+    mc_gfx_fill_rect(75U, 0U, 350U, 36U, kTopBarBg);
+    const uint16_t tw = mc_gfx_text_width(txt, 2U);
+    const uint16_t tx = static_cast<uint16_t>((480U - tw) / 2U);
+    mc_gfx_text(tx, 10U, txt, kOrangeTgt, kTopBarBg, 2U);
+    g_home_msg_shown    = true;
+    g_home_msg_start_ms = mc_millis();
+    mc_buzzer_click(MC_UI_REFUSE_BEEP_MS);
+}
+
+// بعد از MC_UI_HOME_MSG_MS میلی‌ثانیه عنوان MC_DEVICE_NAME را برمی‌گرداند
+static void home_msg_poll() {
+    if (g_home_msg_shown && ((mc_millis() - g_home_msg_start_ms) >= static_cast<uint32_t>(MC_UI_HOME_MSG_MS))) {
+        mc_gfx_fill_rect(75U, 0U, 350U, 36U, kTopBarBg);
+        char dev_name[25];
+        mc_fmt_text(dev_name, sizeof(dev_name), 0U, MC_DEVICE_NAME);
+        const uint16_t tw = mc_gfx_text_width(dev_name, 2U);
+        const uint16_t nx = (tw < 480U) ? static_cast<uint16_t>((480U - tw) / 2U) : 0U;
+        mc_gfx_text(nx, 10U, dev_name, kColorWhite, kTopBarBg, 2U);
+        g_home_msg_shown = false;
+    }
+}
+
+static void home_note_refuse(uint32_t reason) {
+    mc_dbg_412_home_act_refused   = mc_dbg_412_home_act_refused + 1U;
+    mc_dbg_413_home_refuse_reason = reason;
+    home_refuse_feedback(reason);
+}
+
+static void home_note_ok(uint8_t idx) {
+    mc_dbg_410_home_act_cnt       = mc_dbg_410_home_act_cnt + 1U;
+    mc_dbg_411_home_act_last      = idx;
+    mc_dbg_413_home_refuse_reason = 0U;
+}
+
+static bool home_push_line(const char* line) {
+    static GcodeCommand cmd;
+    if (mc_gcode_parse(line, cmd) != GcodeResult::Ok) { return false; }
+    return mc_cmdq_push(cmd);
+}
+
+static void home_run_action(uint8_t idx) {
+    if (idx > 3U) { return; }
+
+    if (mc_dbg_297_ui_fake_on != 0U) {
+        home_note_refuse(3U);
+        return;
+    }
+    if (mc_dbg_409_home_act_en == 0U) {
+        home_note_refuse(4U);
+        return;
+    }
+    if ((idx <= 2U) && mc_is_killed()) {
+        home_note_refuse(2U);
+        return;
+    }
+
+    if (idx == 0U) { // START
+        if (!home_push_line("M24")) {
+            home_note_refuse(8U);
+            return;
+        }
+        home_note_ok(0U);
+    } else if (idx == 1U) { // PAUSE
+        if (!home_push_line("M25")) {
+            home_note_refuse(8U);
+            return;
+        }
+        home_note_ok(1U);
+    } else if (idx == 2U) { // STOP
+        mc_quick_stop();
+        home_note_ok(2U);
+    } else if (idx == 3U) { // RESET
+        if (mc_dbg_414_home_reset_dry != 0U) {
+            home_note_ok(3U);
+            mc_buzzer_click(MC_ENC_PRESS_BEEP_MS);
+        } else {
+            home_note_ok(3U);
+            mc_system_reset();
+        }
+    }
+}
+
+static void home_axis_motion_poll() {
+    const uint32_t now_ms = mc_millis();
+    const bool fake = (mc_dbg_297_ui_fake_on != 0U);
+
+    for (uint8_t a = 0U; a < 4U; ++a) {
+        const StepAxis axis = static_cast<StepAxis>(a);
+        const uint32_t emitted = mc_stepgen_axis_emitted(axis);
+        if (emitted != g_last_emitted[a]) {
+            g_last_emitted[a] = emitted;
+            g_last_motion_ms[a] = now_ms;
+        }
+
+        bool is_moving = false;
+        if (fake) {
+            is_moving = ((mc_dbg_416_home_fake_move >> a) & 1U) != 0U;
+        } else {
+            is_moving = mc_stepgen_busy() &&
+                        ((now_ms - g_last_motion_ms[a]) < static_cast<uint32_t>(MC_UI_HOME_MOVE_HOLD_MS));
+        }
+
+        if (is_moving != g_axis_moving[a]) {
+            g_axis_moving[a] = is_moving;
+            g_field_cache[13U + a].dirty = true;
+            g_current_field_idx = static_cast<uint8_t>(13U + a);
+        }
+
+        if (is_moving) {
+            mc_dbg_415_home_moving_mask |= (1U << a);
+        } else {
+            mc_dbg_415_home_moving_mask &= ~(1U << a);
+        }
+    }
+}
 
 // تشخیص واقعی SD در بند ۹.۱ وصل می‌شود
 static bool media_sd_present() {
@@ -595,7 +744,7 @@ void draw_static_step(uint8_t step) {
             break;
         case 10: // سلول محور E
             mc_ui_card(362U, 132U, 110U, 56U, 8U, kCardBg, kCardBorder);
-            mc_gfx_text(370U, 138U, "E", kAxisE, kCardBg, 3U);
+            mc_gfx_text(static_cast<uint16_t>(362U + kExLetterDx), 138U, "EX", kAxisE, kCardBg, 3U);
             break;
         case 11: // نوار ادغام‌شده وضعیت دستگاه و منبع ورودی
             mc_ui_card(8U, 196U, 464U, 32U, 10U, kCardBg, kCardBorder);
@@ -817,7 +966,20 @@ void update_one_field() {
             mc_dbg_318_ui_axis_white_shown &= ~(1U << axis_idx);
         }
 
-        const uint8_t state = (enabled ? 1U : 0U) | (positive ? 2U : 0U);
+        const uint8_t flip = (static_cast<uint8_t>(MC_UI_HOME_ARROW_FLIP_MASK) >> axis_idx) & 1U;
+        const bool vis_positive = (positive != (flip != 0U));
+        const bool moving       = g_axis_moving[axis_idx];
+
+        uint8_t mode = 0U;
+        if (!enabled) {
+            mode = 0U;
+        } else if (!moving) {
+            mode = 3U; // ایستا: هر دو روشن
+        } else {
+            mode = vis_positive ? 1U : 2U; // حرکت: فقط فلش جهت حرکت
+        }
+
+        const uint8_t state = (enabled ? 1U : 0U) | (positive ? 2U : 0U) | (moving ? 4U : 0U);
         if (cache.dirty || (cache.state != state)) {
             const uint16_t cell_x0 = static_cast<uint16_t>(8U + axis_idx * 118U);
             const uint16_t card_bg  = enabled ? kColorWhite : kCardBg;
@@ -825,23 +987,29 @@ void update_one_field() {
 
             static const uint16_t kInactLetters[4] = { kAxisX, kAxisY, kAxisZ, kAxisE };
             static const uint16_t kActLetters[4]   = { kAxisXDark, kAxisYDark, kAxisZDark, kAxisEDark };
-            static const char* const kLetterStr[4] = { "X", "Y", "Z", "E" };
+            static const char* const kLetterStr[4] = { "X", "Y", "Z", "EX" };
 
             const uint16_t letter_fg = enabled ? kActLetters[axis_idx] : kInactLetters[axis_idx];
             const char* const st_str  = enabled ? "ON" : "OFF";
             const uint16_t st_fg      = enabled ? kActiveStatus : kLabelGray;
 
+            const uint16_t letter_dx = (axis_idx == 3U) ? kExLetterDx : 8U;
+            const uint16_t status_dx = (axis_idx == 3U) ? kExStatusDx : 40U;
+
             // ۱. کشیدن مجدد کارت، حرف محور و وضعیت ON/OFF
             mc_ui_card(cell_x0, 132U, 110U, 56U, 8U, card_bg, card_brd);
-            mc_gfx_text(static_cast<uint16_t>(cell_x0 + 8U), 138U, kLetterStr[axis_idx], letter_fg, card_bg, 3U);
-            mc_gfx_text(static_cast<uint16_t>(cell_x0 + 40U), 140U, st_str, st_fg, card_bg, 2U);
+            mc_gfx_text(static_cast<uint16_t>(cell_x0 + letter_dx), 138U, kLetterStr[axis_idx], letter_fg, card_bg, 3U);
+            mc_gfx_text(static_cast<uint16_t>(cell_x0 + status_dx), 140U, st_str, st_fg, card_bg, 2U);
 
-            // ۲. پاک‌کردن جعبه فلش و کشیدن فلش جفت‌مثلث بدون دم
-            mc_gfx_fill_rect(static_cast<uint16_t>(cell_x0 + 82U), 137U, 18U, 26U, card_bg);
-            const uint8_t act_code = enabled ? (positive ? 1U : 2U) : 0U;
+            // ۲. پاک‌کردن جعبه فلش و کشیدن فلش‌های افقی/عمودی
             const uint16_t dim_col = enabled ? kDirDimActive : kDirDimInact;
-            const uint16_t act_col = positive ? kDirPosActive : kDirNegActive;
-            mc_icon_dir_pair(static_cast<uint16_t>(cell_x0 + 84U), 139U, act_code, act_col, dim_col);
+            if (axis_idx == 0U) { // X: فلش افقی
+                mc_gfx_fill_rect(static_cast<uint16_t>(cell_x0 + 80U), 141U, 26U, 18U, card_bg);
+                mc_icon_dir_pair_h(static_cast<uint16_t>(cell_x0 + 82U), 143U, mode, kDirPosActive, kDirNegActive, dim_col);
+            } else { // Y, Z, E: فلش عمودی
+                mc_gfx_fill_rect(static_cast<uint16_t>(cell_x0 + 82U), 137U, 18U, 26U, card_bg);
+                mc_icon_dir_pair_v(static_cast<uint16_t>(cell_x0 + 84U), 139U, mode, kDirPosActive, kDirNegActive, dim_col);
+            }
 
             cache.state = state;
             cache.dirty = false;
@@ -937,6 +1105,14 @@ void mc_ui_init() {
     mc_dbg_359_ui_fake_print_pct = 0U;
     mc_dbg_360_about_sel_shown = 0U;
     mc_dbg_361_about_force = 0U;
+    mc_dbg_409_home_act_en = 1U;
+    mc_dbg_410_home_act_cnt = 0U;
+    mc_dbg_411_home_act_last = 255U;
+    mc_dbg_412_home_act_refused = 0U;
+    mc_dbg_413_home_refuse_reason = 0U;
+    mc_dbg_414_home_reset_dry = 0U;
+    mc_dbg_415_home_moving_mask = 0U;
+    mc_dbg_416_home_fake_move = 0U;
 
     for (uint8_t i = 0U; i < kFieldCount; ++i) {
         g_field_cache[i].text[0] = '\0';
@@ -972,6 +1148,14 @@ void mc_ui_poll() {
     (void)mc_dbg_302_ui_fake_status;
     (void)mc_dbg_303_ui_fake_media;
     (void)mc_dbg_304_ui_fake_fan_pct;
+    (void)mc_dbg_409_home_act_en;
+    (void)mc_dbg_410_home_act_cnt;
+    (void)mc_dbg_411_home_act_last;
+    (void)mc_dbg_412_home_act_refused;
+    (void)mc_dbg_413_home_refuse_reason;
+    (void)mc_dbg_414_home_reset_dry;
+    (void)mc_dbg_415_home_moving_mask;
+    (void)mc_dbg_416_home_fake_move;
     (void)mc_dbg_305_ui_fake_axis_en;
     (void)mc_dbg_306_ui_media_shown;
     (void)mc_dbg_307_ui_fake_axis_dir;
@@ -1517,8 +1701,13 @@ void mc_ui_poll() {
                 if (mc_dbg_319_ui_sel_shown == 4U) { // اینتر روی گزینه منو
                     mc_ui_menu_open();
                     mc_dbg_323_ui_page = 1U;
+                } else {
+                    home_run_action(static_cast<uint8_t>(mc_dbg_319_ui_sel_shown));
                 }
             }
+
+            home_axis_motion_poll();
+            home_msg_poll();
 
             // ۴. به‌روزرسانی فیلدهای متغیر
             update_one_field();

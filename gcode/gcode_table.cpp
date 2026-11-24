@@ -47,6 +47,10 @@ const GcodeEntry kTable[] = {
     { 'M', 501U, -1, mc_gcode_m501 },
     { 'M', 502U, -1, mc_gcode_m502 },
     { 'M', 503U, -1, mc_gcode_m503 },
+    { 'M', 24U,  -1, mc_gcode_m24 },
+    { 'M', 25U,  -1, mc_gcode_m25 },
+    { 'M', 410U, -1, mc_gcode_m410 },
+    { 'M', 999U, -1, mc_gcode_m999 },
     { 'M', 9999U, -1, mc_gcode_m9999 }   // دستور تست بند ۳.۵ (موقت)
 };
 

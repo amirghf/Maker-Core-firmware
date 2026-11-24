@@ -92,6 +92,13 @@ bool mc_board_safe_state_check() {
     return true;
 }
 
+[[noreturn]] void mc_system_reset() {
+    mc_board_safe_state();
+    __disable_irq();
+    NVIC_SystemReset();
+    while (true) {}
+}
+
 }  // namespace mc
 
 // پل‌های C برای main.c (استثنای مجاز از قانون namespace)

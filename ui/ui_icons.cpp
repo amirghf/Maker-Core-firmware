@@ -167,6 +167,39 @@ void mc_icon_dir_pair(uint16_t x, uint16_t y, uint8_t active, uint16_t active_co
                         static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 21U), bottom_color);
 }
 
+void mc_icon_dir_pair_v(uint16_t x, uint16_t y, uint8_t mode, uint16_t top_color, uint16_t bottom_color, uint16_t dim_color) {
+    const uint16_t top_col = ((mode & 1U) != 0U) ? top_color : dim_color;
+    const uint16_t bot_col = ((mode & 2U) != 0U) ? bottom_color : dim_color;
+
+    // مثلث بالا (جهت مثبت): نقاط (x, y+9)، (x+14, y+9)، (x+7, y)
+    mc_ui_fill_triangle(static_cast<int16_t>(x), static_cast<int16_t>(y + 9U),
+                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 9U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y), top_col);
+
+    // مثلث پایین (جهت منفی): نقاط (x, y+12)، (x+14, y+12)، (x+7, y+21)
+    mc_ui_fill_triangle(static_cast<int16_t>(x), static_cast<int16_t>(y + 12U),
+                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 12U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 21U), bot_col);
+}
+
+void mc_icon_dir_pair_h(uint16_t x, uint16_t y, uint8_t mode, uint16_t right_color, uint16_t left_color, uint16_t dim_color) {
+    const uint16_t right_col = ((mode & 1U) != 0U) ? right_color : dim_color;
+    const uint16_t left_col  = ((mode & 2U) != 0U) ? left_color : dim_color;
+
+    // مثلث چپ (جهت منفی): نقاط (x+9, y)، (x+9, y+14)، (x, y+7)
+    mc_ui_fill_triangle(static_cast<int16_t>(x + 9U), static_cast<int16_t>(y),
+                        static_cast<int16_t>(x + 9U), static_cast<int16_t>(y + 14U),
+                        static_cast<int16_t>(x), static_cast<int16_t>(y + 7U), left_col);
+
+    // مثلث راست (جهت مثبت): نقاط (x+12, y)، (x+12, y+14)، (x+21, y+7)
+    mc_ui_fill_triangle(static_cast<int16_t>(x + 12U), static_cast<int16_t>(y),
+                        static_cast<int16_t>(x + 12U), static_cast<int16_t>(y + 14U),
+                        static_cast<int16_t>(x + 21U), static_cast<int16_t>(y + 7U), right_col);
+}
+                        static_cast<int16_t>(x + 14U), static_cast<int16_t>(y + 12U),
+                        static_cast<int16_t>(x + 7U), static_cast<int16_t>(y + 21U), bottom_color);
+}
+
 
 // کارت SD: بدنه با گوشه بریده بالا-راست و سه شیار تماس
 void mc_icon_sd(uint16_t x, uint16_t y, uint16_t color, uint16_t bg) {

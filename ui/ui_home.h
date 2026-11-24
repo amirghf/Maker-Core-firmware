@@ -17,6 +17,16 @@ extern volatile uint32_t mc_dbg_304_ui_fake_fan_pct;      // نوشتنی: در�
 extern volatile uint32_t mc_dbg_305_ui_fake_axis_en;     // نوشتنی: بیت ۰ تا ۳ = فعال بودن X، Y، Z، E (فقط وقتی fake روشن است)
 extern volatile uint32_t mc_dbg_323_ui_page;            // خواندنی: ۰ = صفحه اصلی، ۱ = منو (بند ۸.۷)، ۲ = صفحه حرکت (بند ۸.۸)، ۳ = صفحه اکسترودر (بند ۸.۹)، ۴ = صفحه داغ (بند ۸.۱۰)، ۵ = صفحه سنسورها (بند ۸.۱۲)، ۶ = صفحه SD CARD (بند ۸.۱۳)، ۷ = صفحه USB OTG (بند ۸.۱۴)، ۸ = صفحه ABOUT (بند ۸.۱۸)، ۹ = صفحه TOUCH CAL (بند ۸.۱۵)
 extern volatile uint32_t mc_dbg_359_ui_fake_print_pct;   // نوشتنی: درصد ساختگی چاپ ۰ تا ۱۰۰ (فقط وقتی fake روشن است) (بند ۸.۶)
+
+// متغیرهای دیباگ عملکردهای صفحه اصلی (بند ۸.۱۶.۵)
+extern volatile uint32_t mc_dbg_409_home_act_en;       // نوشتنی: 0 = دکمه‌های START و PAUSE و STOP و RESET هیچ کاری نمی‌کنند (پیش‌فرض 1)
+extern volatile uint32_t mc_dbg_410_home_act_cnt;      // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+extern volatile uint32_t mc_dbg_411_home_act_last;     // خواندنی: اندیس آخرین دکمه موفق (0 = START، 1 = PAUSE، 2 = STOP، 3 = RESET؛ 255 = هنوز نشده)
+extern volatile uint32_t mc_dbg_412_home_act_refused;  // خواندنی: تعداد دفعاتی که دکمه رد شد
+extern volatile uint32_t mc_dbg_413_home_refuse_reason;// خواندنی: علت آخرین رد شدن
+extern volatile uint32_t mc_dbg_414_home_reset_dry;    // نوشتنی: 1 = دکمه RESET همه کار را می‌کند ولی ریست سخت‌افزاری نمی‌زند (برای تست)؛ 0 = ریست واقعی (پیش‌فرض 0)
+extern volatile uint32_t mc_dbg_415_home_moving_mask;  // خواندنی: بیت 0 تا 3 = حرکت واقعی (یا fake) محور X، Y، Z، E
+extern volatile uint32_t mc_dbg_416_home_fake_move;    // نوشتنی: بیت 0 تا 3 = حرکت ساختگی X، Y، Z، E
 // متغیرهای mc_dbg_362/370/371 (TOUCH CAL) در ui_tcal.h اعلان شده‌اند (بند ۸.۱۵).
 
 
