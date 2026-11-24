@@ -190,7 +190,7 @@ static void draw_filament_row() {
     mc_gfx_text(22U, 195U, "FILAMENT", kLabelGray, kCardBg, 2U);
 
     const bool empty = read_filament_empty();
-    const char* st_text = empty ? "EMPTY" : "OK";
+    const char* st_text = empty ? "EMPTY" : "PRESENT";
     const uint16_t st_color = empty ? kColorRed : kColorGreen;
 
     const uint16_t tw = mc_gfx_text_width(st_text, 2U);

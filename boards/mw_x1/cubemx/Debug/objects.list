@@ -23,6 +23,7 @@
 "./Core/core_src/endstop_guard.o"
 "./Core/core_src/error.o"
 "./Core/core_src/extruder.o"
+"./Core/core_src/filament_sensor.o"
 "./Core/core_src/gcode_parser.o"
 "./Core/core_src/gfx.o"
 "./Core/core_src/heater_bed.o"
