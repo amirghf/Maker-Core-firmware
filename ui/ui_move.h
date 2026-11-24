@@ -14,6 +14,14 @@ extern volatile uint32_t mc_dbg_331_move_enter_idx;   // خواندنی: اند�
 extern volatile uint32_t mc_dbg_332_move_force;       // نوشتنی: ۰ = بی‌اثر؛ ۱ = باز کردن صفحه حرکت؛ ۲ = برگشت به منو؛ ۳ تا ۱۵ = فوکوس روی مورد
 extern volatile uint32_t mc_dbg_333_move_step_shown;  // خواندنی: گام نمایشی: ۰ = ۰.۱، ۱ = ۱ (پیش‌فرض)، ۲ = ۱۰
 
+// متغیرهای دیباگ عملکردهای صفحه حرکت (بند ۸.۱۶)
+extern volatile uint32_t mc_dbg_395_mv_act_cnt;         // خواندنی: تعداد دفعاتی که دکمه‌ها واقعاً کاری انجام دادند
+extern volatile uint32_t mc_dbg_396_mv_act_last;        // خواندنی: اندیس آخرین دکمه موفق (0 تا 11؛ 255 = هنوز نشده)
+extern volatile uint32_t mc_dbg_397_mv_act_refused;     // خواندنی: تعداد دفعاتی که دکمه رد شد
+extern volatile uint32_t mc_dbg_398_mv_act_en;          // نوشتنی: 0 = دکمه‌ها هیچ کاری نمی‌کنند (پیش‌فرض 1)
+extern volatile uint32_t mc_dbg_399_mv_refuse_reason;   // خواندنی: علت آخرین رد شدن
+extern volatile int32_t  mc_dbg_400_mv_jog_last_um;     // خواندنی: آخرین حرکت دکمه‌های ± محورها، علامت‌دار، به میکرومتر
+
 #ifdef __cplusplus
 }
 
