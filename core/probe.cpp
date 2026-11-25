@@ -23,7 +23,7 @@
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند. شماره‌ها دائمی‌اند.
 extern "C" {
 volatile uint32_t mc_dbg_236_pr_state        = 0;  // خواندنی: وضعیت G30 (0 بیکار، 1 در حال کار، 2 تمام شد، 3 خطا)
-volatile uint32_t mc_dbg_237_pr_stage        = 0;  // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Deploy، 3 Approach، 4 Return، 5 Stow، 6 AlarmRelease، 7 StowAgain)
+volatile uint32_t mc_dbg_237_pr_stage        = 0;  // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Deploy، 3 Approach، 4 Return، 5 Stow، 6 AlarmRelease، 7 StowAgain، 8 PreRelease، 9 PreStow)
 volatile uint32_t mc_dbg_238_pr_result       = 0;  // خواندنی: نتیجه آخرین G30 (0 هیچ، 1 موفق، 2 kill یا arm نیست، 3 فعال‌شدن درایور Z ناموفق، 4 سیگنال قبل از Deploy بالا بود، 5 سیگنال بعد از Deploy بالا بود، 6 پراب نخورد، 7 صف رد کرد، 8 BLTouch فرمان را نپذیرفت یا Deployed نشد، 9 توقف غیرمنتظره، 10 سیگنال بعد از Stow بالا بود، 11 پارامتر نامعتبر)
 volatile uint32_t mc_dbg_239_pr_runs         = 0;  // خواندنی: تعداد G30 هایی که موفق تمام شدند
 volatile uint32_t mc_dbg_240_pr_cap_mm       = 0;  // نوشتنی: سقف مسافت پایین‌رفتن (میلی‌متر). 0 = پیش‌فرض (kProbeMaxMm)
@@ -35,6 +35,7 @@ volatile int32_t  mc_dbg_245_pr_off_y_um     = 0;  // خواندنی: آفست Y
 volatile int32_t  mc_dbg_246_pr_off_z_um     = 0;  // خواندنی: آفست Z (میکرومتر)
 volatile uint32_t mc_dbg_247_pr_post_stow_hi = 0;  // خواندنی: 1 یعنی در آخرین G30 بعد از اولین Stow سیگنال پراب هنوز بالا بود
 volatile uint32_t mc_dbg_248_pr_refused      = 0;  // خواندنی: شمارنده دستورهای رد شده
+volatile uint32_t mc_dbg_448_pr_prerel_cnt   = 0;  // خواندنی: تعداد دفعاتی که قبل از G30، توالی AlarmRelease و Stow شروع شد (از روشن شدن) (بند ۶.۶)
 
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
@@ -51,7 +52,9 @@ enum class Stage : uint8_t {
     Return       = 4,
     Stow         = 5,
     AlarmRelease = 6,
-    StowAgain    = 7
+    StowAgain    = 7,
+    PreRelease   = 8,   // ریست آلارم قبل از Deploy در G30 (بند ۶.۷ و ۶.۶)
+    PreStow      = 9    // جمع کردن پین بعد از PreRelease و قبل از Deploy در G30 (بند ۶.۷ و ۶.۶)
 };
 
 constexpr uint32_t kStateIdle  = 0U;
@@ -213,6 +216,7 @@ void mc_probe_init() {
     mc_dbg_246_pr_off_z_um     = 0;
     mc_dbg_247_pr_post_stow_hi = 0U;
     mc_dbg_248_pr_refused      = 0U;
+    mc_dbg_448_pr_prerel_cnt   = 0U;
     refresh_debug();
 }
 
@@ -246,9 +250,6 @@ GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
             if (mc_is_killed() || (mc_dbg_80_mv_arm != 1U)) {
                 return fail_g30(kResNotArmed, "G30: kill or arm off", false);
             }
-            if (mc_endstop_triggered(2U)) {
-                return fail_g30(kResSignalPreDeployHigh, "G30: probe signal high before deploy", false);
-            }
             mc_eguard_snapshot();
             g.start_z     = mc_position_get(kAxisZ);
             g.start_steps = mc_axis_position_steps(StepAxis::Z);
@@ -258,6 +259,28 @@ GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
                 return fail_g30(kResDriverFail, "G30: driver enable failed", false);
             }
 
+            g.stage = Stage::PreRelease;
+            mc_dbg_237_pr_stage = 8U;
+            mc_dbg_448_pr_prerel_cnt = mc_dbg_448_pr_prerel_cnt + 1U;
+            if (!mc_bltouch_start(BltouchCmd::AlarmRelease)) {
+                return fail_g30(kResBltouchFail, "G30: bltouch pre-release start failed", false);
+            }
+            return GcodeStatus::Busy;
+
+        case Stage::PreRelease:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            g.stage = Stage::PreStow;
+            mc_dbg_237_pr_stage = 9U;
+            if (!mc_bltouch_start(BltouchCmd::Stow)) {
+                return fail_g30(kResBltouchFail, "G30: bltouch pre-stow start failed", true);
+            }
+            return GcodeStatus::Busy;
+
+        case Stage::PreStow:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            if (mc_endstop_triggered(2U)) {
+                return fail_g30(kResSignalPreDeployHigh, "G30: probe signal high before deploy", false);
+            }
             g.stage = Stage::Deploy;
             mc_dbg_237_pr_stage = 2U;
             if (!mc_bltouch_start(BltouchCmd::Deploy)) {

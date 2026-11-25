@@ -357,6 +357,26 @@
 | `mc_dbg_445_fchg_ignore_sensor` | `uint32_t` | نوشتنی | 1 = موقع «ادامه» سنسور فیلامنت نادیده گرفته شود (برای تست؛ پیش‌فرض 0) |
 | `mc_dbg_446_fchg_tmo_s` | `uint32_t` | نوشتنی | مدت نگه‌داشتن هیتر در انتظار به ثانیه (برای تست). 0 = از `MC_FILCHG_HEATER_HOLD_S` |
 
+---
+
+## 🔷 بند ۶.۷: هومینگ Z و ایمنی آلارم BLTouch (`core/homing.cpp`)
+
+| نام کامل | نوع | دسترسی | توضیح |
+| :--- | :--- | :--- | :--- |
+| `mc_dbg_447_hm_prerel_cnt` | `uint32_t` | خواندنی | تعداد دفعاتی که قبل از هومینگ Z، توالی AlarmRelease و Stow شروع شد (از روشن شدن). |
+
+*(توضیح مرحله‌های `mc_dbg_208_hm_stage`: 0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy، 14 PreRelease، 15 PreStow)*
+
+---
+
+## 🔷 بند ۶.۶: پراب Z و دستور G30 (`core/probe.cpp`)
+
+| نام کامل | نوع | دسترسی | توضیح |
+| :--- | :--- | :--- | :--- |
+| `mc_dbg_448_pr_prerel_cnt` | `uint32_t` | خواندنی | تعداد دفعاتی که قبل از G30، توالی AlarmRelease و Stow شروع شد (از روشن شدن). |
+
+*(توضیح مرحله‌های `mc_dbg_237_pr_stage`: 0 هیچ، 1 WaitIdle، 2 Deploy، 3 Approach، 4 Return، 5 Stow، 6 AlarmRelease، 7 StowAgain، 8 PreRelease، 9 PreStow)*
+
 
 
 

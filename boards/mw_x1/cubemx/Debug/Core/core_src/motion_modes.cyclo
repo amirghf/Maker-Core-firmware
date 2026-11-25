@@ -1,0 +1,15 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:28:10:uint32_t mc::{anonymous}::to_milli(float)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:32:6:void mc::{anonymous}::refresh_debug()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:44:6:void mc::mc_mode_init()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:55:6:void mc::mc_mode_poll()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:68:6:bool mc::mc_mode_relative_get()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:69:6:void mc::mc_mode_relative_set(bool)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:71:6:bool mc::mc_mode_e_relative_get()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:72:6:void mc::mc_mode_e_relative_set(bool)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:74:7:float mc::mc_mode_spmm_get(uint8_t)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:79:6:bool mc::mc_mode_spmm_set(uint8_t, float)	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:87:7:float mc::mc_mode_feed_get_mmin()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:88:7:float mc::mc_mode_feed_get_mms()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:90:6:bool mc::mc_mode_feed_set(float)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:97:6:void mc::mc_mode_note_applied()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/motion_modes.cpp:98:6:void mc::mc_mode_note_refused()	1

@@ -1,0 +1,8 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:34:13:bool mc::{anonymous}::real_otg_present()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:39:16:uint8_t mc::{anonymous}::read_otg_status_code()	6
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:55:13:void mc::{anonymous}::draw_status_card()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:116:13:void mc::{anonymous}::draw_file_list_area()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:157:13:void mc::{anonymous}::draw_otg_item(uint8_t)	19
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:238:13:void mc::{anonymous}::apply_otg_selection(uint8_t)	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:252:6:void mc::mc_ui_otg_open()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_otg.cpp:269:11:mc::OtgResult mc::mc_ui_otg_poll()	24

@@ -26,7 +26,7 @@
 extern "C" {
 volatile uint32_t mc_dbg_206_hm_state        = 0;    // خواندنی: وضعیت G28 (0 بیکار، 1 در حال کار، 2 تمام شد، 3 خطا)
 volatile uint32_t mc_dbg_207_hm_axis         = 255;  // خواندنی: محوری که الان هوم می‌شود (0 X، 1 Y، 2 Z، 255 هیچ)
-volatile uint32_t mc_dbg_208_hm_stage        = 0;    // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy)
+volatile uint32_t mc_dbg_208_hm_stage        = 0;    // خواندنی: مرحله (0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy، 14 PreRelease، 15 PreStow)
 volatile uint32_t mc_dbg_209_hm_result       = 0;    // خواندنی: نتیجه آخرین G28 (0 هیچ، 1 موفق، 2 kill یا arm نیست، 3 فعال‌شدن درایور ناموفق، 4 اندستاپ گیر کرده، 5 اندستاپ پیدا نشد، 6 صف رد کرد، 7 توقف غیرمنتظره، 8 نیاز به هوم X و Y، 9 نقطه امن خارج از حدود، 10 خطای BLTouch، 11 سیگنال قبل Deploy بالا، 12 سیگنال بعد Deploy بالا، 13 سیگنال بعد Stow بالا، 14 سیگنال بعد از ریست و Deploy دوباره بالا)
 volatile uint32_t mc_dbg_210_hm_homed_mask   = 0;    // خواندنی: ماسک محورهای هوم‌شده (بیت ۰ X، ۱ Y، ۲ Z)
 volatile uint32_t mc_dbg_211_hm_runs         = 0;    // خواندنی: تعداد G28 هایی که کامل و موفق تمام شدند
@@ -36,6 +36,7 @@ volatile uint32_t mc_dbg_214_hm_slow_um      = 0;    // خواندنی: مساف
 volatile int32_t  mc_dbg_249_hm_z_set_um    = 0;    // خواندنی: موقعیت Z که بعد از آخرین هومینگ موفق Z گذاشته شد (میکرومتر)
 volatile uint32_t mc_dbg_250_hm_post_stow_hi = 0;   // خواندنی: 1 یعنی در آخرین هومینگ Z بعد از اولین Stow سیگنال پراب هنوز بالا بود
 volatile uint32_t mc_dbg_251_hm_reset_cnt    = 0;    // خواندنی: تعداد ریست‌های پراب (AlarmRelease بعد از زدن) در آخرین G28 (برای یک G28 Z درست باید 1 باشد)
+volatile uint32_t mc_dbg_447_hm_prerel_cnt   = 0;    // خواندنی: تعداد دفعاتی که قبل از هومینگ Z، توالی AlarmRelease و Stow شروع شد (از روشن شدن) (بند ۶.۷)
 
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
@@ -58,20 +59,22 @@ constexpr float kSafeHomeXMm      = MC_SAFE_HOME_X_MM;
 constexpr float kSafeHomeYMm      = MC_SAFE_HOME_Y_MM;
 
 enum class Stage : uint8_t {
-    Idle         = 0,
-    WaitIdle     = 1,
-    Release      = 2,
-    Fast         = 3,
-    BackOff      = 4,
-    Slow         = 5,
-    SafeX        = 6,
-    SafeY        = 7,
-    Deploy       = 8,
-    Stow         = 9,
-    AlarmRelease = 10,
-    StowAgain    = 11,
-    ProbeReset   = 12,   // بعد از زدن پراب و عقب‌نشینی: فرمان AlarmRelease
-    ProbeRedeploy = 13   // بعد از ریست: Deploy دوباره، بررسی سیگنال، شروع مرحله آهسته
+    Idle          = 0,
+    WaitIdle      = 1,
+    Release       = 2,
+    Fast          = 3,
+    BackOff       = 4,
+    Slow          = 5,
+    SafeX         = 6,
+    SafeY         = 7,
+    Deploy        = 8,
+    Stow          = 9,
+    AlarmRelease  = 10,
+    StowAgain     = 11,
+    ProbeReset    = 12,   // بعد از زدن پراب و عقب‌نشینی: فرمان AlarmRelease
+    ProbeRedeploy = 13,   // بعد از ریست: Deploy دوباره، بررسی سیگنال، شروع مرحله آهسته
+    PreRelease    = 14,   // ریست آلارم قبل از شروع هومینگ Z (بند ۶.۷ و ۶.۶)
+    PreStow       = 15    // جمع کردن پین بعد از PreRelease و قبل از Deploy (بند ۶.۷ و ۶.۶)
 };
 
 constexpr uint32_t kStateIdle  = 0U;
@@ -194,7 +197,23 @@ GcodeStatus fail(uint32_t code, const char* text) {
     return GcodeStatus::Error;
 }
 
+// شروع توالی هومینگ Z با BLTouch (بند ۶.۷ و ۶.۶): اول AlarmRelease، بعد Stow، بعد چک سیگنال و Deploy.
 GcodeStatus start_z_bltouch() {
+    if (!mc_motor_enable(StepAxis::Z, true)) {
+        return fail(kResDriver, "homing: driver enable failed");
+    }
+    g.pin_out = true;
+    g.stage = Stage::PreRelease;
+    mc_dbg_208_hm_stage = static_cast<uint32_t>(Stage::PreRelease);
+    mc_dbg_447_hm_prerel_cnt = mc_dbg_447_hm_prerel_cnt + 1U;
+    if (!mc_bltouch_start(BltouchCmd::AlarmRelease)) {
+        return fail(kResBltouchFail, "homing: bltouch pre-release start failed");
+    }
+    return GcodeStatus::Busy;
+}
+
+// مرحله Deploy پس از پایان PreStow (بند ۶.۷ و ۶.۶): بررسی سیگنال پراب، سپس ارسال فرمان Deploy.
+GcodeStatus start_z_deploy() {
     if (mc_endstop_triggered(2U)) {
         return fail(kResSignalPreDeployHigh, "homing: probe signal high before deploy");
     }
@@ -420,6 +439,7 @@ void mc_homing_init() {
     mc_dbg_249_hm_z_set_um     = 0;
     mc_dbg_250_hm_post_stow_hi = 0U;
     mc_dbg_251_hm_reset_cnt    = 0U;
+    mc_dbg_447_hm_prerel_cnt   = 0U;
 }
 
 void mc_homing_poll() {
@@ -481,6 +501,19 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
         case Stage::BackOff:
         case Stage::Slow:
             return step_move();
+
+        case Stage::PreRelease:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            g.stage = Stage::PreStow;
+            mc_dbg_208_hm_stage = static_cast<uint32_t>(Stage::PreStow);
+            if (!mc_bltouch_start(BltouchCmd::Stow)) {
+                return fail(kResBltouchFail, "homing: bltouch pre-stow start failed");
+            }
+            return GcodeStatus::Busy;
+
+        case Stage::PreStow:
+            if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
+            return start_z_deploy();
 
         case Stage::Deploy:
             if (mc_bltouch_busy()) { return GcodeStatus::Busy; }
