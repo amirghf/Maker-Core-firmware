@@ -13,6 +13,8 @@ void mc_homing_init();
 void mc_homing_poll();
 // ماسک محورهای هوم‌شده (بیت ۰ = X، ۱ = Y، ۲ = Z)
 uint8_t mc_homing_homed_mask();
+// آیا هومینگ در حال اجراست؟
+bool mc_homing_busy();
 // اجرای G28. تا پایان کار Busy برمی‌گرداند و منتظر نمی‌ماند.
 GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call);
 

@@ -19,6 +19,8 @@ void mc_probe_poll();
 
 // اجرای G30. تا پایان کار Busy برمی‌گرداند و منتظر نمی‌ماند.
 GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call);
+// آیا G30 در حال اجراست؟
+bool mc_probe_busy();
 
 // آفست پراب (۰ = X ، ۱ = Y ، ۲ = Z) به میلی‌متر. شماره بد ← ۰.
 float mc_probe_offset_get(uint8_t axis);

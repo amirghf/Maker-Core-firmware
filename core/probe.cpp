@@ -224,6 +224,10 @@ void mc_probe_poll() {
     refresh_debug();
 }
 
+bool mc_probe_busy() {
+    return (g.stage != Stage::Idle);
+}
+
 GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
     if (first_call) {
         g = Ctx{};

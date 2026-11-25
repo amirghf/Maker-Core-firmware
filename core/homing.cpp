@@ -465,6 +465,10 @@ uint8_t mc_homing_homed_mask() {
     return g_homed;
 }
 
+bool mc_homing_busy() {
+    return (g.stage != Stage::Idle);
+}
+
 GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
     if (first_call) {
         g = Ctx{};
