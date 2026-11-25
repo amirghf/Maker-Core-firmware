@@ -7,6 +7,9 @@
 #include "motion_modes.h"
 #include "motion_queue.h"
 #include "endstop_guard.h"   // بند ۶.۲
+#include "soft_limits.h"    // بند ۱۰.۶
+#include "homing.h"         // بند ۱۰.۶
+#include "host_reply.h"     // بند ۱۰.۶
 
 namespace mc {
 
@@ -31,6 +34,22 @@ GcodeStatus mc_gcode_g92(const GcodeCommand& cmd, bool first_call) {
     }
 
     if (mc_mq_busy()) { return GcodeStatus::Busy; }
+
+    // بند ۱۰.۶: G92 روی محور هوم‌شده: هر مقدار تازه‌ای که موقعیت فعلی را بیرون از محدوده بگذارد رد می‌شود
+    if (mc_softlimit_enabled_get()) {
+        const uint8_t homed_mask = mc_homing_homed_mask();
+        for (uint8_t i = 0U; i < 3U; ++i) {
+            if (has[i] && ((homed_mask & (1U << i)) != 0U)) {
+                if (!mc_softlimit_allows(i, val[i])) {
+                    mc_softlimit_note_homed_refused(3U);  // 3 = G92
+                    mc_softlimit_note_refused();
+                    mc_mode_note_refused();
+                    mc_reply_error("G92 position out of bounds for homed axis");
+                    return GcodeStatus::DoneReplied;
+                }
+            }
+        }
+    }
 
     bool any = false;
     for (uint8_t i = 0U; i < 4U; ++i) {

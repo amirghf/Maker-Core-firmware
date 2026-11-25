@@ -163,11 +163,14 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
             return GcodeStatus::Error;
         }
 
-        // هـ) Soft limits check
-        if (!mc_softlimit_allows_all(target_pos)) {
-            mc_softlimit_note_refused();
-            record_refuse(3U);
-            return GcodeStatus::Error;
+        // هـ) Soft limits check (بند ۱۰.۶)
+        for (uint8_t i = 0U; i < 3U; ++i) {
+            if (!mc_softlimit_allows(i, target_pos[i])) {
+                mc_softlimit_note_homed_refused(i);
+                mc_softlimit_note_refused();
+                record_refuse(3U);
+                return GcodeStatus::Error;
+            }
         }
 
         // و) Delta steps and dir mask

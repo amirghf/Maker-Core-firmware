@@ -39,5 +39,7 @@ bool mc_softlimit_allows_all(const float target_mm[4]);
 
 // شمارنده debug: هر رد شدن را بشمار (هم نوشتن نامعتبر و هم مقصد نامجاز).
 void mc_softlimit_note_refused();
+// بند ۱۰.۶: ثبت رد شدن به‌خاطر خروج از محدوده بعد از هومینگ (محور ۰=X، ۱=Y، ۲=Z، ۳=G92)
+void mc_softlimit_note_homed_refused(uint8_t axis);
 
 }  // namespace mc

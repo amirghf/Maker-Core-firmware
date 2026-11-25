@@ -2,6 +2,7 @@
 #include "soft_limits.h"
 #include "machine_state.h"
 #include "motion_modes.h"
+#include "homing.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند. شماره‌ها دائمی‌اند.
 // واحد مقدارهای mm10: دهم میلی‌متر (۲۴۰ میلی‌متر = ۲۴۰۰).
@@ -18,6 +19,8 @@ volatile int32_t  mc_dbg_160_sl_chk_mm10     = 0;  // نوشتنی: مقصد آ�
 volatile uint32_t mc_dbg_161_sl_chk_go       = 0;  // نوشتنی: ۱ = مقصد mc_dbg_160 را برای محور انتخاب‌شده بررسی کن. خودش صفر می‌شود. مقدار غیرصفر دیگر رد می‌شود.
 volatile uint32_t mc_dbg_162_sl_chk_result   = 0;  // خواندنی: نتیجه آخرین بررسی. ۰ = هنوز بررسی نشده، ۱ = مجاز، ۲ = رد شد.
 volatile uint32_t mc_dbg_163_sl_refused      = 0;  // خواندنی: تعداد کل رد شدن‌ها (نوشتن نامعتبر و مقصد نامجاز)
+volatile uint32_t mc_dbg_473_hsl_refused_cnt = 0;  // خواندنی: تعداد حرکت‌های ردشده به‌خاطر بیرون از محدوده بعد از هومینگ (بند ۱۰.۶)
+volatile uint32_t mc_dbg_474_hsl_last_axis    = 0;  // خواندنی: محور آخرین رد شدن: 0=X، 1=Y، 2=Z، 3=G92 (بند ۱۰.۶)
 }
 
 namespace mc {
@@ -156,6 +159,9 @@ bool mc_softlimit_set(uint8_t axis, float min_mm, float max_mm) {
 bool mc_softlimit_allows(uint8_t axis, float target_mm) {
     if (!g_enabled) { return true; }
     if (axis >= kLimitedAxes) { return true; }   // E (و هر شماره دیگر) حد ندارد
+    // بند ۱۰.۶: حدود نرم‌افزاری فقط برای محورهای هوم‌شده اعمال می‌شود
+    const bool is_homed = (mc_homing_homed_mask() & (1U << axis)) != 0U;
+    if (!is_homed) { return true; }
     // NaN در این شرط false می‌شود و رد می‌شود
     return (target_mm >= g_min[axis]) && (target_mm <= g_max[axis]);
 }
@@ -168,5 +174,10 @@ bool mc_softlimit_allows_all(const float target_mm[4]) {
 }
 
 void mc_softlimit_note_refused() { mc_dbg_163_sl_refused = mc_dbg_163_sl_refused + 1U; }
+
+void mc_softlimit_note_homed_refused(uint8_t axis) {
+    mc_dbg_473_hsl_refused_cnt = mc_dbg_473_hsl_refused_cnt + 1U;
+    mc_dbg_474_hsl_last_axis    = axis;
+}
 
 }  // namespace mc
