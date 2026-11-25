@@ -126,7 +126,7 @@ ErrorCode mc_last_error() {
             bool btn_pressed = !mc_gpio_read(PinId::EncBtn);
             if (!btn_pressed && mc_touch_pressed()) {
                 uint16_t tx = 0U, ty = 0U;
-                if (mc_touch_read_raw(tx, ty)) {
+                if (mc_touch_read_raw(&tx, &ty)) {
                     (void)tx;
                     (void)ty;
                     btn_pressed = true;
