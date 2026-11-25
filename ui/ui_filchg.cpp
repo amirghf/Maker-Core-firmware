@@ -9,6 +9,7 @@
 #include "../core/thermistor.h"
 #include "../core/heater_ex.h"
 #include "../core/filament_change.h"
+#include "../core/filament_runout.h"
 #include "../core/quick_stop.h"
 #include "../core/encoder.h"
 #include "../hal/hal_display.h"
@@ -46,7 +47,7 @@ const char* phase_to_str(uint8_t phase) {
         case 2: return "RETRACTING";
         case 3: return "PARKING";
         case 4: return "UNLOADING";
-        case 5: return "CHANGE FILAMENT - PRESS CONTINUE";
+        case 5: return mc_filrun_caused() ? "FILAMENT RUNOUT - PRESS CONTINUE" : "CHANGE FILAMENT - PRESS CONTINUE";
         case 6: return "REHEATING";
         case 7: return "LOADING";
         case 8: return "PURGING";

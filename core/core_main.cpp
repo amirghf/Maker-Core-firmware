@@ -43,6 +43,9 @@
 #include "probe.h"
 #include "filament_sensor.h"
 #include "filament_change.h"
+#include "filament_load.h"
+#include "filament_runout.h"
+#include "print_state.h"
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
@@ -408,6 +411,9 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_bltouch_init();   // بند ۶.۵
     mc::mc_filament_init();  // بند ۸.۱۶.۴: سنسور فیلامنت
     mc::mc_filchg_init();    // بند ۹.۱: تعویض فیلامنت
+    mc::mc_fload_init();     // بند ۹.۲: بارگذاری و تخلیه فیلامنت
+    mc::mc_filrun_init();    // بند ۹.۴: واکنش به اتمام فیلامنت
+    mc::mc_print_init();     // بند ۹.۴: وضعیت چاپ
     mc::mc_probe_init();   // بند ۶.۶
     mc::mc_eeprom_init();   // بند ۷.۱
     mc::mc_settings_init();   // بند ۷.۲
@@ -458,6 +464,9 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_bltouch_poll, mc::kBltouchPeriodMs);   // بند ۶.۵: BLTouch و متغیرهای debug
     mc::g_main.add(mc::mc_filament_poll, 10U);   // بند ۸.۱۶.۴: سنسور فیلامنت
     mc::g_main.add(mc::mc_filchg_poll, 100U);   // بند ۹.۱: تعویض فیلامنت
+    mc::g_main.add(mc::mc_fload_poll, 100U);    // بند ۹.۲: بارگذاری و تخلیه فیلامنت
+    mc::g_main.add(mc::mc_filrun_poll, 100U);   // بند ۹.۴: واکنش به اتمام فیلامنت
+    mc::g_main.add(mc::mc_print_poll, 100U);    // بند ۹.۴: وضعیت چاپ
     mc::g_main.add(mc::mc_probe_poll, 100U);   // بند ۶.۶: G30 و متغیرهای debug
     mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_settings_poll, mc::kSettingsPollMs);   // بند ۷.۲: ذخیره‌سازی سخت‌دار

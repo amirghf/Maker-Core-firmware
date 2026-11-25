@@ -12,6 +12,7 @@
 #include "error.h"
 #include "endstop_guard.h"   // بند ۶.۲
 #include "step_gen.h"        // بند ۶.۲
+#include "print_state.h"     // بند ۹.۴
 #include <math.h>
 #include <stdlib.h>
 
@@ -405,6 +406,13 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
     for (uint8_t i = 0U; i < 4U; ++i) {
         mc_position_set(i, g_move.target_pos[i]);
     }
+
+    const bool has_xy_extrude = ((g_move.total_delta[0] != 0) || (g_move.total_delta[1] != 0)) && (g_move.total_delta[3] > 0);
+    if (has_xy_extrude) {
+        // بند ۹.۴: ثبت حرکت چاپی (در بند ۱۲ شرط چاپ از فایل هم اضافه می‌شود)
+        mc_print_note_extrusion();
+    }
+
     mc_dbg_164_gm_result   = 1U;
     mc_dbg_165_gm_accepted += 1U;
     return GcodeStatus::Done;
