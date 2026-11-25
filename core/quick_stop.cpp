@@ -1,4 +1,4 @@
-// STOP: حرکت‌ها و صف قطع می‌شود، هیتر اکسترودر و بستر و فن خاموش می‌شوند و موتورها غیرفعال می‌شوند (بند ۸.۱۶.۵). هیچ هدر ST اینجا include نمی‌شود.
+// STOP: حرکت‌ها و صف قطع می‌شود، هیتر اکسترودر و بستر و فن خاموش می‌شوند و موتورها غیرفعال می‌شوند (بند ۸.۱۶.۵ و ۱۰.۱۴). هیچ هدر ST اینجا include نمی‌شود.
 #include "quick_stop.h"
 #include "step_gen.h"
 #include "axis_move.h"
@@ -17,7 +17,12 @@
 #include "heater_bed.h"
 #include "output_pwm.h"
 #include "stepper_out.h"
+#include "endstop_guard.h"  // بند ۱۰.۱۴
 #include "../gcode/gcode_dispatch.h"
+
+extern "C" {
+volatile uint32_t mc_dbg_489_qstop_sync_cnt = 0U; // خواندنی: تعداد دفعاتی که بعد از توقف سریع موقعیت منطقی از گام‌های واقعی دوباره ساخته شد (بند ۱۰.۱۴)
+}
 
 namespace mc {
 
@@ -31,6 +36,10 @@ void mc_quick_stop() {
     // ۲) پاک‌کردن صف‌های حرکت و برنامه‌ریز
     mc_mq_clear();
     mc_plan_clear();
+
+    // بند ۱۰.۱۴: بازسازی موقعیت منطقی از گام‌های واقعی موتورها (مثل Marlin بعد از quickstop)
+    mc_eguard_resync();
+    mc_dbg_489_qstop_sync_cnt = mc_dbg_489_qstop_sync_cnt + 1U;
 
     // ۳) پاک‌کردن صف دستورها و رها کردن دستور در حال اجرا
     mc_cmdq_clear();
