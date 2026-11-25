@@ -13,6 +13,7 @@ GcodeStatus mc_gcode_m112(const GcodeCommand& cmd, bool first_call) {
     (void)first_call;
     mc_dbg_485_estop_cnt = mc_dbg_485_estop_cnt + 1U;
     mc_kill(ErrorCode::EmergencyStop);
+    return GcodeStatus::Done;
 }
 
 }  // namespace mc
