@@ -15,6 +15,7 @@ ui/ui_home.o: \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_about.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_display.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_filchg.h \
+ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_msg.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_tcal.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_touch.h \
  K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_screen.h \
@@ -62,6 +63,7 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Cor
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_about.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_display.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_filchg.h:
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_msg.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_tcal.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_touch.h:
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer\ 3D/My_Framware/Maker\ Core\ firmware/ui/ui_screen.h:

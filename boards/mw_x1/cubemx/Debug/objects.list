@@ -194,6 +194,7 @@
 "./ui/ui_icons.o"
 "./ui/ui_menu.o"
 "./ui/ui_move.o"
+"./ui/ui_msg.o"
 "./ui/ui_otg.o"
 "./ui/ui_screen.o"
 "./ui/ui_sd.o"

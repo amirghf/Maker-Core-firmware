@@ -10,6 +10,8 @@
 #include "../config/mc_config.h"
 
 extern "C" {
+extern volatile uint32_t mc_dbg_294_ui_state;   // خواندنی (تعریف در ui_home.cpp): وضعیت UI؛ 4 = کار عادی (بند ۱۰.۱)
+
 volatile uint32_t mc_dbg_464_msg_force          = 0;  // نوشتنی: 0 = بی‌اثر. 1 = Error نمونه، 2 = Warning نمونه، 3 = Info نمونه.
 volatile uint32_t mc_dbg_465_msg_sample         = 0;  // نوشتنی: شماره نمونه متن 0 تا 3.
 volatile uint32_t mc_dbg_466_msg_shown          = 0;  // خواندنی: 1 = صفحه پیام الان نمایش داده می‌شود، 0 = نه.
