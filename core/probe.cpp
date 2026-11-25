@@ -36,6 +36,9 @@ volatile int32_t  mc_dbg_246_pr_off_z_um     = 0;  // خواندنی: آفست Z
 volatile uint32_t mc_dbg_247_pr_post_stow_hi = 0;  // خواندنی: 1 یعنی در آخرین G30 بعد از اولین Stow سیگنال پراب هنوز بالا بود
 volatile uint32_t mc_dbg_248_pr_refused      = 0;  // خواندنی: شمارنده دستورهای رد شده
 volatile uint32_t mc_dbg_448_pr_prerel_cnt   = 0;  // خواندنی: تعداد دفعاتی که قبل از G30، توالی AlarmRelease و Stow شروع شد (از روشن شدن) (بند ۶.۶)
+volatile uint32_t mc_dbg_478_psafe_refused_cnt = 0; // خواندنی: تعداد G28 Z یا G30 ردشده به‌خاطر نقطه ناامن پراب (بند ۱۰.۹)
+volatile int32_t  mc_dbg_479_psafe_last_x_um   = 0; // خواندنی: X نقطه پراب در آخرین رد شدن (میکرومتر) (بند ۱۰.۹)
+volatile int32_t  mc_dbg_480_psafe_last_y_um   = 0; // خواندنی: Y نقطه پراب در آخرین رد شدن (میکرومتر) (بند ۱۰.۹)
 
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
@@ -73,6 +76,7 @@ constexpr uint32_t kResBltouchFail          = 8U;
 constexpr uint32_t kResUnexpectedStop       = 9U;
 constexpr uint32_t kResSignalPostStowHigh   = 10U;
 constexpr uint32_t kResBadParam             = 11U;
+constexpr uint32_t kResUnsafeProbePoint     = 12U;
 
 struct Ctx {
     Stage    stage;
@@ -253,6 +257,17 @@ GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
             if (mc_mq_busy()) { return GcodeStatus::Busy; }
             if (mc_is_killed() || (mc_dbg_80_mv_arm != 1U)) {
                 return fail_g30(kResNotArmed, "G30: kill or arm off", false);
+            }
+            // بند ۱۰.۹: بررسی نقطه امن پراب قبل از شروع G30
+            {
+                const float cur_x = mc_position_get(0U);
+                const float cur_y = mc_position_get(1U);
+                if (!mc_probe_point_ok(cur_x, cur_y)) {
+                    const float pr_x = cur_x + g_offset[0];
+                    const float pr_y = cur_y + g_offset[1];
+                    mc_probe_note_unsafe_refused(pr_x, pr_y);
+                    return fail_g30(kResUnsafeProbePoint, "G30: probe point outside safe area", false);
+                }
             }
             mc_eguard_snapshot();
             g.start_z     = mc_position_get(kAxisZ);
@@ -465,6 +480,20 @@ bool mc_probe_offset_set(uint8_t axis, float mm) {
 void mc_probe_note_refused() {
     mc_dbg_248_pr_refused = mc_dbg_248_pr_refused + 1U;
     refresh_debug();
+}
+
+bool mc_probe_point_ok(float x_nozzle, float y_nozzle) {
+    const float x_probe = x_nozzle + g_offset[0];
+    const float y_probe = y_nozzle + g_offset[1];
+
+    return (x_probe >= MC_PROBE_SAFE_MIN_X_MM) && (x_probe <= MC_PROBE_SAFE_MAX_X_MM) &&
+           (y_probe >= MC_PROBE_SAFE_MIN_Y_MM) && (y_probe <= MC_PROBE_SAFE_MAX_Y_MM);
+}
+
+void mc_probe_note_unsafe_refused(float x_probe, float y_probe) {
+    mc_dbg_478_psafe_refused_cnt = mc_dbg_478_psafe_refused_cnt + 1U;
+    mc_dbg_479_psafe_last_x_um   = lroundf(x_probe * 1000.0f);
+    mc_dbg_480_psafe_last_y_um   = lroundf(y_probe * 1000.0f);
 }
 
 }  // namespace mc

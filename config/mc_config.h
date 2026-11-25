@@ -84,6 +84,11 @@
 // حد مجاز قدر مطلق آفست
 #define MC_PROBE_OFFSET_XY_LIMIT_MM 50.0f
 #define MC_PROBE_OFFSET_Z_LIMIT_MM  20.0f
+// حدود ناحیه امن پراب روی بستر (میلی‌متر، بند ۱۰.۹؛ کاربر باید مقدار واقعی را بعداً با خط‌کش اندازه‌گیری و تنظیم کند)
+#define MC_PROBE_SAFE_MIN_X_MM      0.0f
+#define MC_PROBE_SAFE_MAX_X_MM      240.0f
+#define MC_PROBE_SAFE_MIN_Y_MM      0.0f
+#define MC_PROBE_SAFE_MAX_Y_MM      120.0f
 // زمان‌بندی BLTouch (میلی‌ثانیه)
 #define MC_BLTOUCH_HOLD_MS          500U    // مدت پالس هر فرمان
 #define MC_BLTOUCH_SETTLE_MS        300U    // صبر بعد از Deploy و Stow

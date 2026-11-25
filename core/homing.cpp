@@ -99,6 +99,7 @@ constexpr uint32_t kResSignalPreDeployHigh   = 11U;
 constexpr uint32_t kResSignalPostDeployHigh  = 12U;
 constexpr uint32_t kResSignalPostStowHigh    = 13U;
 constexpr uint32_t kResSignalPostResetHigh   = 14U;
+constexpr uint32_t kResUnsafeProbePoint     = 15U;
 
 struct Ctx {
     Stage    stage;
@@ -509,6 +510,13 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
                 }
                 if (!mc_softlimit_allows(0U, kSafeHomeXMm) || !mc_softlimit_allows(1U, kSafeHomeYMm)) {
                     return fail(kResSafePointOutOfBounds, "homing: safe point outside soft limits");
+                }
+                // بند ۱۰.۹: بررسی نقطه امن پراب قبل از هومینگ Z
+                if (!mc_probe_point_ok(kSafeHomeXMm, kSafeHomeYMm)) {
+                    const float pr_x = kSafeHomeXMm + mc_probe_offset_get(0U);
+                    const float pr_y = kSafeHomeYMm + mc_probe_offset_get(1U);
+                    mc_probe_note_unsafe_refused(pr_x, pr_y);
+                    return fail(kResUnsafeProbePoint, "homing: safe probe point outside safe area");
                 }
             }
             mc_eguard_snapshot();   // صف خالی است

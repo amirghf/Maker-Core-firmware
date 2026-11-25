@@ -31,4 +31,9 @@ bool mc_probe_offset_set(uint8_t axis, float mm);
 // یک دستور رد شد (پارامتر نامعتبر)؛ فقط شمارنده را بالا می‌برد.
 void mc_probe_note_refused();
 
+// بررسی داخل بودن نقطه پراب (موقعیت نازل + آفست) در ناحیه امن بستر (بند ۱۰.۹)
+bool mc_probe_point_ok(float x_nozzle, float y_nozzle);
+// ثبت رد شدن به‌خاطر نقطه ناامن پراب (بند ۱۰.۹)
+void mc_probe_note_unsafe_refused(float x_probe, float y_probe);
+
 }  // namespace mc
