@@ -364,8 +364,10 @@
 | نام کامل | نوع | دسترسی | توضیح |
 | :--- | :--- | :--- | :--- |
 | `mc_dbg_447_hm_prerel_cnt` | `uint32_t` | خواندنی | تعداد دفعاتی که قبل از هومینگ Z، توالی AlarmRelease و Stow شروع شد (از روشن شدن). |
+| `mc_dbg_449_hm_alarm_seen` | `uint32_t` | خواندنی | 1 = در آخرین هومینگ Z، قبل از ریست پراب سیگنال آن HIGH دیده شد (آلارم یا فعال)، 0 = LOW بود. |
+| `mc_dbg_450_hm_zlift_um` | `uint32_t` | خواندنی | مقدار بالا بردن Z قبل از آخرین هومینگ، به میکرومتر (0 = بالا نرفت). |
 
-*(توضیح مرحله‌های `mc_dbg_208_hm_stage`: 0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy، 14 PreRelease، 15 PreStow)*
+*(توضیح مرحله‌های `mc_dbg_208_hm_stage`: 0 هیچ، 1 WaitIdle، 2 Release، 3 Fast، 4 BackOff، 5 Slow، 6 SafeX، 7 SafeY، 8 Deploy، 9 Stow، 10 AlarmRelease، 11 StowAgain، 12 ProbeReset، 13 ProbeRedeploy، 14 PreRelease، 15 PreStow، 16 ZLift)*
 
 ---
 
