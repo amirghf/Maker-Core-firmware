@@ -18,6 +18,7 @@ extern "C" {
 volatile int mc_dbg_07_killed       = 0;  // 1 = برد در حالت kill است
 volatile int mc_dbg_08_error_code   = 0;  // آخرین کد خطا
 volatile int mc_dbg_10_kill_safe_ok = -1; // بعد از kill: 1 = همه خروجی‌ها امن بودند، 0 = نبودند، -1 = kill نشده
+volatile uint32_t mc_dbg_490_kill_bl_cnt = 0U; // خواندنی: تعداد دفعاتی که بک‌لایت در مسیر kill روشن شد (بند ۱۰.۱۴)
 }
 
 namespace mc {
@@ -71,6 +72,10 @@ ErrorCode mc_last_error() {
     // اول از همه همه خروجی‌ها را خاموش کن و بررسی کن واقعاً امن شده‌اند
     mc_board_safe_state();
     mc_dbg_10_kill_safe_ok = mc_board_safe_state_check() ? 1 : 0;
+
+    // بند ۱۰.۱۴: بک‌لایت بعد از حالت امن دوباره روشن می‌شود تا صفحه kill دیده شود
+    mc_display_backlight(true);
+    mc_dbg_490_kill_bl_cnt = mc_dbg_490_kill_bl_cnt + 1U;
 
     // بند ۱۰.۱۳: نمایش صفحه kill تمام‌صفحه
     mc_dbg_484_alert_kill_screen = 1U;
@@ -141,6 +146,9 @@ ErrorCode mc_last_error() {
 
         if (mc_time_elapsed_ms(last_safe, kSafeStateMs)) {
             mc_board_safe_state();
+            // بند ۱۰.۱۴: بک‌لایت بعد از حالت امن دوباره روشن می‌شود تا صفحه kill دیده شود
+            mc_display_backlight(true);
+            mc_dbg_490_kill_bl_cnt = mc_dbg_490_kill_bl_cnt + 1U;
             last_safe = mc_millis();
         }
         if (mc_time_elapsed_ms(last_report, kReportMs)) {
