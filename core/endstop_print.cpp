@@ -6,7 +6,7 @@
 #include "probe.h"
 #include "quick_stop.h"
 #include "error.h"
-#include "../ui/ui_msg.h"
+#include "alert.h"
 
 extern "C" {
 volatile uint32_t mc_dbg_475_esp_enable    = MC_ENDSTOP_PRINT_CHECK_DEFAULT;
@@ -38,8 +38,8 @@ void mc_endstop_print_poll() {
         mc_quick_stop();
         mc_dbg_476_esp_trip_cnt  = mc_dbg_476_esp_trip_cnt + 1U;
         mc_dbg_477_esp_last_mask = mask;
-        // در این بند از mc_ui_msg_show مستقیم استفاده می‌شود (در بند ۱۰.۱۳ به mc_alert_raise تبدیل می‌شود)
-        mc_ui_msg_show(MsgType::Error, "ENDSTOP TRIGGERED DURING PRINT", "CODE 14 - ENDSTOP DURING PRINT");
+        // بند ۱۰.۱۳: استفاده از mc_alert_raise برای اعلام خطا
+        mc_alert_raise(AlertLevel::Error, "ENDSTOP TRIGGERED DURING PRINT", "CODE 14 - ENDSTOP DURING PRINT");
     }
 }
 

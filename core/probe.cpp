@@ -16,6 +16,7 @@
 #include "error.h"
 #include "log.h"
 #include "host_reply.h"
+#include "alert.h"
 #include "text_format.h"
 #include <math.h>
 #include <stdlib.h>
@@ -258,7 +259,7 @@ GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
             if (mc_is_killed() || (mc_dbg_80_mv_arm != 1U)) {
                 return fail_g30(kResNotArmed, "G30: kill or arm off", false);
             }
-            // بند ۱۰.۹: بررسی نقطه امن پراب قبل از شروع G30
+            // بند ۱۰.۹ و ۱۰.۱۳: بررسی نقطه امن پراب و اعلام هشدار
             {
                 const float cur_x = mc_position_get(0U);
                 const float cur_y = mc_position_get(1U);
@@ -266,6 +267,7 @@ GcodeStatus mc_probe_run(const GcodeCommand& cmd, bool first_call) {
                     const float pr_x = cur_x + g_offset[0];
                     const float pr_y = cur_y + g_offset[1];
                     mc_probe_note_unsafe_refused(pr_x, pr_y);
+                    mc_alert_raise(AlertLevel::Warning, "PROBE POINT OUTSIDE SAFE AREA", "CHECK M851 PROBE OFFSET AND POSITION");
                     return fail_g30(kResUnsafeProbePoint, "G30: probe point outside safe area", false);
                 }
             }

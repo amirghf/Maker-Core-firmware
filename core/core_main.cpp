@@ -47,6 +47,7 @@
 #include "filament_runout.h"
 #include "print_state.h"
 #include "endstop_print.h"
+#include "alert.h"
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
@@ -416,6 +417,7 @@ extern "C" void mc_core_init_c(void) {
     mc::mc_filrun_init();    // بند ۹.۴: واکنش به اتمام فیلامنت
     mc::mc_print_init();     // بند ۹.۴: وضعیت چاپ
     mc::mc_endstop_print_init(); // بند ۱۰.۸: بررسی اندستاپ حین چاپ
+    mc::mc_alert_init();     // بند ۱۰.۱۳: هشدارها و پیام‌های سیستم
     mc::mc_probe_init();   // بند ۶.۶
     mc::mc_eeprom_init();   // بند ۷.۱
     mc::mc_settings_init();   // بند ۷.۲
@@ -470,6 +472,7 @@ extern "C" void mc_core_init_c(void) {
     mc::g_main.add(mc::mc_filrun_poll, 100U);   // بند ۹.۴: واکنش به اتمام فیلامنت
     mc::g_main.add(mc::mc_print_poll, 100U);    // بند ۹.۴: وضعیت چاپ
     mc::g_main.add(mc::mc_endstop_print_poll, mc::kEndstopPrintPollMs); // بند ۱۰.۸: بررسی اندستاپ حین چاپ
+    mc::g_main.add(mc::mc_alert_poll, 100U);    // بند ۱۰.۱۳: پایش متغیر دیباگ alert
     mc::g_main.add(mc::mc_probe_poll, 100U);   // بند ۶.۶: G30 و متغیرهای debug
     mc::g_main.add(mc::mc_eeprom_poll, mc::kEepromPollMs);   // بند ۷.۱: درایور EEPROM
     mc::g_main.add(mc::mc_settings_poll, mc::kSettingsPollMs);   // بند ۷.۲: ذخیره‌سازی سخت‌دار

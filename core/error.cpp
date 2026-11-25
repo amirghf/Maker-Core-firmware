@@ -5,6 +5,13 @@
 #include "hal_buzzer.h"
 #include "hal_serial.h"
 #include "hal_time.h"
+#include "hal_display.h"
+#include "gfx.h"
+#include "alert.h"
+#include "hal_gpio.h"
+#include "pins.h"
+#include "hal_touch.h"
+#include "touch.h"
 
 // متغیرهای دیباگ؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -65,11 +72,72 @@ ErrorCode mc_last_error() {
     mc_board_safe_state();
     mc_dbg_10_kill_safe_ok = mc_board_safe_state_check() ? 1 : 0;
 
-    // حلقه امن: تا ریست دستی اینجا می‌مانیم
+    // بند ۱۰.۱۳: نمایش صفحه kill تمام‌صفحه
+    mc_dbg_484_alert_kill_screen = 1U;
+
+    mc_display_fill_screen(kColorBlack);
+    constexpr uint16_t kErrBar = mc_rgb565(150, 25, 25);
+    constexpr uint16_t kErrAcc = mc_rgb565(240, 70, 70);
+    mc_display_fill_rect(0U, 0U, 480U, 36U, kErrBar);
+    mc_display_fill_rect(0U, 36U, 480U, 2U, kErrAcc);
+    const uint16_t tw = mc_gfx_text_width("SYSTEM KILLED - ERROR", 2U);
+    mc_gfx_text(static_cast<uint16_t>((480U - tw) / 2U), 10U, "SYSTEM KILLED - ERROR", kColorWhite, kErrBar, 2U);
+
+    // کارت خطا
+    mc_gfx_fill_rect(14U, 50U, 452U, 172U, mc_rgb565(20, 24, 33));
+    mc_gfx_rect(14U, 50U, 452U, 172U, kErrAcc);
+    mc_gfx_fill_rect(14U, 50U, 4U, 172U, kErrAcc);
+
+    char code_str[48];
+    const char* p1 = "ERROR CODE: ";
+    uint8_t cn = 0U;
+    while (*p1 != '\0') { code_str[cn++] = *p1++; }
+    const uint8_t v = static_cast<uint8_t>(code);
+    if (v >= 100U) { code_str[cn++] = static_cast<char>('0' + (v / 100U)); }
+    if (v >= 10U) { code_str[cn++] = static_cast<char>('0' + ((v % 100U) / 10U)); }
+    code_str[cn++] = static_cast<char>('0' + (v % 10U));
+    code_str[cn] = '\0';
+
+    mc_gfx_text(30U, 70U, code_str, kColorWhite, mc_rgb565(20, 24, 33), 2U);
+    mc_gfx_text(30U, 100U, "SYSTEM HALTED FOR SAFETY", kErrAcc, mc_rgb565(20, 24, 33), 2U);
+    mc_gfx_text(30U, 130U, "RESET REQUIRED TO RESUME", kColorWhite, mc_rgb565(20, 24, 33), 2U);
+
+    // دکمه OK برای ساکت کردن بازر
+    mc_gfx_fill_rect(170U, 240U, 140U, 48U, mc_rgb565(24, 38, 64));
+    mc_gfx_rect(170U, 240U, 140U, 48U, kErrAcc);
+    const uint16_t ok_w = mc_gfx_text_width("OK", 2U);
+    mc_gfx_text(static_cast<uint16_t>(170U + (140U - ok_w) / 2U), 256U, "OK", kColorWhite, mc_rgb565(24, 38, 64), 2U);
+
+    // اشاره برای کاربر
+    const char* help_txt = "PRESS OK OR ENCODER TO SILENCE";
+    const uint16_t hw = mc_gfx_text_width(help_txt, 1U);
+    mc_gfx_text(static_cast<uint16_t>((480U - hw) / 2U), 300U, help_txt, mc_rgb565(150, 160, 180), kColorBlack, 1U);
+
+    // حلقه امن: تا ریست دستی در این حلقه می‌مانیم
     uint32_t last_safe   = mc_millis();
     uint32_t last_report = mc_millis() - kReportMs;  // اولین اعلام فوراً انجام شود
+    bool buzzer_silenced = false;
+
     for (;;) {
         mc_watchdog_feed();  // برد خودش ریست نشود و خطا پنهان نماند
+
+        // پایش کلید انکودر یا لمس برای ساکت‌کردن بازر
+        if (!buzzer_silenced) {
+            bool btn_pressed = !mc_gpio_read(PinId::EncBtn);
+            if (!btn_pressed && mc_touch_pressed()) {
+                uint16_t tx = 0U, ty = 0U;
+                if (mc_touch_read_raw(tx, ty)) {
+                    // بررسی محدوده دکمه OK روی صفحه (حدودی)
+                    btn_pressed = true;
+                }
+            }
+            if (btn_pressed) {
+                buzzer_silenced = true;
+                mc_buzzer_off();
+                mc_dbg_484_alert_kill_screen = 2U; // ساکت شد
+            }
+        }
+
         if (mc_time_elapsed_ms(last_safe, kSafeStateMs)) {
             mc_board_safe_state();
             last_safe = mc_millis();
@@ -77,7 +145,9 @@ ErrorCode mc_last_error() {
         if (mc_time_elapsed_ms(last_report, kReportMs)) {
             last_report = mc_millis();
             report_serial(code);
-            mc_buzzer_play(Sound::Error);
+            if (!buzzer_silenced) {
+                mc_buzzer_play(Sound::Error);
+            }
             mc_watchdog_feed();
         }
     }

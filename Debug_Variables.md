@@ -458,6 +458,18 @@
 | `mc_dbg_479_psafe_last_x_um` | `int32_t` | خواندنی | X نقطه پراب در آخرین رد شدن (میکرومتر) |
 | `mc_dbg_480_psafe_last_y_um` | `int32_t` | خواندنی | Y نقطه پراب در آخرین رد شدن (میکرومتر) |
 
+---
+
+## 🔷 بند ۱۰.۱۳: پیام قابل تأیید روی نمایشگر و بازر (`core/alert.cpp`)
+
+| نام کامل | نوع | دسترسی | توضیح |
+| :--- | :--- | :--- | :--- |
+| `mc_dbg_481_alert_force` | `uint32_t` | نوشتنی | 0 = بی‌اثر. 1 = Info، 2 = Warning، 3 = Error نمونه (غیر kill) از طریق mc_alert_raise؛ ماژول بعد از اجرا آن را 0 می‌کند |
+| `mc_dbg_482_alert_raise_cnt` | `uint32_t` | خواندنی | تعداد دفعاتی که mc_alert_raise صدا زده شد |
+| `mc_dbg_483_alert_last_level` | `uint32_t` | خواندنی | سطح آخرین هشدار: 0 = هیچ، 1 = Info، 2 = Warning، 3 = Error |
+| `mc_dbg_484_alert_kill_screen` | `uint32_t` | خواندنی | 1 = صفحه kill نشان داده شد، 2 = با OK ساکت شد |
+
+
 
 
 
