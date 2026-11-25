@@ -4,7 +4,7 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:63:6:void mc::{anonymous}::task_fast()	4	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:64:6:void mc::{anonymous}::task_every()	4	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:65:6:void mc::{anonymous}::task_dummy()	4	static
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:67:6:bool mc::{anonymous}::sched_selftest()	600	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:67:6:bool mc::{anonymous}::sched_selftest()	792	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:100:16:int mc_ring_selftest_c()	16	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/core_selftest.cpp:106:16:int mc_sched_selftest_c()	16	static
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/ring_buffer.h:53:10:bool mc::RingBuffer<T, N>::empty() const [with T = unsigned char; short unsigned int N = 8]	16	static

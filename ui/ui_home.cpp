@@ -13,6 +13,7 @@
 #include "ui_about.h"
 #include "ui_display.h"
 #include "ui_filchg.h"
+#include "ui_msg.h"
 #include "ui_tcal.h"
 #include "ui_touch.h"
 #include "ui_screen.h"
@@ -1129,6 +1130,7 @@ void mc_ui_init() {
     g_splash_hold_start_ms = 0U;
     g_static_frame_step = 0U;
     g_current_field_idx = 0U;
+    mc_ui_msg_init();
     mc_ui_screen_init();
 }
 
@@ -1318,6 +1320,7 @@ void mc_ui_poll() {
     // بند ۹.۱: مدیریت صفحه FILAMENT CHANGE (صفحه ۱۱)
     if (mc_filchg_active()) {
         if ((mc_dbg_323_ui_page != 11U) && (mc_dbg_323_ui_page != 9U)) {
+            mc_ui_msg_abort();   // بند ۱۰.۱: لغو صفحه پیام در صورت فعال شدن تعویض فیلامنت
             mc_ui_screen_wake();
             mc_dbg_323_ui_page = 11U;
             mc_ui_filchg_open();
@@ -1330,6 +1333,14 @@ void mc_ui_poll() {
                 mc_dbg_294_ui_state = 3U;   // بازنقاشی کامل صفحه اصلی
             }
         }
+    }
+
+    // بند ۱۰.۱: مدیریت صفحه MESSAGE (صفحه ۱۲)
+    mc_ui_msg_test_poll();
+    if (mc_ui_msg_pending() && (mc_dbg_323_ui_page == 0U) && (mc_dbg_294_ui_state == 4U)) {
+        mc_ui_screen_wake();
+        mc_dbg_323_ui_page = 12U;
+        mc_ui_msg_open();
     }
 
     // بررسی درخواست نقاشی مجدد
@@ -1536,6 +1547,24 @@ void mc_ui_poll() {
     if (mc_dbg_323_ui_page == 11U) {
         const FilChgUiResult fc_res = mc_ui_filchg_poll();
         (void)fc_res;
+        const uint32_t elapsed_us = mc_micros() - start_us;
+        if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
+            mc_dbg_296_ui_max_tick_us = elapsed_us;
+        }
+        return;
+    }
+
+    // اگر صفحه فعال صفحه MESSAGE باشد (۱۲) (بند ۱۰.۱)
+    if (mc_dbg_323_ui_page == 12U) {
+        const MsgUiResult msg_res = mc_ui_msg_poll();
+        if (msg_res == MsgUiResult::Closed) {
+            mc_dbg_323_ui_page = 0U;
+            if (mc_dbg_294_ui_state != 5U) {
+                g_static_frame_step = 0U;
+                mc_dbg_294_ui_state = 3U;   // بازنقاشی کامل صفحه اصلی
+            }
+            mc_ui_touch_reset();
+        }
         const uint32_t elapsed_us = mc_micros() - start_us;
         if (elapsed_us > mc_dbg_296_ui_max_tick_us) {
             mc_dbg_296_ui_max_tick_us = elapsed_us;
