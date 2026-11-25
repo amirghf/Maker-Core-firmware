@@ -1,8 +1,16 @@
 #pragma once
-// توزیع‌کننده دستور: دستورها را از صف دستورها یکی‌یکی برمی‌دارد و تابع هر دستور را از جدول
-// (gcode_table.cpp) صدا می‌زند. دستور تا تمام‌شدنش (Done) نگه داشته می‌شود و دستور بعدی
-// برداشته نمی‌شود. هیچ هدر ST اینجا include نمی‌شود.
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// متغیرهای دیباگ توزیع‌کننده دستور (تعریف‌شده در gcode_dispatch.cpp)
+extern volatile uint32_t mc_dbg_disp_letter; // کد حرف آخرین دستور برداشته‌شده
+extern volatile uint32_t mc_dbg_disp_number; // شماره آخرین دستور برداشته‌شده
+
+#ifdef __cplusplus
+}
 
 namespace mc {
 
@@ -16,3 +24,4 @@ bool mc_dispatch_busy();
 void mc_dispatch_abort();
 
 }  // namespace mc
+#endif

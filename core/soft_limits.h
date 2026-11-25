@@ -6,6 +6,18 @@
 #include <stdint.h>
 #include "../config/mc_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// متغیرهای دیباگ حدود نرم‌افزاری هوم‌شده (بند ۱۰.۶، تعریف در soft_limits.cpp)
+extern volatile uint32_t mc_dbg_473_hsl_refused_cnt; // خواندنی: تعداد حرکت‌های ردشده به‌خاطر بیرون از محدوده بعد از هومینگ
+extern volatile uint32_t mc_dbg_474_hsl_last_axis;    // خواندنی: محور آخرین رد شدن: 0=X، 1=Y، 2=Z، 3=G92
+
+#ifdef __cplusplus
+}
+#endif
+
 namespace mc {
 
 // مقدارهای پیش‌فرض (اندازه مسیر قابل استفاده دستگاه؛ بعد از هومینگ در مرحله ۶ دقیق می‌شوند)

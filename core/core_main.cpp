@@ -96,6 +96,11 @@ volatile float    mc_dbg_gc_f               = 0;  // مقدار F (همین‌ط
 volatile float    mc_dbg_gc_s               = 0;  // مقدار S (همین‌طور)
 volatile uint32_t mc_dbg_cq_pause           = 0;  // برای تست: ۱ = برداشتن از صف متوقف می‌شود (صف پر می‌شود)، ۰ = عادی
 volatile uint32_t mc_dbg_cq_full_waits      = 0;  // تعداد خط‌هایی که به‌خاطر پر بودن صف منتظر ماندند (هر خط یک بار)
+
+// اعلان متغیرهای دیباگ که در gcode/m112.cpp و gcode/m410.cpp تعریف شده‌اند (بند ۱۰.۱۴)
+extern volatile uint32_t mc_dbg_485_estop_cnt;
+extern volatile uint32_t mc_dbg_486_qstop_cnt;
+extern volatile uint32_t mc_dbg_487_qstop_busy_cnt;
 }
 
 namespace mc {

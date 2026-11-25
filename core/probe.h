@@ -4,6 +4,19 @@
 #include "../config/mc_config.h"
 #include "gcode_handlers.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// متغیرهای دیباگ نقطه امن پراب (بند ۱۰.۹، تعریف در probe.cpp)
+extern volatile uint32_t mc_dbg_478_psafe_refused_cnt; // خواندنی: تعداد G28 Z یا G30 ردشده به‌خاطر نقطه ناامن پراب
+extern volatile int32_t  mc_dbg_479_psafe_last_x_um;   // خواندنی: X نقطه پراب در آخرین رد شدن (میکرومتر)
+extern volatile int32_t  mc_dbg_480_psafe_last_y_um;   // خواندنی: Y نقطه پراب در آخرین رد شدن (میکرومتر)
+
+#ifdef __cplusplus
+}
+#endif
+
 namespace mc {
 
 constexpr float kProbeMaxMm          = MC_PROBE_MAX_MM;       // سقف مسافت پایین‌رفتن Z (میلی‌متر)
