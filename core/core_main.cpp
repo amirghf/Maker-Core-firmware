@@ -48,6 +48,7 @@
 #include "print_state.h"
 #include "endstop_print.h"
 #include "alert.h"
+#include "quick_stop.h"
 #include "eeprom_at24.h"
 #include "settings_store.h"
 #include "settings_boot.h"
@@ -347,6 +348,46 @@ void task_splash() {
 void task_cmd_intake() {
     static bool waiting = false;   // این خط قبلاً به‌خاطر پر بودن صف شمرده شده
     if (!mc_line_ready()) { return; }
+
+    static char cmd_text[kLineMaxChars + 1U];   // متن دستور بعد از حذف N و *
+    const LineCheck chk = mc_line_check(mc_line_text(), cmd_text, sizeof(cmd_text));
+
+    // بند ۱۰.۱۴: مسیر اجرای فوری برای M112 و M410 قبل از بررسی پر بودن صف
+    static GcodeCommand quick_cmd;
+    if ((chk == LineCheck::Ok) && (mc_gcode_parse(cmd_text, quick_cmd) == GcodeResult::Ok)) {
+        if ((quick_cmd.letter == 'M') && (quick_cmd.number == 112U) && (quick_cmd.sub == -1)) {
+            mc_line_release();
+            waiting = false;
+            if (mc_cmdq_full() || mc_dispatch_busy() || mc_mq_busy()) {
+                mc_dbg_487_qstop_busy_cnt = mc_dbg_487_qstop_busy_cnt + 1U;
+            }
+            mc_dbg_485_estop_cnt = mc_dbg_485_estop_cnt + 1U;
+            mc_reply_error("Emergency stop requested (M112)");
+            mc_kill(ErrorCode::EmergencyStop);
+        }
+        if ((quick_cmd.letter == 'M') && (quick_cmd.number == 410U) && (quick_cmd.sub == -1)) {
+            mc_line_release();
+            waiting = false;
+            const bool is_busy = mc_dispatch_busy() || !mc_cmdq_empty() || mc_mq_busy();
+            if (is_busy) {
+                mc_dbg_487_qstop_busy_cnt = mc_dbg_487_qstop_busy_cnt + 1U;
+            }
+            mc_dbg_486_qstop_cnt = mc_dbg_486_qstop_cnt + 1U;
+
+            const bool had_active = mc_dispatch_busy();
+            const char active_letter = had_active ? static_cast<char>(mc_dbg_disp_letter) : '\0';
+            const uint16_t active_num = had_active ? static_cast<uint16_t>(mc_dbg_disp_number) : 0U;
+
+            mc_quick_stop();
+
+            if (had_active) {
+                mc_reply_command_failed(active_letter, active_num);
+            }
+            mc_reply_ok();
+            return;
+        }
+    }
+
     if (mc_cmdq_full()) {
         if (!waiting) {
             waiting = true;
@@ -357,9 +398,6 @@ void task_cmd_intake() {
     waiting = false;
 
     mc_log(LogLevel::Debug, mc_line_text());   // بند ۳.۸: متن هر خط دریافتی فقط در سطح Debug به USB برمی‌گردد
-
-    static char cmd_text[kLineMaxChars + 1U];   // متن دستور بعد از حذف N و *
-    const LineCheck chk = mc_line_check(mc_line_text(), cmd_text, sizeof(cmd_text));
     mc_line_release();
     if (chk != LineCheck::Ok) {
         mc_line_send_resend(chk);

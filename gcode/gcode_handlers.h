@@ -73,6 +73,7 @@ GcodeStatus mc_gcode_m503(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m24(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m25(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m108(const GcodeCommand& cmd, bool first_call);
+GcodeStatus mc_gcode_m112(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m410(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m600(const GcodeCommand& cmd, bool first_call);
 GcodeStatus mc_gcode_m701(const GcodeCommand& cmd, bool first_call);
