@@ -345,12 +345,10 @@ FilChgUiResult mc_ui_filchg_poll() {
     }
 
     int32_t cur_x10 = 0;
-    bool sensor_ok = false;
     if (mc_dbg_297_ui_fake_on != 0U) {
         cur_x10 = mc_dbg_298_ui_fake_noz_x10;
-        sensor_ok = (cur_x10 != -9999);
     } else {
-        sensor_ok = mc_temp_get_x10(AdcChannel::TempExtruder, &cur_x10);
+        (void)mc_temp_get_x10(AdcChannel::TempExtruder, &cur_x10); // مقدار برگشتی نیاز نیست، cur_x10 پایین‌تر چک می‌شود
     }
 
     int32_t tgt_x10 = 0;

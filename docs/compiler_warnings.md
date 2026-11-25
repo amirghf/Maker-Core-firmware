@@ -44,3 +44,5 @@
 | `core/homing.cpp` | Signed/Unsigned comparison & conversion | cast صریح `static_cast` در بررسی‌های ماسک هومینگ و نقاط امن پراب. |
 | `core/endstop_print.cpp` | Unused parameter / explicit cast | بررسی متغیرهای دیباگ و cast صریح برای ماسک اندستاپ‌ها. |
 | `core/alert.cpp` | Unused parameter / string bounds | استفاده از cast صریح در تبدیل AlertLevel به MsgType و کنترل طول بافر رشته‌ها. |
+| `ui/ui_filchg.cpp` | variable set but not used | حذف متغیر نااستفاده `sensor_ok` در `mc_ui_filchg_poll` و فراخوانی `mc_temp_get_x10` با `(void)`. |
+
