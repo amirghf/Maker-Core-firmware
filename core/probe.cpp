@@ -167,6 +167,7 @@ GcodeStatus fail_g30(uint32_t code, const char* text, bool try_stow = true) {
     mc_dbg_238_pr_result = code;
     refresh_debug();
     mc_log_value(LogLevel::Error, text, code);
+    mc_alert_raise_id(AlertId::ProbeFailed, text, code);
     return GcodeStatus::Error;
 }
 
@@ -178,6 +179,7 @@ GcodeStatus finish_g30() {
         mc_dbg_238_pr_result = g.err;
         refresh_debug();
         mc_log_value(LogLevel::Error, "G30 error", g.err);
+        mc_alert_raise_id(AlertId::ProbeFailed, "G30 ERROR", g.err);
         return GcodeStatus::Error;
     }
 

@@ -8,6 +8,7 @@
 #include "hal_step_timer.h"
 #include "error.h"
 #include "extruder.h"
+#include "alert.h"
 
 // متغیرهای debug بند ۵.۶ (شماره‌ها دائمی‌اند)
 extern "C" {
@@ -120,6 +121,7 @@ bool mc_mq_push(const MotionBlock& block) {
     if ((block.steps[3] != 0U) && !mc_extruder_allowed()) {
         note_refused(MqReason::ColdExtrude);
         mc_extruder_note_refused();
+        mc_alert_cold_extrude_trigger();
         return false;
     }
     if (mc_plan_count() >= (kPlanQueueSize - 1U)) {

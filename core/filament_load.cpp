@@ -12,6 +12,7 @@
 #include "error.h"
 #include "log.h"
 #include "host_reply.h"
+#include "alert.h"
 #include "hal_time.h"
 #include "text_format.h"
 #include <math.h>
@@ -64,6 +65,7 @@ GcodeStatus fload_refuse(uint32_t reason, const char* msg) {
     mc_dbg_452_fld_result = 3U;
     mc_dbg_453_fld_reason = reason;
     mc_log_value(LogLevel::Error, msg, reason);
+    mc_alert_raise_id(AlertId::FilLoadFailed, msg, reason);
     return GcodeStatus::Error;
 }
 
@@ -182,12 +184,14 @@ GcodeStatus mc_fload_run(const GcodeCommand& cmd, bool first_call, bool is_load)
         const int32_t target_x10 = mc_heater_ex_target_x10();
         if (target_x10 < (MC_EXTRUDE_MIN_TEMP_C * 10)) {
             mc_reply_line(is_load ? "echo:M701: set hotend temp first (M104/M109)" : "echo:M702: set hotend temp first (M104/M109)");
+            mc_alert_raise_id(AlertId::HotendTempNeeded);
             return fload_refuse(3U, is_load ? "M701 target temp too low or zero" : "M702 target temp too low or zero");
         }
 
         // ۷) فقط برای M701: سنسور فیلامنت خالی نباشد
         if (is_load && mc_filament_empty() && (mc_dbg_445_fchg_ignore_sensor == 0U)) {
             mc_reply_line("echo:Filament not detected");
+            mc_alert_raise_id(AlertId::FilamentNotFound);
             return fload_refuse(9U, "M701 refused: filament not detected");
         }
 

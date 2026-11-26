@@ -12,6 +12,7 @@
 #include "log.h"
 #include "host_reply.h"
 #include "hal_buzzer.h"
+#include "alert.h"
 
 extern "C" {
 volatile uint32_t mc_dbg_458_frun_last     = 0;  // 0 هیچ، 1 M600 در صف، 2 رد (چاپ نیست)، 3 رد (تعویض/بارگذاری فعال)، 4 رد (killed)، 5 صف پر بود
@@ -67,6 +68,7 @@ void mc_filrun_poll() {
                 g_caused_pending = false;
                 mc_dbg_463_frun_caused = 0U;
                 mc_log(LogLevel::Error, "runout M600 refused");
+                mc_alert_raise_id(AlertId::RunoutRefused);
             }
         }
     }

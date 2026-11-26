@@ -1138,6 +1138,7 @@ void mc_ui_notify_splash(uint32_t result) {
     if ((result == 2U) || (result == 4U)) {
         mc_dbg_294_ui_state = 5U;   // 5 = غیرفعال (نمایشگر ناموجود/خطا)
         mc_log(LogLevel::Warn, "ui disabled: display unavailable");
+        mc_buzzer_play(Sound::Error);
     } else {
         g_splash_hold_start_ms = mc_millis();
         mc_dbg_294_ui_state = 2U;   // 2 = مکث بعد از اسپلش

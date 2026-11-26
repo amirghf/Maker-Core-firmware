@@ -199,6 +199,7 @@ GcodeStatus fail(uint32_t code, const char* text) {
     mc_dbg_206_hm_state  = kStateError;
     mc_dbg_209_hm_result = code;
     mc_log_value(LogLevel::Error, text, code);
+    mc_alert_raise_id(AlertId::HomingFailed, text, code);
     return GcodeStatus::Error;
 }
 

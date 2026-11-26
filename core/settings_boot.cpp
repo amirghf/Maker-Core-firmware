@@ -5,6 +5,7 @@
 #include "motion_queue.h"
 #include "log.h"
 #include "hal_time.h"
+#include "alert.h"
 
 // ---------------- متغیرهای debug (Live Expressions در CubeIDE) ----------------
 extern "C" {
@@ -55,6 +56,7 @@ void mc_cfg_boot_poll() {
     if (mc_time_elapsed_ms(g_t_start, MC_CFG_BOOT_TIMEOUT_MS)) {
         mc_cfg_apply_defaults();
         mc_log(LogLevel::Info, "Settings: EEPROM error, defaults used");
+        mc_alert_raise_id(AlertId::SettingsEepromErr);
         update_debug(BootState::Done, 4U, mc_settings_result(), 0U, 0U);
         return;
     }
@@ -85,6 +87,7 @@ void mc_cfg_boot_poll() {
 
         mc_cfg_apply_defaults();
         mc_log(LogLevel::Info, "Settings: saved data invalid, defaults used");
+        mc_alert_raise_id(AlertId::SettingsInvalid);
         update_debug(BootState::Done, 3U, mc_settings_result(), static_cast<uint32_t>(chk), loaded_len);
         return;
     }
@@ -97,6 +100,7 @@ void mc_cfg_boot_poll() {
         update_debug(BootState::Done, 2U, store_res, 0U, 0U);
     } else {
         mc_log(LogLevel::Info, "Settings: EEPROM error, defaults used");
+        mc_alert_raise_id(AlertId::SettingsEepromErr);
         update_debug(BootState::Done, 4U, store_res, 0U, 0U);
     }
 }

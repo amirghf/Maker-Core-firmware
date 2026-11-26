@@ -21,6 +21,8 @@ volatile uint32_t mc_dbg_469_msg_close_cnt      = 0;  // خواندنی: تعد�
 volatile uint32_t mc_dbg_470_msg_close_src      = 0;  // خواندنی: منبع آخرین بستن: 0 = هنوز، 1 = دکمه انکودر، 2 = لمس دکمه OK.
 volatile uint32_t mc_dbg_471_msg_refused        = 0;  // خواندنی: تعداد دفعاتی که درخواست نمایش پیام رد شد.
 volatile uint32_t mc_dbg_472_msg_refuse_reason  = 0;  // خواندنی: علت آخرین رد شدن: 0 = هنوز، 1 = صفحه فعال 0 نبود یا UI آماده نبود، 2 = نوع/نمونه نامعتبر.
+volatile uint32_t mc_dbg_494_msg_queue_depth    = 0;  // خواندنی: تعداد پیام‌های در انتظار و باز (بند ۱۰.۱۳)
+volatile uint32_t mc_dbg_495_msg_queue_drop_cnt = 0;  // خواندنی: تعداد پیام‌هایی که چون صف پر بود دور ریخته شدند (بند ۱۰.۱۳)
 }
 
 namespace mc {
@@ -45,6 +47,16 @@ static const SampleMsg kSamples[4] = {
     { "THIS IS A VERY LONG TEST MESSAGE USED ONLY TO CHECK THAT THE TEXT WRAPS ON THREE LINES AND THE REST IS CUT WITH THREE DOTS AT THE END OF THE LAST LINE", "DETAIL LINE USED TO TEST THE SMALL GRAY TEXT UNDER THE DIVIDER" },
     { "FILAMENT RUNOUT", "" }
 };
+
+struct QueuedMsg {
+    MsgType type = MsgType::None;
+    char text[MC_UI_MSG_TEXT_MAX + 1U];
+    char detail[MC_UI_MSG_DETAIL_MAX + 1U];
+};
+
+static QueuedMsg g_queue[MC_UI_MSG_QUEUE_LEN];
+static uint8_t   g_queue_head  = 0U;
+static uint8_t   g_queue_count = 0U;
 
 static MsgType g_msg_type = MsgType::None;
 static char    g_text_buf[MC_UI_MSG_TEXT_MAX + 1U];
@@ -283,6 +295,9 @@ void mc_ui_msg_init() {
     g_msg_step      = 255U;
     g_pending       = false;
 
+    g_queue_head    = 0U;
+    g_queue_count   = 0U;
+
     mc_dbg_464_msg_force         = 0U;
     mc_dbg_465_msg_sample        = 0U;
     mc_dbg_466_msg_shown         = 0U;
@@ -292,34 +307,96 @@ void mc_ui_msg_init() {
     mc_dbg_470_msg_close_src     = 0U;
     mc_dbg_471_msg_refused       = 0U;
     mc_dbg_472_msg_refuse_reason = 0U;
+    mc_dbg_494_msg_queue_depth   = 0U;
+    mc_dbg_495_msg_queue_drop_cnt = 0U;
 }
 
 void mc_ui_msg_show(MsgType type, const char* text, const char* detail) {
     if (type == MsgType::None) { return; }
-    g_msg_type = type;
+
+    char up_text[MC_UI_MSG_TEXT_MAX + 1U];
+    char up_detail[MC_UI_MSG_DETAIL_MAX + 1U];
 
     uint16_t i = 0U;
     if (text != nullptr) {
         while ((text[i] != '\0') && (i < MC_UI_MSG_TEXT_MAX)) {
-            g_text_buf[i] = text[i];
+            char ch = text[i];
+            if ((ch >= 'a') && (ch <= 'z')) { ch = static_cast<char>(ch - 'a' + 'A'); }
+            up_text[i] = ch;
             ++i;
         }
     }
-    g_text_buf[i] = '\0';
+    up_text[i] = '\0';
 
     i = 0U;
     if (detail != nullptr) {
         while ((detail[i] != '\0') && (i < MC_UI_MSG_DETAIL_MAX)) {
-            g_detail_buf[i] = detail[i];
+            char ch = detail[i];
+            if ((ch >= 'a') && (ch <= 'z')) { ch = static_cast<char>(ch - 'a' + 'A'); }
+            up_detail[i] = ch;
             ++i;
         }
     }
-    g_detail_buf[i] = '\0';
-    g_has_detail = (g_detail_buf[0] != '\0');
+    up_detail[i] = '\0';
 
-    format_text_lines();
+    // سرریز صف: اگر صف پر است
+    if (g_queue_count >= MC_UI_MSG_QUEUE_LEN) {
+        if (type == MsgType::Error) {
+            // پیام جدید Error است: قدیمی‌ترین Warning یا Info حذف می‌شود
+            int16_t drop_idx = -1;
+            for (uint8_t k = 0U; k < g_queue_count; ++k) {
+                const uint8_t idx = static_cast<uint8_t>((g_queue_head + k) % MC_UI_MSG_QUEUE_LEN);
+                if (g_queue[idx].type != MsgType::Error) {
+                    drop_idx = static_cast<int16_t>(idx);
+                    break;
+                }
+            }
+            if (drop_idx >= 0) {
+                uint8_t curr = static_cast<uint8_t>(drop_idx);
+                const uint8_t last_idx = static_cast<uint8_t>((g_queue_head + g_queue_count - 1U) % MC_UI_MSG_QUEUE_LEN);
+                while (curr != last_idx) {
+                    const uint8_t nxt = static_cast<uint8_t>((curr + 1U) % MC_UI_MSG_QUEUE_LEN);
+                    g_queue[curr] = g_queue[nxt];
+                    curr = nxt;
+                }
+                g_queue_count--;
+                mc_dbg_495_msg_queue_drop_cnt = mc_dbg_495_msg_queue_drop_cnt + 1U;
+            } else {
+                // همه پیام‌های صف Error هستند: پیام جدید دور ریخته می‌شود
+                mc_dbg_495_msg_queue_drop_cnt = mc_dbg_495_msg_queue_drop_cnt + 1U;
+                return;
+            }
+        } else {
+            // پیام جدید Warning یا Info است: پیام جدید دور ریخته می‌شود
+            mc_dbg_495_msg_queue_drop_cnt = mc_dbg_495_msg_queue_drop_cnt + 1U;
+            return;
+        }
+    }
 
-    g_pending = true;
+    // افزودن پیام به انتهای صف
+    const uint8_t tail = static_cast<uint8_t>((g_queue_head + g_queue_count) % MC_UI_MSG_QUEUE_LEN);
+    g_queue[tail].type = type;
+
+    uint16_t k = 0U;
+    while (up_text[k] != '\0') {
+        g_queue[tail].text[k] = up_text[k];
+        ++k;
+    }
+    g_queue[tail].text[k] = '\0';
+
+    k = 0U;
+    while (up_detail[k] != '\0') {
+        g_queue[tail].detail[k] = up_detail[k];
+        ++k;
+    }
+    g_queue[tail].detail[k] = '\0';
+
+    g_queue_count++;
+    mc_dbg_494_msg_queue_depth = g_queue_count;
+
+    if (mc_dbg_466_msg_shown == 0U) {
+        g_pending = true;
+    }
 }
 
 bool mc_ui_msg_pending() {
@@ -328,6 +405,27 @@ bool mc_ui_msg_pending() {
 
 void mc_ui_msg_open() {
     g_pending = false;
+    if (g_queue_count == 0U) { return; }
+
+    g_msg_type = g_queue[g_queue_head].type;
+
+    uint16_t i = 0U;
+    while (g_queue[g_queue_head].text[i] != '\0') {
+        g_text_buf[i] = g_queue[g_queue_head].text[i];
+        ++i;
+    }
+    g_text_buf[i] = '\0';
+
+    i = 0U;
+    while (g_queue[g_queue_head].detail[i] != '\0') {
+        g_detail_buf[i] = g_queue[g_queue_head].detail[i];
+        ++i;
+    }
+    g_detail_buf[i] = '\0';
+    g_has_detail = (g_detail_buf[0] != '\0');
+
+    format_text_lines();
+
     g_msg_step = 0U;
     mc_dbg_466_msg_shown = 1U;
     mc_dbg_467_msg_type  = static_cast<uint32_t>(g_msg_type);
@@ -367,41 +465,70 @@ MsgUiResult mc_ui_msg_poll() {
         }
     }
 
-    // 1) لمس (دکمه OK)
+    bool closed = false;
+    uint32_t close_src = 0U;
+
+    // ۱) لمس (دکمه OK)
     {
         const TouchGesture tg = mc_ui_touch_poll();
         if (tg.evt == TouchEvt::Tap) {
             if (mc_ui_touch_in_rect(tg.x, tg.y, 170U, 240U, 140U, 48U)) {
                 mc_ui_touch_accept(90U);
-                mc_dbg_470_msg_close_src = 2U;
-                mc_dbg_469_msg_close_cnt = mc_dbg_469_msg_close_cnt + 1U;
-                mc_dbg_466_msg_shown = 0U;
-                mc_ui_touch_reset();
-                return MsgUiResult::Closed;
+                closed = true;
+                close_src = 2U;
             }
         }
     }
 
-    // 2) انکودر (فشردن دکمه)
-    if (mc_encoder_take_press()) {
-        mc_dbg_470_msg_close_src = 1U;
+    // ۲) انکودر (فشردن دکمه)
+    if (!closed && mc_encoder_take_press()) {
+        closed = true;
+        close_src = 1U;
+    }
+
+    if (closed) {
+        mc_dbg_470_msg_close_src = close_src;
         mc_dbg_469_msg_close_cnt = mc_dbg_469_msg_close_cnt + 1U;
+
+        if (g_queue_count > 0U) {
+            g_queue_head = static_cast<uint8_t>((g_queue_head + 1U) % MC_UI_MSG_QUEUE_LEN);
+            g_queue_count--;
+        }
+        mc_dbg_494_msg_queue_depth = g_queue_count;
         mc_dbg_466_msg_shown = 0U;
         mc_ui_touch_reset();
+
+        if (g_queue_count > 0U) {
+            g_pending = true;  // پیام بعدی صف دوباره pending می‌شود
+        }
         return MsgUiResult::Closed;
     }
 
-    // 3) انکودر (چرخش در این صفحه کاری نمی‌کند)
+    // ۳) انکودر (چرخش در این صفحه کاری نمی‌کند)
     (void)mc_encoder_take_clicks();
 
     return MsgUiResult::Stay;
 }
 
 void mc_ui_msg_abort() {
-    g_pending = false;
+    if (mc_dbg_466_msg_shown != 0U) {
+        if (g_msg_type == MsgType::Error) {
+            // پیام جاری Error است: در سر صف می‌ماند تا بعد از تعویض فیلامنت دوباره نشان داده شود
+            g_pending = true;
+        } else {
+            // پیام جاری Warning یا Info است: از صف حذف می‌شود
+            if (g_queue_count > 0U) {
+                g_queue_head = static_cast<uint8_t>((g_queue_head + 1U) % MC_UI_MSG_QUEUE_LEN);
+                g_queue_count--;
+            }
+            g_pending = (g_queue_count > 0U);
+        }
+    }
     g_msg_step = 255U;
     mc_dbg_466_msg_shown = 0U;
+    mc_dbg_494_msg_queue_depth = g_queue_count;
 }
+
 
 MsgType mc_ui_msg_type() {
     return (mc_dbg_466_msg_shown != 0U) ? g_msg_type : MsgType::None;

@@ -11,6 +11,7 @@
 #include "host_reply.h"
 #include "hal_time.h"
 #include "log.h"
+#include "alert.h"
 
 namespace mc {
 namespace {
@@ -114,6 +115,7 @@ GcodeStatus mc_gcode_m303(const GcodeCommand& cmd, bool first_call) {
         n = mc_fmt_text(buf, cap, n, fail_text(mc_autotune_fail()));
         mc_reply_line(buf);
         mc_log(LogLevel::Warn, "M303 autotune failed");
+        mc_alert_raise_id(AlertId::AutotuneFailed, fail_text(mc_autotune_fail()));
         mc_autotune_release();
         (void)mc_heater_ex_set_target_x10(0);
         return GcodeStatus::Error;

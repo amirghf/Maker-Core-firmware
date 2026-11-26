@@ -17,6 +17,7 @@
 #include "hal_gpio.h"
 #include "hal_buzzer.h"
 #include "text_format.h"
+#include "alert.h"
 #include <math.h>
 
 extern "C" {
@@ -103,6 +104,7 @@ GcodeStatus filchg_fail(uint32_t reason, const char* msg) {
     mc_dbg_435_fchg_result = 3U;
     mc_dbg_436_fchg_reason = reason;
     mc_log_value(LogLevel::Error, msg, reason);
+    mc_alert_raise_id(AlertId::FilChgFailed, msg, reason);
     return GcodeStatus::Error;
 }
 
@@ -294,6 +296,7 @@ GcodeStatus mc_filchg_run(const GcodeCommand& cmd, bool first_call) {
         const int32_t target_x10 = mc_heater_ex_target_x10();
         if (target_x10 < (MC_EXTRUDE_MIN_TEMP_C * 10)) {
             mc_reply_line("echo:M600: set hotend temp first (M104/M109)");
+            mc_alert_raise_id(AlertId::HotendTempNeeded);
             return filchg_fail(3U, "M600 target temp too low or zero");
         }
 
@@ -397,6 +400,7 @@ GcodeStatus mc_filchg_run(const GcodeCommand& cmd, bool first_call) {
                     }
                 } else {
                     mc_log(LogLevel::Warn, "M600: park Z skipped, not homed");
+                    mc_alert_raise_id(AlertId::FilChgParkSkipped, "Z NOT HOMED");
                 }
                 g_sub_step  = 1U;
                 g_sub_first = true;
@@ -434,6 +438,7 @@ GcodeStatus mc_filchg_run(const GcodeCommand& cmd, bool first_call) {
                     }
                 } else {
                     mc_log(LogLevel::Warn, "M600: park XY skipped, not homed");
+                    mc_alert_raise_id(AlertId::FilChgParkSkipped, "XY NOT HOMED");
                 }
             }
 
@@ -514,6 +519,7 @@ GcodeStatus mc_filchg_run(const GcodeCommand& cmd, bool first_call) {
                     (void)mc_heater_ex_set_target_x10(0);
                     mc_dbg_441_fchg_cooled = 1U;
                     mc_log(LogLevel::Info, "M600: heater hold timeout, hotend off");
+                    mc_alert_raise_id(AlertId::FilChgHotendOff);
                 }
             }
 
@@ -525,6 +531,7 @@ GcodeStatus mc_filchg_run(const GcodeCommand& cmd, bool first_call) {
                 if (mc_filament_empty() && (mc_dbg_445_fchg_ignore_sensor == 0U)) {
                     mc_dbg_439_fchg_resume_refused = mc_dbg_439_fchg_resume_refused + 1U;
                     mc_reply_line("echo:Filament not detected");
+                    mc_alert_raise_id(AlertId::FilamentNotFound);
                 } else {
                     mc_dbg_438_fchg_resume_cnt = mc_dbg_438_fchg_resume_cnt + 1U;
                     mc_dbg_437_fchg_resume_src = src;

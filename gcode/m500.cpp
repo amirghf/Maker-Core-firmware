@@ -5,6 +5,7 @@
 #include "settings_boot.h"
 #include "host_reply.h"
 #include "hal_time.h"
+#include "alert.h"
 
 namespace mc {
 namespace {
@@ -77,6 +78,7 @@ GcodeStatus mc_gcode_m500(const GcodeCommand& cmd, bool first_call) {
 
     // st == SettingsState::Error
     mc_cfg_note(500U, 2U, g_len, store_res);
+    mc_alert_raise_id(AlertId::SettingsSaveFailed);
     reset_state();
     return GcodeStatus::Error;
 }

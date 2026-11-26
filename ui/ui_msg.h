@@ -17,6 +17,8 @@ extern volatile uint32_t mc_dbg_469_msg_close_cnt;     // خواندنی: تعد
 extern volatile uint32_t mc_dbg_470_msg_close_src;     // خواندنی: منبع آخرین بستن: 0 = هنوز، 1 = دکمه انکودر، 2 = لمس دکمه OK.
 extern volatile uint32_t mc_dbg_471_msg_refused;       // خواندنی: تعداد دفعاتی که درخواست نمایش پیام رد شد.
 extern volatile uint32_t mc_dbg_472_msg_refuse_reason; // خواندنی: علت آخرین رد شدن: 0 = هنوز، 1 = صفحه فعال 0 نبود یا UI آماده نبود، 2 = نوع/نمونه نامعتبر.
+extern volatile uint32_t mc_dbg_494_msg_queue_depth;   // خواندنی: تعداد پیام‌های در انتظار و باز (بند ۱۰.۱۳)
+extern volatile uint32_t mc_dbg_495_msg_queue_drop_cnt; // خواندنی: تعداد پیام‌هایی که چون صف پر بود دور ریخته شدند (بند ۱۰.۱۳)
 
 #ifdef __cplusplus
 }

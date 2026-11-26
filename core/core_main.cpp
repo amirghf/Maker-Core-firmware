@@ -28,6 +28,7 @@
 #include "temp_report.h"
 #include "stepper_out.h"
 #include "step_gen.h"
+#include "alert.h"
 #include "axis_move.h"
 #include "motion_queue.h"
 #include "planner.h"
@@ -151,6 +152,7 @@ void task_heartbeat() {
         boot_reported = true;
         if (mc_watchdog_was_reset()) {
             mc_log(LogLevel::Warn, "last reset was by watchdog");
+            mc_alert_raise_id(AlertId::WatchdogReset);
         }
     }
 
@@ -343,6 +345,7 @@ void task_splash() {
         mc_log(LogLevel::Info, "splash ok");
     } else {
         mc_log_value(LogLevel::Error, "splash failed", result);
+        mc_alert_raise_id(AlertId::SplashFailed, nullptr, result);
     }
 }
 
