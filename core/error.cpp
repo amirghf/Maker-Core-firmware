@@ -125,7 +125,7 @@ ErrorCode mc_last_error() {
     while (*p1 != '\0') { code_str[cn++] = *p1++; }
     const uint8_t v = static_cast<uint8_t>(code);
     if (v >= 100U) { code_str[cn++] = static_cast<char>('0' + (v / 100U)); }
-    if (v >= 10U) { code_str[cn++] = static_str_cast<char>('0' + ((v % 100U) / 10U)); }
+    if (v >= 10U) { code_str[cn++] = static_cast<char>('0' + ((v % 100U) / 10U)); }
     code_str[cn++] = static_cast<char>('0' + (v % 10U));
     code_str[cn] = '\0';
 
