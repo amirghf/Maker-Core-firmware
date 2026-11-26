@@ -30,6 +30,8 @@ volatile int32_t  mc_dbg_172_gm_pos_e_um = 0;  // E
 volatile uint32_t mc_dbg_182_mt_en_mask  = 0;  // خواندنی: درایورهای فعال (بیت ۰ = X ... بیت ۳ = E)
 volatile uint32_t mc_dbg_183_mt_refused  = 0;  // خواندنی: تعداد M17/M18/M84 ردشده
 volatile uint32_t mc_dbg_188_motion_busy = 0;   // خواندنی: ۱ = mc_motion_busy() الان true است (حرکت واقعی یا ساختگی)، ۰ = بیکار (بند ۵.۱۲)
+volatile uint32_t mc_dbg_501_speed_factor_pct = MC_SPEED_FACTOR_DEFAULT_PCT; // خواندنی: ضریب سرعت فعلی M220، درصد (بند ۱۱.۳)
+volatile uint32_t mc_dbg_502_flow_factor_pct  = MC_FLOW_FACTOR_DEFAULT_PCT;  // خواندنی: ضریب جریان فعلی M221، درصد (بند ۱۱.۳)
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
 }
@@ -66,6 +68,26 @@ int32_t to_um(float mm) {
 
 }  // namespace
 
+uint32_t mc_motion_speed_factor_get() {
+    return mc_dbg_501_speed_factor_pct;
+}
+
+bool mc_motion_speed_factor_set(uint32_t pct) {
+    if ((pct < MC_SPEED_FACTOR_MIN_PCT) || (pct > MC_SPEED_FACTOR_MAX_PCT)) { return false; }
+    mc_dbg_501_speed_factor_pct = pct;
+    return true;
+}
+
+uint32_t mc_motion_flow_factor_get() {
+    return mc_dbg_502_flow_factor_pct;
+}
+
+bool mc_motion_flow_factor_set(uint32_t pct) {
+    if ((pct < MC_FLOW_FACTOR_MIN_PCT) || (pct > MC_FLOW_FACTOR_MAX_PCT)) { return false; }
+    mc_dbg_502_flow_factor_pct = pct;
+    return true;
+}
+
 void mc_gmove_init() {
     g_move = MoveStateCtx{};
     mc_dbg_164_gm_result   = 0U;
@@ -75,6 +97,8 @@ void mc_gmove_init() {
     mc_dbg_168_gm_clamped  = 0U;
     mc_dbg_182_mt_en_mask  = 0U;
     mc_dbg_183_mt_refused  = 0U;
+    mc_dbg_501_speed_factor_pct = MC_SPEED_FACTOR_DEFAULT_PCT;
+    mc_dbg_502_flow_factor_pct  = MC_FLOW_FACTOR_DEFAULT_PCT;
 }
 
 void mc_gmove_poll() {
@@ -190,7 +214,18 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
                 record_refuse(7U);
                 return GcodeStatus::Error;
             }
+        }
 
+        // بند ۱۱.۳: اعمال ضریب جریان M221 روی تغییر گام‌های E
+        if (delta[3] != 0) {
+            const uint32_t flow_pct = mc_dbg_502_flow_factor_pct;
+            if (flow_pct != 100U) {
+                const float scaled_d = static_cast<float>(delta[3]) * (static_cast<float>(flow_pct) / 100.0f);
+                delta[3] = lroundf(scaled_d);
+            }
+        }
+
+        for (uint8_t i = 0U; i < 4U; ++i) {
             if (delta[i] != 0) {
                 any_steps = true;
                 if (delta[i] > 0) {
@@ -247,6 +282,13 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call) {
 
         const float hz_per_mms = static_cast<float>(labs(delta[master])) / len_mm;
         float v_mms = has_f ? (f_pending / 60.0f) : mc_mode_feed_get_mms();  // فید فقط وقتی اعمال می‌شود که دستور پذیرفته شده باشد (بند ۵.۱۱)
+
+        // بند ۱۱.۳: اعمال ضریب سرعت M220 قبل از محدود کردن با حد سرعت هر محور
+        const uint32_t speed_pct = mc_dbg_501_speed_factor_pct;
+        if (speed_pct != 100U) {
+            v_mms = v_mms * (static_cast<float>(speed_pct) / 100.0f);
+        }
+
         bool clamped = false;
 
         if (has_xyz) {

@@ -288,7 +288,17 @@
 #define MC_KILL_RESTART_DELAY_MS   600U   // فاصله بین قبول شدن OK و ریست (میلی‌ثانیه)
 
 // ===================== ۲۶. کالیبراسیون و ضریب‌های حرکت (بند ۱۱.۱ و ۱۱.۳) =====================
-#define MC_M301_GAIN_MAX           1000.0f// حداکثر مقدار هر ضریب PID برای M301 (بند ۱۱.۱)
+#define MC_M301_GAIN_MAX               1000.0f  // حداکثر مقدار هر ضریب PID برای M301 (بند ۱۱.۱)
+#define MC_SPEED_FACTOR_MIN_PCT        10U      // حداقل ضریب سرعت M220 (درصد) (بند ۱۱.۳)
+#define MC_SPEED_FACTOR_MAX_PCT        500U     // حداکثر ضریب سرعت M220 (درصد) (بند ۱۱.۳)
+#define MC_SPEED_FACTOR_DEFAULT_PCT    100U     // ضریب سرعت پیش‌فرض M220 (درصد) (بند ۱۱.۳)
+#define MC_FLOW_FACTOR_MIN_PCT         10U      // حداقل ضریب جریان M221 (درصد) (بند ۱۱.۳)
+#define MC_FLOW_FACTOR_MAX_PCT         200U     // حداکثر ضریب جریان M221 (درصد) (بند ۱۱.۳)
+#define MC_FLOW_FACTOR_DEFAULT_PCT     100U     // ضریب جریان پیش‌فرض M221 (درصد) (بند ۱۱.۳)
+#define MC_M117_TEXT_MAX               40U      // حداکثر طول متن M117 بر حسب کاراکتر (بند ۱۱.۳)
+#define MC_M300_DEFAULT_MS             200U     // طول پیش‌فرض بوق M300 (میلی‌ثانیه) (بند ۱۱.۳)
+#define MC_M300_MAX_MS                 1000U    // حداکثر طول بوق M300 (میلی‌ثانیه) (بند ۱۱.۳)
+
 
 
 

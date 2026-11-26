@@ -17,4 +17,12 @@ GcodeStatus mc_gmove_run(const GcodeCommand& cmd, bool first_call);
 // شمارنده debug: دستور M17/M18/M84 ردشده
 void mc_gmove_note_mt_refused();
 
+// ضریب سرعت M220 (درصد، ۱۰ تا ۵۰۰) (بند ۱۱.۳)
+uint32_t mc_motion_speed_factor_get();
+bool mc_motion_speed_factor_set(uint32_t pct);
+
+// ضریب جریان M221 (درصد، ۱۰ تا ۲۰۰) (بند ۱۱.۳)
+uint32_t mc_motion_flow_factor_get();
+bool mc_motion_flow_factor_set(uint32_t pct);
+
 }  // namespace mc
