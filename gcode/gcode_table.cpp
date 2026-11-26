@@ -42,6 +42,7 @@ const GcodeEntry kTable[] = {
     { 'M', 140U, -1, mc_gcode_m140 },
     { 'M', 155U, -1, mc_gcode_m155 },
     { 'M', 190U, -1, mc_gcode_m190 },
+    { 'M', 301U, -1, mc_gcode_m301 },
     { 'M', 303U, -1, mc_gcode_m303 },
     { 'M', 400U, -1, mc_gcode_m400 },
     { 'M', 500U, -1, mc_gcode_m500 },
