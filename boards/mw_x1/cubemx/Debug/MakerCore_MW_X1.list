@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 000037dc  00000000  00000000  000e15d8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0003bb58  00000000  00000000  000e4db4  2**0
+ 17 .debug_macro  0003bb7d  00000000  00000000  000e4db4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0008e2bc  00000000  00000000  0012090c  2**0
+ 18 .debug_line   0008e345  00000000  00000000  00120931  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    00100c4b  00000000  00000000  001aebc8  2**0
+ 19 .debug_str    00100c93  00000000  00000000  001aec76  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  002af813  2**0
+ 20 .comment      00000043  00000000  00000000  002af909  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  000104f8  00000000  00000000  002af858  2**2
+ 21 .debug_frame  000104f8  00000000  00000000  002af94c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000009b  00000000  00000000  002bfd50  2**0
+ 22 .debug_line_str 0000009b  00000000  00000000  002bfe44  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -101044,8 +101044,8 @@ extern "C" void mc_steptimer_isr_c(void) {
 0802a9fc <_ZN2mc12_GLOBAL__N_110valid_axisENS_8StepAxisE>:
 };
 
-// بند ۶.۳: محور Y معکوس شد چون سوئیچ Y جلوی دستگاه است و جهت منفی باید به سمت سوئیچ برود. X و Z و E بدون تغییر.
-const bool kDirInvert[4] = { false, true, false, false };
+// جهت هر موتور از ماکروهای MC_X_DIR_INVERT تا MC_E_DIR_INVERT در config/mc_config.h خوانده می‌شود. ترتیب: X، Y، Z، E (بند ۱۱.۳)
+const bool kDirInvert[4] = { MC_X_DIR_INVERT != 0, MC_Y_DIR_INVERT != 0, MC_Z_DIR_INVERT != 0, MC_E_DIR_INVERT != 0 };
 
 inline bool valid_axis(StepAxis axis) {
  802a9fc:	b480      	push	{r7}

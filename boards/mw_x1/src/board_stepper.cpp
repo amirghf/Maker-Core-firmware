@@ -21,7 +21,7 @@ const AxisPins kAxisPins[4] = {
     { PinId::EStep,  PinId::EDir,  PinId::EEn }
 };
 
-// جهت هر موتور از ماکروهای MC_X_DIR_INVERT تا MC_E_DIR_INVERT در config/mc_config.h خوانده می‌شود. ترتیب: X، Y، Z، E (بند ۱۱.۳)
+// جهت هر موتور از ماکروهای MC_X_DIR_INVERT تا MC_E_DIR_INVERT در config/mc_config.h خوانده می‌شود. ترتیب: X، Y، Z، E
 const bool kDirInvert[4] = { MC_X_DIR_INVERT != 0, MC_Y_DIR_INVERT != 0, MC_Z_DIR_INVERT != 0, MC_E_DIR_INVERT != 0 };
 
 inline bool valid_axis(StepAxis axis) {
