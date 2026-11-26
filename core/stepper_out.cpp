@@ -4,6 +4,7 @@
 #include "step_gen.h"
 #include "hal_time.h"
 #include "error.h"
+#include "homing.h"
 
 // متغیرهای debug؛ در CubeIDE با Live Expressions دیده می‌شوند.
 extern "C" {
@@ -59,6 +60,8 @@ bool mc_motor_enable(StepAxis axis, bool on) {
     mc_stepper_enable(axis, on);
     if (on) {
         g_last_activity_ms = mc_millis();
+    } else if (axis == StepAxis::Z) {
+        mc_homing_note_z_driver_off();
     }
     return true;
 }
@@ -67,6 +70,7 @@ void mc_motor_disable_all() {
     for (uint8_t i = 0U; i < static_cast<uint8_t>(StepAxis::Count); ++i) {
         mc_stepper_enable(static_cast<StepAxis>(i), false);
     }
+    mc_homing_note_z_driver_off();
 }
 
 void mc_stepper_out_poll() {

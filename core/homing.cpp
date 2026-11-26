@@ -40,6 +40,8 @@ volatile uint32_t mc_dbg_251_hm_reset_cnt    = 0;    // خواندنی: تعدا
 volatile uint32_t mc_dbg_447_hm_prerel_cnt   = 0;    // خواندنی: تعداد دفعاتی که قبل از هومینگ Z، توالی AlarmRelease و Stow شروع شد (از روشن شدن) (بند ۶.۷)
 volatile uint32_t mc_dbg_449_hm_alarm_seen   = 0;    // خواندنی: 1 = در آخرین هومینگ Z، قبل از ریست پراب سیگنال آن HIGH دیده شد (آلارم یا فعال)، 0 = LOW بود (بند ۶.۷)
 volatile uint32_t mc_dbg_450_hm_zlift_um      = 0;    // خواندنی: مقدار بالا بردن Z قبل از آخرین هومینگ، به میکرومتر (0 = بالا نرفت) (بند ۶.۳)
+volatile uint32_t mc_dbg_498_hm_zlift_skip_cnt = 0;   // خواندنی: تعداد دفعاتی که G28 بالا بردن Z را رد کرد چون Z قبلاً بالا رفته بود (بند ۶.۳ و ۶.۷)
+volatile uint32_t mc_dbg_499_hm_zlift_known    = 0;   // خواندنی: 1 = برد می‌داند Z قبلاً بالا رفته است، 0 = نمی‌داند (بند ۶.۳ و ۶.۷)
 
 extern volatile uint32_t mc_dbg_80_mv_arm;
 extern volatile uint32_t mc_dbg_112_mq_run;
@@ -47,6 +49,9 @@ extern volatile uint32_t mc_dbg_112_mq_run;
 
 namespace mc {
 namespace {
+
+bool  g_z_lift_done   = false;
+float g_z_lift_ref_mm = 0.0f;
 
 // سقف مسافت جست‌وجوی مرحله سریع (میلی‌متر): X و Y و Z (از config/mc_config.h)
 constexpr float kHomeMaxMm[3]     = { MC_HOME_MAX_X_MM, MC_HOME_MAX_Y_MM, MC_HOME_MAX_Z_MM };
@@ -407,6 +412,9 @@ GcodeStatus step_move() {
     if (g.stage == Stage::ZLift) {
         if ((g_homed & 0x4U) != 0U) {
             mc_position_set(2U, g.target_safe);
+        } else {
+            g_z_lift_done = true;
+            g_z_lift_ref_mm = mc_position_get(2U);
         }
         mc_eguard_snapshot();
         return begin_next_axis();
@@ -437,11 +445,20 @@ GcodeStatus step_move() {
 
 }  // namespace
 
+void mc_homing_note_z_driver_off() {
+#if (MC_HOME_Z_LIFT_FORGET_ON_DISABLE != 0)
+    g_z_lift_done   = false;
+    g_z_lift_ref_mm = 0.0f;
+#endif
+}
+
 void mc_homing_init() {
     g       = Ctx{};
     g.axis  = 0xFFU;
     g.mv_axis = 0xFFU;
     g_homed = 0U;
+    g_z_lift_done   = false;
+    g_z_lift_ref_mm = 0.0f;
     mc_dbg_206_hm_state        = kStateIdle;
     mc_dbg_207_hm_axis         = 255U;
     mc_dbg_208_hm_stage        = 0U;
@@ -457,11 +474,14 @@ void mc_homing_init() {
     mc_dbg_447_hm_prerel_cnt   = 0U;
     mc_dbg_449_hm_alarm_seen   = 0U;
     mc_dbg_450_hm_zlift_um     = 0U;
+    mc_dbg_498_hm_zlift_skip_cnt = 0U;
+    mc_dbg_499_hm_zlift_known    = 0U;
 }
 
 void mc_homing_poll() {
     mc_dbg_207_hm_axis       = g.axis;
     mc_dbg_210_hm_homed_mask = g_homed;
+    mc_dbg_499_hm_zlift_known = g_z_lift_done ? 1U : 0U;
 }
 
 uint8_t mc_homing_homed_mask() {
@@ -528,11 +548,19 @@ GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call) {
             {
                 float lift_mm = 0.0f;
                 if ((g_homed & 0x4U) == 0U) {
-                    // Z هوم‌نشده: 30 میلی‌متر نسبی رو به بالا
-                    lift_mm = MC_HOME_Z_LIFT_MM;
-                    g.target_safe = lift_mm;
+                    // Z هوم‌نشده: MC_HOME_Z_LIFT_MM (20 میلی‌متر) نسبی رو به بالا، فقط اگر قبلاً بالا نرفته باشد
+                    const float cur_z = mc_position_get(2U);
+                    if (g_z_lift_done && (cur_z >= (g_z_lift_ref_mm - 0.05f))) {
+                        lift_mm = 0.0f;
+                        g.target_safe = cur_z;
+                        mc_dbg_450_hm_zlift_um = 0U;
+                        mc_dbg_498_hm_zlift_skip_cnt = mc_dbg_498_hm_zlift_skip_cnt + 1U;
+                    } else {
+                        lift_mm = MC_HOME_Z_LIFT_MM;
+                        g.target_safe = cur_z + lift_mm;
+                    }
                 } else {
-                    // Z هوم‌شده: تا حداقل 30 میلی‌متر مطلق، محدود به حد نرم‌افزاری Z
+                    // Z هوم‌شده: تا حداقل MC_HOME_Z_LIFT_MM (20 میلی‌متر) مطلق، محدود به حد نرم‌افزاری Z
                     const float cur_z = mc_position_get(2U);
                     float target_z = MC_HOME_Z_LIFT_MM;
                     if (target_z > MC_SOFT_MAX_Z_MM) {

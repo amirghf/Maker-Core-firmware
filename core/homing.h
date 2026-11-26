@@ -17,5 +17,7 @@ uint8_t mc_homing_homed_mask();
 bool mc_homing_busy();
 // اجرای G28. تا پایان کار Busy برمی‌گرداند و منتظر نمی‌ماند.
 GcodeStatus mc_homing_run(const GcodeCommand& cmd, bool first_call);
+// اطلاع‌رسانی خاموش شدن درایور Z (بند ۶.۳ و ۶.۷)
+void mc_homing_note_z_driver_off();
 
 }  // namespace mc
