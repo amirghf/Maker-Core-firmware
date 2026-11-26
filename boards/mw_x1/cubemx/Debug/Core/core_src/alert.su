@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/alert.cpp:53:6:void mc::mc_alert_init()	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/alert.cpp:69:6:void mc::mc_alert_cold_extrude_trigger()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/alert.cpp:73:6:void mc::mc_alert_raise_id(AlertId, const char*, uint32_t)	184	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/alert.cpp:108:6:void mc::mc_alert_poll()	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/alert.cpp:134:6:void mc::mc_alert_raise(AlertLevel, const char*, const char*)	168	static

@@ -1,0 +1,2 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/gcode/m9999.cpp:20:13:mc::GcodeStatus mc::mc_gcode_m9999(const GcodeCommand&, bool)	7

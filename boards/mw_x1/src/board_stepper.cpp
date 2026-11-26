@@ -2,6 +2,7 @@
 #include "hal_stepper.h"
 #include "hal_gpio.h"
 #include "stm32f4xx_hal.h"
+#include "../../../config/mc_config.h"
 
 namespace mc {
 namespace {
@@ -20,8 +21,8 @@ const AxisPins kAxisPins[4] = {
     { PinId::EStep,  PinId::EDir,  PinId::EEn }
 };
 
-// بند ۶.۳: محور Y معکوس شد چون سوئیچ Y جلوی دستگاه است و جهت منفی باید به سمت سوئیچ برود. X و Z و E بدون تغییر.
-const bool kDirInvert[4] = { false, true, false, false };
+// جهت هر موتور از ماکروهای MC_X_DIR_INVERT تا MC_E_DIR_INVERT در config/mc_config.h خوانده می‌شود. ترتیب: X، Y، Z، E (بند ۱۱.۳)
+const bool kDirInvert[4] = { MC_X_DIR_INVERT != 0, MC_Y_DIR_INVERT != 0, MC_Z_DIR_INVERT != 0, MC_E_DIR_INVERT != 0 };
 
 inline bool valid_axis(StepAxis axis) {
     return static_cast<uint8_t>(axis) < static_cast<uint8_t>(StepAxis::Count);

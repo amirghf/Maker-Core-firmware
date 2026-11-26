@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_sensor.cpp:28:6:void mc::mc_filament_init()	4
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_sensor.cpp:61:6:void mc::mc_filament_poll()	13
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_sensor.cpp:100:6:bool mc::mc_filament_empty()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_sensor.cpp:105:6:bool mc::mc_filament_runout_enabled()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_sensor.cpp:109:6:bool mc::mc_filament_runout_take()	2

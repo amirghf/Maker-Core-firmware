@@ -1,0 +1,2 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/temp_param.h:8:16:int32_t mc::mc_temp_c_to_x10(float)	5
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/gcode/m190.cpp:11:13:mc::GcodeStatus mc::mc_gcode_m190(const GcodeCommand&, bool)	7

@@ -1,0 +1,14 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:52:6:void mc::{anonymous}::merge_plan_delta()	3
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:62:6:void mc::{anonymous}::note_refused(mc::MoveRefuse)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:71:6:void mc::{anonymous}::close_move()	10
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:100:6:void mc::{anonymous}::update_debug()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:108:6:void mc::mc_axis_move_init()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:145:6:bool mc::mc_axis_move_start(StepAxis, bool, uint32_t, uint32_t)	12
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:193:6:bool mc::mc_axis_move_start_ramp(StepAxis, bool, uint32_t, uint32_t, uint32_t, uint32_t)	15
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:246:6:bool mc::mc_axis_move_start_multi(const uint32_t*, uint8_t, uint32_t, uint32_t, uint32_t)	19
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:304:6:bool mc::mc_axis_move_start_plan()	7
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:330:6:void mc::mc_axis_move_abort()	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:338:6:bool mc::mc_axis_move_busy()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:342:9:int32_t mc::mc_axis_position_steps(StepAxis)	2
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:350:11:mc::MoveState mc::mc_axis_move_state()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/axis_move.cpp:354:6:void mc::mc_axis_move_poll()	18

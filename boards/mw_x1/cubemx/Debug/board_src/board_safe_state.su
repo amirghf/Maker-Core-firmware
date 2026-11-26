@@ -1,0 +1,7 @@
+../Drivers/CMSIS/Include/core_cm4.h:1938:34:void __NVIC_SystemReset()	4	static,ignoring_inline_asm
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:52:6:void mc::{anonymous}::mc_enable_gpio_clocks()	32	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:62:6:void mc::mc_board_safe_state()	40	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:78:6:bool mc::mc_board_safe_state_check()	24	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:95:19:void mc::mc_system_reset()	8	static,ignoring_inline_asm
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:105:17:void mc_board_safe_state_c()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/src/board_safe_state.cpp:109:16:int mc_board_safe_state_check_c()	8	static

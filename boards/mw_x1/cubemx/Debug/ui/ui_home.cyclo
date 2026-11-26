@@ -19,4 +19,4 @@ K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core 
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:799:6:void mc::{anonymous}::update_one_field()	84
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:1057:6:void mc::mc_ui_init()	2
 K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:1137:6:void mc::mc_ui_notify_splash(uint32_t)	3
-K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:1147:6:void mc::mc_ui_poll()	174
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/ui/ui_home.cpp:1148:6:void mc::mc_ui_poll()	174

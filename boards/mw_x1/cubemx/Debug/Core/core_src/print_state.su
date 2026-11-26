@@ -1,0 +1,5 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/boards/mw_x1/cubemx/../../../hal/hal_time.h:27:13:bool mc::mc_time_elapsed_ms(uint32_t, uint32_t)	16	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/print_state.cpp:19:6:void mc::mc_print_init()	4	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/print_state.cpp:25:6:void mc::mc_print_poll()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/print_state.cpp:29:6:void mc::mc_print_note_extrusion()	8	static
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/print_state.cpp:33:6:bool mc::mc_print_active()	16	static

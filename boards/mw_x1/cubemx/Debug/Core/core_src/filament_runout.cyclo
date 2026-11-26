@@ -1,0 +1,4 @@
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_runout.cpp:33:6:void mc::mc_filrun_init()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_runout.cpp:44:6:bool mc::mc_filrun_caused()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_runout.cpp:48:6:void mc::mc_filrun_abort()	1
+K:/Projects/1405/01-Multi_Works_Machine/Codes/Printer 3D/My_Framware/Maker Core firmware/core/filament_runout.cpp:55:6:void mc::mc_filrun_poll()	21
